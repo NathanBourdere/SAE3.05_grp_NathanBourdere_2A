@@ -1,3 +1,8 @@
+body{
+    text-align: center;
+    background-color: #97C8EB;
+    font-family: oswald;
+}
 main>article{
     color:white;
     background-color: blue;
@@ -38,7 +43,11 @@ article:last-child{
 article:last-child>a{
     text-decoration: none;
 }
-
+main>img{
+    height: 12rem;
+    width: auto;
+    margin-bottom: 0.7em;
+}
 @keyframes insertMessage {
     0%{
         transform: translate3d(-150px, 0, 0);
