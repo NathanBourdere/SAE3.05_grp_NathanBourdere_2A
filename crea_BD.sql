@@ -14,19 +14,19 @@ CREATE TABLE UTILISATEUR(
     ddnU DATE,
     mail varchar(50) UNIQUE,
     PRIMARY KEY(IDuser)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE PERSONNELADMINISTRATIF(
     IDpersAdmin varchar(20) NOT NULL,
     PRIMARY KEY(IDpersAdmin)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE VACATAIRE(
     IDvacataire varchar(20) NOT NULL,
     candidature varchar(42),
     ancien boolean,
     PRIMARY KEY(IDvacataire)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE GERERDOSSIER(
     IDpersAdmin varchar(20) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE GERERDOSSIER(
     dateModif DATE,
     heureModif int(2) check (heureModif between 0 and 23),
     PRIMARY KEY(IDpersAdmin,IDvacataire)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 --dureeCours en minutes
 CREATE TABLE COURS(
@@ -46,14 +46,14 @@ CREATE TABLE COURS(
     heuresTotale int(3),
     dureeCours int(3),
     PRIMARY KEY(IDCours,TypeCours)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE AFFECTABLE(
     IDCours varchar(6) NOT NULL,
     TypeCours varchar(2) NOT NULL,
     IDvacataire varchar(20) NOT NULL,
     PRIMARY KEY(IDCours,TypeCours,IDvacataire)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 --salle ex: I201
 --classe ex: 2A ou 2A2 ou 2A2A (en fonction du type de cours)
 CREATE TABLE ASSIGNER(
@@ -65,7 +65,7 @@ CREATE TABLE ASSIGNER(
     dateCours DATE,
     heureCours int(2) check (heuresCours between 0 and 23),
     PRIMARY KEY (IDCours,TypeCours,IDvacataire)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 ALTER TABLE PERSONNELADMINISTRATIF ADD FOREIGN KEY(IDpersAdmin) REFERENCES UTILISATEUR(IDuser);
 ALTER TABLE VACATAIRE ADD FOREIGN KEY(IDvacataire) REFERENCES UTILISATEUR(IDuser);  
