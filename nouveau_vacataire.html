@@ -15,8 +15,10 @@
     </header>
     <main>
         <h1>
-            Trouver titre d'accroche
+            Nous sommes heureux de savoir que vous souhaitez
+            nous rejoindre !
         </h1>
+        <h2>Nous avons besoin de quelques informations vous concernant...</h2>
         <section>
             <article>
                 <ol>
@@ -26,10 +28,10 @@
                     <li><label for="mail">Email: </label><input type="email" id="mail"></li>
                 </ol>
             </article>
-        </section>
-        <section>
-            <article>
-                <label>Matières</label>
+            <article class="select">
+                <div class="protected">
+                    <label id="matiere">Matières</label>
+                </div>
                 <ol>
                     <li>
                         <select nom="Matiere1">
@@ -60,13 +62,15 @@
                     </li>
                 </ol>
             </article>
+        </section>
+        <section>
             <article>
                 <label>Disponibilités</label>
                 <div>
                     <p>De</p>
-                    <input type="date">
+                    <input type="date" class="date">
                     <p>à</p>
-                    <input type="date">
+                    <input type="date" class="date">
                 </div>
             </article>
         </section>
