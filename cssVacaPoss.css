@@ -1,0 +1,17 @@
+section{
+    border: solid
+}
+section:last-child{
+    display: flex;
+    padding-right:35%;
+    padding-left:35%
+}
+section:last-child>article{
+    margin: 0 auto;
+}
+section:last-child>article:last-child>div{
+    display: flex;
+}
+li{
+    list-style: none;
+}
