@@ -72,4 +72,20 @@ ALTER TABLE GERERDOSSIER ADD FOREIGN KEY(IDvacataire) REFERENCES VACATAIRE(IDvac
 ALTER TABLE AFFECTABLE ADD FOREIGN KEY(IDCours,TypeCours) REFERENCES COURS(IDCours,TypeCours);
 ALTER TABLE AFFECTABLE ADD FOREIGN KEY(IDvacataire) REFERENCES VACATAIRE(IDvacataire); 
 ALTER TABLE ASSIGNER ADD FOREIGN KEY(IDCours,TypeCours) REFERENCES COURS(IDCours,TypeCours);
-ALTER TABLE ASSIGNER ADD FOREIGN KEY(IDvacataire) REFERENCES VACATAIRE(IDvacataire); 
+ALTER TABLE ASSIGNER ADD FOREIGN KEY(IDvacataire) REFERENCES VACATAIRE(IDvacataire);
+
+--TRIGGERS
+
+--trigger numéro 1 : on s'assure qu'un ancien vacataire n'est pas assigné à un cours
+DELIMITER |
+create or replace trigger ancienPasAssignable before insert on ASSIGNER for each row
+BEGIN
+    declare res varchar(500) DEFAULT '';
+    declare est_ancien boolean DEFAULT FALSE;
+    select ancien into est_ancien from ASSIGNER NATURAL JOIN VACATAIRE where IDvacataire = new.IDvacataire;
+    if (ancien = TRUE) then
+        set res = concat(res,"erreur :",new.IDvacataire," est un ancien vacataire, il n'enseigne plus ici, assignation impossible");
+        signal SQLSTATE '45000' set MESSAGE_TEXT = res;
+    end if;
+END |
+DELIMITER ;
