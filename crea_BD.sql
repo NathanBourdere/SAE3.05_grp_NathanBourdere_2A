@@ -103,3 +103,17 @@ BEGIN
     end if;
 END |
 DELIMITER ;
+
+--trigger numéro 3 : Un vacataire ne peut pas se faire assigner un cours (et son type) dont il n'est pas affectable
+DELIMITER |
+create or replace trigger vacataireNonAffectable before insert on ASSIGNER for each row
+BEGIN
+    declare res varchar(500) DEFAULt '';
+    declare idv_dans_affectable varchar(20) DEFAULT '';
+    select IDvacataire into idv_dans_affectable from AFFECTABLE where IDvacataire = new.IDvacataire and IDCours = new.IDCours and TypeCours = new.TypeCours;
+    if (idv_dans_affectable != '') then
+        set res = concat(res,"erreur : ",idv_dans_affectable," n'est pas affectable au cours ",new.IDCours,"(en ",new.TypeCours,")");
+        signal SQLSTATE '45000' set MESSAGE_TEXT = res;
+    end if;
+END |
+DELIMITER ;
