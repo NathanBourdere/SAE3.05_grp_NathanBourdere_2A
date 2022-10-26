@@ -83,8 +83,22 @@ BEGIN
     declare res varchar(500) DEFAULT '';
     declare est_ancien boolean DEFAULT FALSE;
     select ancien into est_ancien from ASSIGNER NATURAL JOIN VACATAIRE where IDvacataire = new.IDvacataire;
-    if (ancien = TRUE) then
-        set res = concat(res,"erreur :",new.IDvacataire," est un ancien vacataire, il n'enseigne plus ici, assignation impossible");
+    if (est_ancien = TRUE) then
+        set res = concat(res,"erreur : ",new.IDvacataire," est un ancien vacataire, il n'enseigne plus ici, assignation impossible");
+        signal SQLSTATE '45000' set MESSAGE_TEXT = res;
+    end if;
+END |
+DELIMITER ;
+
+--trigger numéro 2 : Un vacataire ne peut pas se faire assigner un cours tant que son dossier n'est pas validé
+DELIMITER |
+create or replace trigger vacataireNonAssignableTantQuePasValidee before insert on ASSIGNER for each row
+BEGIN
+    declare res varchar(500) DEFAULt '';
+    declare etat_doc varchar(20) DEFAULT '';
+    select etat_dossier into etat_doc from ASSIGNER NATURAL JOIN VACATAIRE NATURAL JOIN GERERDOSSIER where IDvacataire = new.IDvacataire;
+    if (etat_doc != "Validé") then
+        set res = concat(res,"erreur : ",new.IDvacataire," à son dossier laissé en l'état : ",etat_doc, ", son dossier doit être validé avant");
         signal SQLSTATE '45000' set MESSAGE_TEXT = res;
     end if;
 END |
