@@ -10,9 +10,9 @@ CREATE TABLE UTILISATEUR(
     IDuser varchar(20) NOT NULL,
     nomU varchar(30),
     prenomU varchar(30),
-    telU int(14),
+    telU int(14) UNIQUE,
     ddnU DATE,
-    mail varchar(50),
+    mail varchar(50) UNIQUE,
     PRIMARY KEY(IDuser)
 );
 
@@ -41,8 +41,8 @@ CREATE TABLE GERERDOSSIER(
 CREATE TABLE COURS(
     IDCours varchar(6) NOT NULL,
     TypeCours varchar(2) NOT NULL,
-    nomCours varchar(42),
-    domaine varchar(42),
+    nomCours varchar(42) UNIQUE NOT NULL,
+    domaine varchar(42) NOT NULL,
     heuresTotale int(3),
     dureeCours int(3),
     PRIMARY KEY(IDCours,TypeCours)
@@ -134,3 +134,6 @@ BEGIN
     end if;
 END |
 DELIMITER ;
+
+--pour sqlAlchemy : Un vacataire doit avoir son etat_dossier passé de incomplet à complet si il n'y a aucun NULL
+-- l'insertion de cours sera automatisé aussi par sqlAlchemy
