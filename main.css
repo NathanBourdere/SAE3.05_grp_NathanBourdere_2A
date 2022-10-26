@@ -16,7 +16,7 @@ header>a>img{
      /** A changer au possible*/
 }
 header>h1{
-    margin-right: 0px;
+    margin-right: auto;
     margin-left: auto;
     /**Idem*/
     font-size: 3em;
@@ -25,61 +25,7 @@ header>h1{
     color:white;
 }
 main>img{
-    height: 15rem;
+    height: 12rem;
     width: auto;
-    margin-bottom: 3em;
-}
-main>article{
-    background-color: blue;
-    font-size: 1rem;
-    max-width: 45%;
-    padding: 0.3rem;
-    margin-bottom: 1em;
-    border-radius: 5em;
-    box-shadow: 6px 6px 10px 2px rgba(119, 119, 119, 0.78);
-}
-article:nth-of-type(1){ /**Pour une raison inconnue :first-child ne fonctionne pas*/
-    opacity: 0;
-    animation-name: insertMessage;
-    animation-duration: 0.6s;
-    animation-delay: 1s;
-    animation-fill-mode: forwards;
-}
-article:not(:last-child):nth-child(2n+1){
-    opacity: 0;
-    animation-name: insertMessage;
-    animation-duration: 0.6s;
-    animation-delay: 2s;
-    animation-fill-mode: forwards;
-}
-
-article:last-child{
-    background-color: white;
-    margin-right: 0px;
-    margin-left: auto;
-    opacity: 0;
-    animation-name: insertLastMessage;
-    animation-duration: 0.6s;
-    animation-delay: 3s;
-    animation-fill-mode: forwards;
-}
-
-@keyframes insertMessage {
-    0%{
-        transform: translate3d(-150px, 0, 0);
-    }
-    100% {
-        transform: translate3d(0,0,0);
-        opacity:1
-    }
-}
-
-@keyframes insertLastMessage {
-    0%{
-        transform: translate3d(150px, 0, 0);
-    }
-    100% {
-        transform: translate3d(0,0,0);
-        opacity:1
-    }
+    margin-bottom: 0.7em;
 }
