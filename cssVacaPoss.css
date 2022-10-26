@@ -3,48 +3,66 @@ main {
     margin-left: 15%;
     margin-right: 15%
 }
-h1,h2{
-    color:antiquewhite;
-}
 
-section:last-child>article:last-child>div {
-    display: flex;
+h1,
+h2 {
+    color: antiquewhite;
 }
 
 ol {
     display: inline-block;
     text-align: left;
-}
-
-section:last-child {
-    display: inline-block;
-    text-align: center;
+    list-style-type: none;
+    padding-left: 0px;
 }
 
 li {
     list-style: none;
-    margin: 0%;
 }
 
-input, select {
+input,
+select {
     display: block;
     width: 100%;
-    padding: 8px 16px;
+    padding: 0.3rem 0rem 0.3rem 0.3rem;
     font-weight: 500;
     border-radius: 6px;
 }
 
-.date {
+#date {
+    margin-left: 25%;
+    margin-right: 25%;
+    text-align: center;
+    justify-content: center;
+    display: flex;
     padding: 0px 0px;
-    margin: 5px
+    margin-top: 0.9em;
+    width: 50%;
+}
+
+#date>p {
+    margin: 0.4em
 }
 
 select {
     padding: 0.5em 9.5rem 0.5em 1em;
 }
-.select>ol{
-    padding-inline-start: 10px;
+
+.olCheckbox {
+    display: flex;
+    justify-content: center;
 }
-article:last-child{
-    margin-left:4rem;
+
+.olCheckbox>li {
+    margin: 1em;
+}
+
+.olCheckbox>li>input {
+    margin-left: 25%;
+    margin-right: 25%;
+}
+
+input[type="checkbox"] {
+    width: 1.7em;
+    height: 1.7em;
 }
