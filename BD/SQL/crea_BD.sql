@@ -13,6 +13,7 @@ CREATE TABLE UTILISATEUR(
     telU int(14) UNIQUE,
     ddnU DATE,
     mail varchar(50) UNIQUE,
+    mdpU varchar(50),
     PRIMARY KEY(IDuser)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
