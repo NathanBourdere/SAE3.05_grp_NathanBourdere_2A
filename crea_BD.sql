@@ -10,7 +10,7 @@ CREATE TABLE UTILISATEUR(
     IDuser varchar(20) NOT NULL,
     nomU varchar(20),
     prenomU varchar(20),
-    telU int(14),
+    telU varchar(10),
     ddnU DATE,
     mail varchar(50),
     PRIMARY KEY(IDuser)

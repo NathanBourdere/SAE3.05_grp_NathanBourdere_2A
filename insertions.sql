@@ -3,10 +3,10 @@ INSERT INTO COURS VALUES ("1", 'TP', 'Qualité de developpement','Programmation'
 INSERT INTO COURS VALUES ("2", 'CM', 'Qualité de developpement','Programmation',20, 75);
 INSERT INTO COURS VALUES ("3", 'TD', 'Probabilité','Math',25, 75);
 
-INSERT INTO UTILISATEUR VALUES ("V1",'Blin--Dorard','Bryan', 0783898400, '2003-06-01','bryanblindorard@gmail.com');
-INSERT INTO UTILISATEUR VALUES ("V2",'Bourdere','Nathan', 0666554482, '2003-09-01','boudereandreounathan@gmail.com');
-INSERT INTO UTILISATEUR VALUES ("V3",'Loszach','Constantin', 0617757221, '2003-02-02','constantinloszach@gmail.com');
-INSERT INTO UTILISATEUR VALUES ("A4",'Viard','Théo', 0695347118, '2003-01-27','theoviard2701@gmail.com');
+INSERT INTO UTILISATEUR VALUES ("V1",'Blin--Dorard','Bryan', "0783898400", '2003-06-01','bryanblindorard@gmail.com');
+INSERT INTO UTILISATEUR VALUES ("V2",'Bourdere','Nathan', "0666554482", '2003-09-01','boudereandreounathan@gmail.com');
+INSERT INTO UTILISATEUR VALUES ("V3",'Loszach','Constantin', "0617757221", '2003-02-02','constantinloszach@gmail.com');
+INSERT INTO UTILISATEUR VALUES ("A4",'Viard','Théo', "0695347118", '2003-01-27','theoviard2701@gmail.com');
 
 -- Vacataire -> id , [Spontanée/Recommandée/] , ancien
 INSERT INTO VACATAIRE VALUES ("V1","Spontané",TRUE);
