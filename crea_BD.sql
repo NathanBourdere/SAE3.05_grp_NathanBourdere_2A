@@ -12,7 +12,7 @@ CREATE TABLE UTILISATEUR(
     prenomU varchar(20),
     telU int(14),
     ddnU DATE,
-    mail varchar(20),
+    mail varchar(50),
     PRIMARY KEY(IDuser)
 );
 
@@ -43,7 +43,7 @@ CREATE TABLE COURS(
     TypeCours varchar(2) NOT NULL,
     nomCours varchar(42),
     domaine varchar(42),
-    heuresTotale int(3) check (heuresTotale between 0 and 23),
+    heuresTotale int(3),
     dureeCours int(3),
     PRIMARY KEY(IDCours,TypeCours)
 );
@@ -62,6 +62,8 @@ CREATE TABLE ASSIGNER(
     IDvacataire varchar(20) NOT NULL,
     salle varchar(12),
     classe varchar(4),
+    dateCours DATE,
+    heureCours int(2) check (heureCours between 0 and 23),
     PRIMARY KEY (IDCours,TypeCours,IDvacataire)
 );
 
