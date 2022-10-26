@@ -64,7 +64,7 @@ CREATE TABLE ASSIGNER(
     salle varchar(12),
     classe varchar(4),
     dateCours DATE,
-    heureCours int(2) check (heuresCours between 0 and 23),
+    heureCours int(2) check (heureCours between 0 and 23),
     PRIMARY KEY (IDCours,TypeCours,IDvacataire)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
