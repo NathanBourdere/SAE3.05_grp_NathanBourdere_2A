@@ -85,7 +85,7 @@ create or replace trigger ancienPasAssignable before insert on ASSIGNER for each
 BEGIN
     declare res varchar(500) DEFAULT '';
     declare est_ancien boolean DEFAULT FALSE;
-    select ancien into est_ancien from ASSIGNER NATURAL JOIN VACATAIRE where IDvacataire = new.IDvacataire and IDCours = new.IDCours and TypeCours = new.TypeCours;
+    select ancien into est_ancien from VACATAIRE where IDvacataire = new.IDvacataire and IDCours = new.IDCours and TypeCours = new.TypeCours;
     if (est_ancien = TRUE) then
         set res = concat(res,"erreur : ",new.IDvacataire," est un ancien vacataire, il n'enseigne plus ici, assignation impossible");
         signal SQLSTATE '45000' set MESSAGE_TEXT = res;
