@@ -146,3 +146,15 @@ th {
     border: 2px solid #C49799;
     text-align: center;
 }
+#avatar{
+    width:20%;
+    border-radius: 25%;
+    margin:1rem;
+}
+#flexAvatar{
+    display: flex;
+    justify-content: center;
+}
+#endFlex{
+    display:box
+}
