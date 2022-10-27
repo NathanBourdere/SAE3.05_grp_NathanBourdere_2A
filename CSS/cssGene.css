@@ -158,3 +158,15 @@ th {
 #endFlex{
     display:box
 }
+#SQL{
+    background-color: #e47105;
+}
+#WEB{
+    background-color:blueviolet;
+}
+#Anglais{
+    background-color:brown;
+}
+#Python{
+    background-color: aqua;
+}
