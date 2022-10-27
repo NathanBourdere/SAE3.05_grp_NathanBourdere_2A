@@ -5,7 +5,7 @@
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     <title>VACAT'O</title>
-    <link href="../CSS/cssGene.css" rel="stylesheet">
+    <link href="../CSS/generalCSS.css" rel="stylesheet">
 </head>
 
 <body>
@@ -63,7 +63,7 @@
                     </ol>
                 </article>
             </section>
-            <section>
+            <section id="dispo">
                 <label>Disponibilités</label>
                 <div id="date">
                     <p>De</p>
@@ -72,34 +72,35 @@
                     <input type="date" class="date">
                 </div>
                 <article>
-                    <ol class="olCheckbox">
-                        <li>
-                            <input type="checkbox" name="jours" id="lundi" value="Lundi">
-                            <label for="lundi">Lundi</label>
-                        </li>
-                        <li>
-                            <input type="checkbox" name="jours" id="mardi" value="Mardi">
-                            <label for="mardi">Mardi</label>
-                        </li>
-                        <li>
-                            <input type="checkbox" name="jours" id="mercredi" value="Mercredi">
-                            <label for="mercredi">Mercredi</label>
-                        </li>
-                    </ol>
-                    <ol class="olCheckbox">
-                        <li>
-                            <input type="checkbox" name="jours" id="jeudi" value="Jeudi">
-                            <label for="jeudi">Jeudi</label>
-                        </li>
-                        <li>
-                            <input type="checkbox" name="jours" id="Vendredi" value="Vendredi">
-                            <label for="Vendredi">Vendredi</label>
-                        </li>
-                        <li>
-                            <input type="checkbox" name="jours" id="Samedi" value="Samedi">
-                            <label for="Samedi">Samedi</label>
-                        </li>
-                    </ol>
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="jours" id="lundi" value="Lundi">
+                                <label for="lundi">Lundi</label>
+                            </td>
+                            <td><input type="checkbox" name="jours" id="mardi" value="Mardi">
+                                <label for="mardi">Mardi</label>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="jours" id="mercredi" value="Mercredi">
+                                <label for="mercredi">Mercredi</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="jours" id="jeudi" value="Jeudi">
+                                <label for="jeudi">Jeudi</label>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="jours" id="Vendredi" value="Vendredi">
+                                <label for="Vendredi">Vendredi</label>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="jours" id="Samedi" value="Samedi">
+                                <label for="Samedi">Samedi</label>
+                            </td>
+                        </tr>
+                    </table>
                 </article>
                 <input type="submit">
             </section>
@@ -111,5 +112,21 @@
         </p>
     </footer>
 </body>
+<style>
+    #date {
+        margin-left: 25%;
+        margin-right: 25%;
+        text-align: center;
+        justify-content: center;
+        display: flex;
+        padding: 0px 0px;
+        margin-top: 0.9em;
+        width: 50%;
+    }
+
+    #date>p {
+        margin: 0.4em
+    }
+</style>
 
 </html>

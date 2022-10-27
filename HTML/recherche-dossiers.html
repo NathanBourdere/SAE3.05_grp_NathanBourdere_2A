@@ -5,7 +5,7 @@
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     <title>VACAT'O</title>
-    <link href="../CSS/cssGene.css" rel="stylesheet">
+    <link href="../CSS/generalCSS.css" rel="stylesheet">
     <link href="../CSS/headerSpe.css" rel="stylesheet">
 </head>
 
@@ -21,8 +21,15 @@
             Rechercher dossier
         </h1>
         <section id="table">
+            <article>
             <input type="text" placeholder="Nom, Prénom, email, telephone, ...">
-            <a href="ouais tout pareil">Filtrer les dossiers ↓ </a>
+            <select nom="filtre">
+                <option value="null">Filtrer les dossiers ↓ </option>
+                <option value="candidat">Candidats</option>
+                <option value="dossier">Dossiers</option>
+                <option value="vaca">Vacataires</option>
+            </select>
+        </article>
             <article>
                 <table>
                     <tr>
