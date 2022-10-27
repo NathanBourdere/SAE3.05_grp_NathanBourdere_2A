@@ -85,7 +85,7 @@ ALTER TABLE ASSIGNER ADD FOREIGN KEY(IDvacataire) REFERENCES VACATAIRE(IDvacatai
 -- BEGIN
 --     declare res varchar(500) DEFAULT '';
 --     declare est_ancien boolean DEFAULT FALSE;
---     select ancien into est_ancien from ASSIGNER NATURAL JOIN VACATAIRE where IDvacataire = new.IDvacataire and IDCours = new.IDCours and TypeCours = new.TypeCours;
+--     select ancien into est_ancien from VACATAIRE where IDvacataire = new.IDvacataire;
 --     if (est_ancien = TRUE) then
 --         set res = concat(res,"erreur : ",new.IDvacataire," est un ancien vacataire, il n'enseigne plus ici, assignation impossible");
 --         signal SQLSTATE '45000' set MESSAGE_TEXT = res;
@@ -115,7 +115,7 @@ ALTER TABLE ASSIGNER ADD FOREIGN KEY(IDvacataire) REFERENCES VACATAIRE(IDvacatai
 --     declare idv_dans_affectable varchar(20) DEFAULT '';
 --     select IDvacataire into idv_dans_affectable from AFFECTABLE where IDvacataire = new.IDvacataire and IDCours = new.IDCours and TypeCours = new.TypeCours;
 --     if (idv_dans_affectable = '') then
---         set res = concat(res,"erreur : ",idv_dans_affectable," n'est pas affectable au cours ",new.IDCours,"(en ",new.TypeCours,")");
+--         set res = concat(res,"erreur : ",idv_dans_affectable," n'est pas affectable au cours ",new.IDCours," (en ",new.TypeCours,")");
 --         signal SQLSTATE '45000' set MESSAGE_TEXT = res;
 --     end if;
 -- END |
@@ -136,7 +136,7 @@ ALTER TABLE ASSIGNER ADD FOREIGN KEY(IDvacataire) REFERENCES VACATAIRE(IDvacatai
 -- END |
 -- DELIMITER ;
 
---pour sqlAlchemy : Un vacataire doit avoir son etat_dossier passé de incomplet à complet si il n'y a aucun NULL
+-- pour sqlAlchemy : Un vacataire doit avoir son etat_dossier passé de incomplet à complet si il n'y a aucun NULL
 -- l'insertion de cours sera automatisé aussi par sqlAlchemy
 
 
@@ -153,3 +153,32 @@ ALTER TABLE ASSIGNER ADD FOREIGN KEY(IDvacataire) REFERENCES VACATAIRE(IDvacatai
 --     end if;
 -- END |
 -- DELIMITER ;
+
+
+-- -- trigger numéro 6 : Deux cours différents ne peuvent pas se passer en même temps dans la même salle
+-- DELIMITER |
+-- create or replace trigger uneSalleUnCours before insert on ASSIGNER for each row
+-- BEGIN
+--     declare res varchar(500) DEFAULT '';
+--     declare idcours_dans_cours varchar(6) DEFAULT '';
+--     select IDCours into idcours_dans_cours from ASSIGNER natural join COURS natural join VACATAIRE where dateCours = new.dateCours and heureCours = new.heureCours and salle = new.salle;
+--     if (idcours_dans_cours != '') then
+--         set res = concat(res,"erreur :Il y a un même cours déja existant à cette date et heure dans cette salle");
+--         signal SQLSTATE '45000' set MESSAGE_TEXT = res;
+--     end if;
+-- END |
+-- DELIMITER ;
+
+-- trigger numéro 7 : Une classe ne peut pas avoir deux cours en même temps
+DELIMITER |
+create or replace trigger uneClasseUnCours before insert on ASSIGNER for each row
+BEGIN
+    declare res varchar(500) DEFAULT '';
+    declare idcours_dans_cours varchar(6) DEFAULT '';
+    select IDCours into idcours_dans_cours from ASSIGNER natural join COURS natural join VACATAIRE where dateCours = new.dateCours and heureCours = new.heureCours and classe = new.classe;
+    if (idcours_dans_cours != '') then
+        set res = concat(res,"erreur :Il y a un même cours déja existant à cette date et heure pour cette classe");
+        signal SQLSTATE '45000' set MESSAGE_TEXT = res;
+    end if;
+END |
+DELIMITER ;
