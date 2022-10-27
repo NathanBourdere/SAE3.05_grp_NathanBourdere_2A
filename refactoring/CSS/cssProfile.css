@@ -1,0 +1,25 @@
+body {
+    text-align: center;
+    background-color: #97C8EB;
+    font-family: oswald;
+}
+
+header {
+    font-family: pacifico;
+    background-color: #89B0AE;
+    text-align: center;
+}
+
+main {
+    background-color: cadetblue;
+    margin-left: 15%;
+    margin-right: 15%
+}
+li{
+    list-style: none;
+}
+ol {
+    display: inline-block;
+    list-style-type: none;
+    padding-left: 0px;
+}
