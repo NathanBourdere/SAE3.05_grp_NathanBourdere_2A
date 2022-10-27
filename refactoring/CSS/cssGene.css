@@ -28,10 +28,6 @@ ol {
     padding-left: 0px;
 }
 
-li {
-    list-style: none;
-}
-
 select {
     display: block;
     width: 100%;
