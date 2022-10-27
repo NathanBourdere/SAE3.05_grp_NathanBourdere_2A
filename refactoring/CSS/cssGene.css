@@ -125,29 +125,7 @@ input[type="button"]:hover {
     transition-duration: .1s;
 }
 
-#table {
-    text-align: center;
-}
 
-#table>input[type="text"] {
-    width: 30%;
-    margin-left: 13%;
-}
-
-table {
-    margin-top: 2rem;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 1.4rem;
-    border-collapse: collapse;
-}
-
-td,
-th {
-    padding: 10px;
-    border: 2px solid #C49799;
-    text-align: center;
-}
 #avatar{
     width:20%;
     border-radius: 25%;
@@ -159,19 +137,4 @@ th {
 }
 #endFlex{
     display:box
-}
-#SQL{
-    background-color: #e47105;
-}
-#WEB{
-    background-color:blueviolet;
-}
-#Anglais{
-    background-color:brown;
-}
-#Python{
-    background-color: aqua;
-}
-#table>article{
-    display: flex;
 }
