@@ -20,12 +20,10 @@ pymysql.install_as_MySQLdb()
 # Base class used by my classes (my entities)
 Base = declarative_base()  # Required
 
-#CLasse utilisateur n'existe plus, il y a juste personnel admin et vacataire avec les attributs de utilisateur
-
 class PersonnelAdministratif(Base):
     __tablename__ = 'PERSONNELADMINISTRATIF'
 
-    IDpersAdmin = Column(Text,ForeignKey("UTILISATEUR.IDuser"),primary_key=True)
+    IDpersAdmin = Column(Text,primary_key=True)
     nomPa = Column(Text)
     prenomPa = Column(Text)
     ddnPa = Column(Date)
@@ -49,7 +47,7 @@ class PersonnelAdministratif(Base):
 class Vacataire(Base):
     __tablename__ = "VACATAIRE"
 
-    IDVacataire = Column(Text,ForeignKey("UTILISATEUR.IDuser"),primary_key=True)
+    IDVacataire = Column(Text,primary_key=True)
     candidature = Column(Text) #0 ou 1
     ancien = Column(Integer)
     nomV = Column(Text)
@@ -80,8 +78,8 @@ class Vacataire(Base):
 class GererDossier(Base):
     __tablename__= "GERERDOSSIER"
 
-    IDVacataire = Column(Text,ForeignKey("UTILISATEUR.IDuser"),primary_key=True)
-    IDpersAdmin = Column(Text,ForeignKey("UTILISATEUR.IDuser"),primary_key=True)
+    IDVacataire = Column(Text,primary_key=True)
+    IDpersAdmin = Column(Text,primary_key=True)
     etat_dossier = Column(Text)
     dateModif = Column(Date)
     heureModif = Column(Integer)
@@ -127,7 +125,7 @@ class Cours(Base):
 class Affectable(Base):
     __tablename__= "AFFECTABLE"
 
-    IDVacataire = Column(Text,ForeignKey("UTILISATEUR.IDuser"),primary_key=True)
+    IDVacataire = Column(Text,primary_key=True)
     IDcours = Column(Text,ForeignKey("COURS.IDcours"),primary_key=True)
     TypeCours = Column(Text,ForeignKey("COURS.TypeCours"),primary_key=True)
 
@@ -145,7 +143,7 @@ class Affectable(Base):
 class Assigner(Base):
     __tablename__ = "ASSIGNER"
 
-    IDVacataire = Column(Text,ForeignKey("UTILISATEUR.IDuser"),primary_key=True)
+    IDVacataire = Column(Text,primary_key=True)
     IDcours = Column(Text,ForeignKey("COURS.IDcours"),primary_key=True)
     TypeCours = Column(Text,ForeignKey("COURS.TypeCours"),primary_key=True)
     salle = Column(Text)
@@ -167,7 +165,8 @@ class Assigner(Base):
     
     def __str__(self):
         return "Le vacataire "+self.IDVacataire+" est assigné au cours "+self.TypeCours+" "+self.IDcours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",self.DateCours+" à "+str(self.HeureCours)
-        
+
+#deprecated        
 def ouvrir_connexion(user,passwd,host,database):
     """
     ouverture d'une connexion MySQL
