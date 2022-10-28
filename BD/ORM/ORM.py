@@ -26,20 +26,25 @@ class PersonnelAdministratif(Base):
     __tablename__ = 'PERSONNELADMINISTRATIF'
 
     IDpersAdmin = Column(Text,ForeignKey("UTILISATEUR.IDuser"),primary_key=True)
-    nomU = Column(Text)
-    prenomU = Column(Text)
-    ddnU = Column(Date)
-    mail = Column(Text)
-    mdpU = Column(Text)
+    nomPa = Column(Text)
+    prenomPa = Column(Text)
+    ddnPa = Column(Date)
+    mailPa = Column(Text)
+    mdpPa = Column(Text)
 
     dossierVacataire = relationship("Vacataire", back_populates = "selfdossier")
     gererdossier = relationship("GererDossier", back_populates = "gerantdossier")
 
-    def __init__(self,idpa):
+    def __init__(self,idpa,nom,pnom,ddn,mail,mdp):
         self.IDpersAdmin = idpa
+        self.nomPa = nom
+        self.prenomPa = pnom
+        self.ddnPa = ddn
+        self.mailPa = mail
+        self.mdpPa = mdp
     
     def __str__(self):
-        return "PersonnelAdministratif ",session.query(Utilisateur).get(self.IDpersAdmin)
+        return "PersonnelAdministratif :"+" "+self.IDpersAdmin+" "+self.nomPa+" "+self.prenomPa+" né(e) le ",self.ddnPa," mail : "+self.mailPa
 
 class Vacataire(Base):
     __tablename__ = "VACATAIRE"
@@ -47,11 +52,11 @@ class Vacataire(Base):
     IDVacataire = Column(Text,ForeignKey("UTILISATEUR.IDuser"),primary_key=True)
     candidature = Column(Text) #0 ou 1
     ancien = Column(Integer)
-    nomU = Column(Text)
-    prenomU = Column(Text)
-    ddnU = Column(Date)
-    mail = Column(Text)
-    mdpU = Column(Text)
+    nomV = Column(Text)
+    prenomV = Column(Text)
+    ddnV = Column(Date)
+    mailV = Column(Text)
+    mdpV = Column(Text)
     
     selfdossier = relationship("PersonnelAdministratif", back_populates = "dossierVacataire")
     dossier_qui_se_fait_gerer = relationship("GererDossier", back_populates = "dossierDuVacataire")
@@ -59,11 +64,18 @@ class Vacataire(Base):
     vacataire_a_affectable = relationship("Affectable", back_populates = "affectable_a_vacataire")
     vacataire_a_assigner = relationship("Assigner", back_populates = "assigner_a_vacataire")
 
-    def __init__(self,idv):
+    def __init__(self,idv,candidature,est_ancien,nom,pnom,ddn,mail,mdp):
         self.IDVacataire = idv
+        self.candidature = candidature
+        self.ancien = est_ancien
+        self.nomV = nom
+        self.prenomV = pnom
+        self.ddnV = ddn
+        self.mailV = mail
+        self.mdpV = mdp
     
     def __str__(self):
-        return "Vacataire ",session.query(Utilisateur).get(self.IDpersAdmin)
+        return "Vacataire : "+" "+self.IDpersAdmin+" "+self.nomPa+" "+self.prenomPa+" né(e) le ",self.ddnPa," mail : "+self.mailPa+" type de candidature : "+self.candidature+" est ancien :"+self.ancien
 
 class GererDossier(Base):
     __tablename__= "GERERDOSSIER"
