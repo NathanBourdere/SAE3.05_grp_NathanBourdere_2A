@@ -26,7 +26,7 @@ def profile():
 def check_doss():
     return render_template('recherche-dossiers.html')           
 
-@app.route('/login.html')
+@app.route('/login.html', methods= ['GET', 'POST'])
 def log():
     # Nécéssite la base de données afin de vérifier les informations.
     if request.method == "POST":
