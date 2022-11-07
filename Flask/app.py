@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template, request
 
 app=Flask(__name__,template_folder='static/HTML')
 
@@ -28,7 +28,24 @@ def check_doss():
 
 @app.route('/login.html')
 def log():
-    return render_template('/login.html')
+    # Nécéssite la base de données afin de vérifier les informations.
+    if request.method == "POST":
+        print('oe')
+        try:
+            print(request.form['username'])
+            log = Vacataire.query.filter_by(IDVacataire=request.form['username']).first()
+            if request.form['password'] == log.mdpV:
+                return render_template('EDT.html')
+        except:
+            try:
+                print('PA1')
+                adm = PersonnelAdministratif.query.filter_by(IDpersAdmin=request.form['username']).first()
+                print('PA2')
+                if request.form['password'] == adm.mdpPa:
+                    return render_template('menu_admin.html')
+            except:
+                return render_template('login.html')
+    return render_template('login.html')
 
 if __name__=="__main__":
     app.run(port=1598)
