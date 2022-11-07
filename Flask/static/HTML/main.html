@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="'fr">
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <title>VACAT'O</title>
+    <link href="{{ url_for('static', filename='CSS/cssMain.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>Vacat'o</h1>
+        <a href="login.html">
+            <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion">
+        </a>
+    </header>
+    <main>
+        <img src="{{ url_for('static', filename='IMG/vacato_logo.png')}}" alt="logo_vacato">
+        <article>
+            <p>
+                Vous êtes un professionnel dans le domaine de nos formations et
+                vous avez le goût de transmettre vos savoirs ?
+            </p>
+        </article>
+        <article>
+            <p>
+                Vous souhaitez devenir vacataire à l'IUT d’Orléans,
+                envoyez-nous votre motivation !
+            </p>
+        </article>
+        <article>
+            <a href="nouveau_vacataire.html">REJOIGNEZ-NOUS !</a>
+        </article>
+    </main>
+    <footer>
+        <p>
+            Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés
+        </p>
+    </footer>
+</body>
+</html>

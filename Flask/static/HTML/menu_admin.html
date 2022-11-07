@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="'fr">
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <title>VACAT'O</title>
+    <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>Vacat'o</h1>
+        <a href="profile.html">
+            <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion">
+        </a>
+    </header>
+    <main>
+        <section>
+            <article>
+                <h1>Bienvenue Théo Viard</h1>
+                <ol>
+                    <a href="recherche-dossiers.html">
+                        <input type="button" value="Voir les candidats">
+                    </a>
+                    <a href="recherche-dossiers.html">
+                        <input type="button" value="Voir les dossiers d'inscription">
+                    </a>
+                    <a href="recherche-dossiers.html">
+                        <input type="button" value="Voir les vacataires">
+                    </a>
+                </ol>
+            </article>
+        </section>
+    </main>
+    <footer>
+        <p>
+            Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés
+        </p>
+    </footer>
+</body>
