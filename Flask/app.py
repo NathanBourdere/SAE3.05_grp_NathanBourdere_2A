@@ -192,7 +192,7 @@ def home():
 @app.route('/nouveau_vacataire.html', methods= ['GET', 'POST'])
 def new_vaca():
     if request.method == "POST":
-        vac = Vacataire('V4','Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],'30-02-1997',request.form['email'],'177013')
+        vac = Vacataire('V' + maxIdActu(),'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
         db.session.add(vac)
         db.session.commit()
     return render_template('nouveau_vacataire.html')
@@ -249,6 +249,20 @@ def estVacataire(user):
         if user[0] == 'V':
             return True
     return False
+
+def maxIdActu():
+    IDMAX = 0
+    VMax = db.session.query(Vacataire.IDVacataire).all()
+    print(VMax)
+    for id in VMax:
+        if IDMAX<int(id[0][1:]):
+            IDMAX = int(id[0][1:])
+    PAMax = db.session.query(PersonnelAdministratif.IDpersAdmin).all()
+    print(PAMax)
+    for id in PAMax:
+        if IDMAX<int(id[0][1:]):
+            IDMAX = int(id[0][1:])
+    return str(IDMAX+1)
 
 def test_connection():
     """
