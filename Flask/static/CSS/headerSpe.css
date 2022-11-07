@@ -1,7 +1,7 @@
 header{
     font-family: pacifico;
     display: flex;
-    background-color: #89B0AE;
+    background:linear-gradient(135deg,rgba(0, 0, 255, 0.466),rgba(5, 231, 231, 0.226));
 }
 header>a>img{
     height:6em;

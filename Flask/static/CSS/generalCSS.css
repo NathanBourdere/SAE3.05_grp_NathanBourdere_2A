@@ -1,7 +1,8 @@
 body {
     text-align: center;
-    background-color: #97C8EB;
+    background:linear-gradient(135deg,rgb(153, 202, 89),rgb(211, 60, 131));
     font-family: oswald;
+    margin-bottom:70px;
 }
 
 header {
@@ -14,6 +15,15 @@ main {
     background-color: cadetblue;
     margin-left: 15%;
     margin-right: 15%
+}
+
+footer {
+    position: fixed;
+    background:linear-gradient(135deg,rgb(153, 202, 89),rgb(211, 60, 131));
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
 }
 ol {
     display: inline-block;

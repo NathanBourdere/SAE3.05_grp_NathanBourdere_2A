@@ -18,10 +18,10 @@
                 <img id="avatar" src="{{ url_for('static', filename='IMG/avatar.png')}}" alt="Photo de la personne du profil">
                 <article>
                     <ol>
-                        <li><label for="identifiant">Nom: Loszach</label></li>
-                        <li><label for="mdp">Prenom: Constantin</label></li>
-                        <li><label for="mdp">Email: loszach.constantin@gmail.com</label></li>
-                        <li><label for="mdp">Telephone: 0694578412</label></li>
+                        <li><label for="identifiant">Nom: {{ profile_nom }}</label></li>
+                        <li><label for="mdp">Prenom: {{ profile_prenom }}</label></li>
+                        <li><label for="mdp">Email: {{ profile_email }}</label></li>
+                        <li><label for="mdp">Telephone:{{ profile_tel }}</label></li>
                     </ol>
                 </article>
             </section>

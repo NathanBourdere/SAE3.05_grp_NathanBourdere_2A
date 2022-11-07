@@ -1,6 +1,6 @@
 body{
     text-align: center;
-    background-color: #97C8EB;
+    background:linear-gradient(135deg,rgb(153, 202, 89),rgb(211, 60, 131));
     font-family: oswald;
 }
 main>article{
