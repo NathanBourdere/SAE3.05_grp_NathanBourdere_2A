@@ -9,17 +9,15 @@ if os.path.exists("instance/db.sqlite3"):
   os.remove("instance/db.sqlite3")
   os.rmdir('instance')
 
-# Configuration de l'application Flask
+# Configuration de l'application Flask et la base de données
 app=Flask(__name__,template_folder='static/HTML')
-
-app.secret_key = "mot de passe trop crypté"
+app.secret_key = "IUTO"
 app.app_context().push()
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Création de la base de donnée
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 db = SQLAlchemy(app)
 
 # Initialisation des tables ORM
@@ -58,7 +56,7 @@ class Assigner(db.Model):
     HeureCours = db.Column(db.Integer)
 
     cours_a_vacataire = db.relationship("Vacataire",back_populates="vacataire_assignee")
-    assigner_cours = db.relationship("Cours",back_populates="cours_assignee")
+    assigner_cours = db.relationship("Cours",back_populates="cours_assignee", foreign_keys=[IDcours])
 
     def __init__(self,idv,idc,t,s,c,d,h):
         self.IDVacataire = idv
@@ -100,10 +98,10 @@ class PersonnelAdministratif(UserMixin,db.Model):
     def __str__(self):
         return "PersonnelAdministratif :"+" "+self.IDpersAdmin+" "+self.nomPa+" "+self.prenomPa+" né(e) le ",self.ddnPa," mail : "+self.mailPa
 
-affectable = db.Table("Affectable",db.Column("IDVacataire",db.Integer,db.ForeignKey("Vacataire.IDVacataire"),primary_key=True,nullable=False),
+affectable = db.Table("Affectable",
+                                   db.Column("IDVacataire",db.Integer,db.ForeignKey("Vacataire.IDVacataire"),primary_key=True,nullable=False),
                                    db.Column("IDCours",db.String(100),db.ForeignKey("Cours.IDcours"),primary_key=True,nullable=False),
-                                   db.Column("TypeCours",db.String(100),db.ForeignKey("Cours.TypeCours"),primary_key=True,nullable=False)
-                     )
+                                   db.Column("TypeCours",db.String(100),db.ForeignKey("Cours.TypeCours"),primary_key=True,nullable=False))
 
 class Vacataire(db.Model):
     __tablename__ = "Vacataire"
@@ -118,7 +116,7 @@ class Vacataire(db.Model):
     mailV = db.Column(db.String(100),unique=True)
     mdpV = db.Column(db.String(100))
 
-    cours_affectable = db.relationship("Cours",secondary=affectable)
+    # cours_affectable = db.relationship("Cours",secondary=affectable)
     selfdossier = db.relationship("GererDossier", back_populates = "dossierVacataire")
     vacataire_assignee = db.relationship("Assigner", back_populates ="cours_a_vacataire")
     dispo = db.relationship("Disponibilites", backref = "vacataire")
@@ -150,8 +148,8 @@ class Cours(db.Model):
     heuresTotale = db.Column(db.Integer)
     dureeCours = db.Column(db.Integer)
 
-    cours_assignee = db.relationship("Assigner",back_populates="assigner_cours")
-    vacataires_affectable = db.relationship("Vacataire",secondary=affectable)
+    cours_assignee = db.relationship("Assigner",back_populates="assigner_cours", foreign_keys=[Assigner.IDcours])
+    # vacataires_affectable = db.relationship("Vacataire",secondary=affectable,foreign_keys=[affectable.IDCours])
 
     def __init__(self,idc,t,n,d,h,dur):
         self.IDcours = idc
@@ -201,11 +199,13 @@ def home():
 @app.route('/nouveau_vacataire.html', methods= ['GET', 'POST'])
 def new_vaca():
     if request.method == "POST":
-        vac = Vacataire('V' + maxIdActu(),'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
+        id = maxIdActu()
+        vac = Vacataire('V' + id,'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
         for i in range(1,4):
             les_cours = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
             for cours in les_cours:
-                db.session.add(Affectable('V' + maxIdActu(),cours.IDcours,cours.TypeCours))
+                db.session.execute(affectable.insert().values(IDVacataire='V' + id,IDCours=cours.IDcours,TypeCours=cours.TypeCours))
+                db.session.commit()
         db.session.add(vac)
         db.session.commit()
     return render_template('nouveau_vacataire.html')
@@ -277,21 +277,6 @@ def maxIdActu():
             IDMAX = int(id[0][1:])
     return str(IDMAX+1)
 
-def menu_admin():
-    return render_template('menu_admin.html')
-
-@app.route('/profile.html')
-def profile():
-    return render_template('profile.html')
-
-@app.route('/recherche-dossiers.html')
-def check_doss():
-    return render_template('recherche-dossiers.html')           
-
-@app.route('/login.html')
-def log():
-    return render_template('/login.html')
-
 def test_connection():
     """
         Insère les valeurs des CSV courants dans /data dans la base de donnée
@@ -304,27 +289,24 @@ def test_connection():
                 case 0:
                     for ligne in fileReader:
                         db.session.add(PersonnelAdministratif(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
-                        db.session.commit()
                 case 1:
                     for ligne in fileReader:
                         db.session.add(Vacataire(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7],ligne[8]))
-                        db.session.commit()
                 case 2:
                     for ligne in fileReader:
                         db.session.add(GererDossier(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4]))
-                        db.session.commit()
                 case 3:
                     for ligne in fileReader:
                         db.session.add(Cours(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5]))
-                        db.session.commit()
                 case 4:
                     for ligne in fileReader:
-                        db.session.add(Affectable(ligne[0],ligne[1],ligne[2]))
+                        x = affectable.insert().values(IDVacataire=ligne[0],IDCours=ligne[1],TypeCours=ligne[2])
+                        db.session.execute(x)
                         db.session.commit()
                 case 5:
                     for ligne in fileReader:
                         db.session.add(Assigner(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
-                        db.session.commit()
+            db.session.commit()
 
 test_connection()
 
