@@ -1,4 +1,4 @@
-from flask import Flask,render_template, request, flash, redirect
+from flask import Flask,render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
 import os
@@ -11,6 +11,7 @@ if os.path.exists("instance/db.sqlite3"):
 
 # Configuration de l'application Flask
 app=Flask(__name__,template_folder='static/HTML')
+
 app.secret_key = "mot de passe trop crypté"
 app.app_context().push()
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,19 +23,67 @@ login_manager.init_app(app)
 db = SQLAlchemy(app)
 
 # Initialisation des tables ORM
+
+class GererDossier(db.Model):
+    __tablename__= "GererDossier"
+
+    IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),primary_key=True,nullable=False)
+    IDpersAdmin = db.Column(db.String(100),db.ForeignKey("PersonnelAdministratif.IDpersAdmin"),primary_key=True,nullable=False)
+    etat_dossier = db.Column(db.String(100))
+    dateModif = db.Column(db.String(100))
+    heureModif = db.Column(db.Integer)
+
+    personnelAdmin = db.relationship('PersonnelAdministratif',back_populates="gerant_dossier")
+    dossierVacataire = db.relationship("Vacataire", back_populates = "selfdossier")
+
+    def __init__(self,idv,idp,edoc,date,h):
+        self.IDVacataire = idv
+        self.IDpersAdmin = idp
+        self.etat_dossier = edoc
+        self.dateModif = date
+        self.heureModif = h
+    
+    def __str__(self):
+        return "Dossier du vacataire "+self.IDVacataire+", modification le ",self.dateModif," à "+ str(self.heureModif)+"par "+self.IDpersAdmin+", le dossier est "+self.etat_dossier
+
+class Assigner(db.Model):
+    __tablename__ = "Assigner"
+
+    IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),primary_key=True,nullable=False)
+    IDcours = db.Column(db.String(100),db.ForeignKey("Cours.IDcours"),primary_key=True,nullable=False)
+    TypeCours = db.Column(db.String(100),db.ForeignKey("Cours.TypeCours"),primary_key=True,nullable=False)
+    salle = db.Column(db.String(100))
+    classe = db.Column(db.String(100))
+    dateCours = db.Column(db.String(100))
+    HeureCours = db.Column(db.Integer)
+
+    cours_a_vacataire = db.relationship("Vacataire",back_populates="vacataire_assignee")
+    assigner_cours = db.relationship("Cours",back_populates="cours_assignee")
+
+    def __init__(self,idv,idc,t,s,c,d,h):
+        self.IDVacataire = idv
+        self.IDcours = idc
+        self.TypeCours = t
+        self.classe = c
+        self.salle = s
+        self.DateCours = d
+        self.HeureCours = h
+    
+    def __str__(self):
+        return "Le vacataire "+self.IDVacataire+" est assigné au cours "+self.TypeCours+" "+self.IDcours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",str(self.DateCours)+" à "+str(self.HeureCours)
+
 class PersonnelAdministratif(UserMixin,db.Model):
     __tablename__ = 'PersonnelAdministratif'
 
-    IDpersAdmin = db.Column(db.Text,primary_key=True)
-    nomPa = db.Column(db.Text)
-    prenomPa = db.Column(db.Text)
-    numTelPa = db.Column(db.Text)
-    ddnPa = db.Column(db.Text)
-    mailPa = db.Column(db.Text)
-    mdpPa = db.Column(db.Text)
+    IDpersAdmin = db.Column(db.String(100),primary_key=True,nullable=False)
+    nomPa = db.Column(db.String(100))
+    prenomPa = db.Column(db.String(100))
+    numTelPa = db.Column(db.String(100),unique=True)
+    ddnPa = db.Column(db.String(100))
+    mailPa = db.Column(db.String(100),unique=True)
+    mdpPa = db.Column(db.String(100))
 
-    # dossierVacataire = db.relationship("Vacataire", back_populates = "selfdossier")
-    # gererdossier = db.relationship("GererDossier", back_populates = "gerantdossier")
+    gerant_dossier = db.relationship("GererDossier", back_populates = "personnelAdmin")
 
     def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp):
         self.IDpersAdmin = idpa
@@ -51,24 +100,28 @@ class PersonnelAdministratif(UserMixin,db.Model):
     def __str__(self):
         return "PersonnelAdministratif :"+" "+self.IDpersAdmin+" "+self.nomPa+" "+self.prenomPa+" né(e) le ",self.ddnPa," mail : "+self.mailPa
 
-class Vacataire(UserMixin, db.Model):
-    __tablename__ = "vacataire"
+affectable = db.Table("Affectable",db.Column("IDVacataire",db.Integer,db.ForeignKey("Vacataire.IDVacataire"),primary_key=True,nullable=False),
+                                   db.Column("IDCours",db.String(100),db.ForeignKey("Cours.IDcours"),primary_key=True,nullable=False),
+                                   db.Column("TypeCours",db.String(100),db.ForeignKey("Cours.TypeCours"),primary_key=True,nullable=False)
+                     )
 
-    IDVacataire = db.Column(db.Text,primary_key=True)
-    candidature = db.Column(db.Text) #0 ou 1
-    ancien = db.Column(db.Integer)
-    nomV = db.Column(db.Text)
-    prenomV = db.Column(db.Text)
-    numTelV = db.Column(db.Text)
-    ddnV = db.Column(db.Text)
-    mailV = db.Column(db.Text)
-    mdpV = db.Column(db.Text)
-    
-    # selfdossier = db.relationship("PersonnelAdministratif", back_populates = "dossierVacataire")
-    # dossier_qui_se_fait_gerer = db.relationship("GererDossier", back_populates = "dossierDuVacataire")
-    # vacataire_a_cours = db.relationship("Cours", back_populates ="cours_a_vacataire")
-    # vacataire_a_affectable = db.relationship("Affectable", back_populates = "affectable_a_vacataire")
-    # vacataire_a_assigner = db.relationship("Assigner", back_populates = "assigner_a_vacataire")
+class Vacataire(db.Model):
+    __tablename__ = "Vacataire"
+
+    IDVacataire = db.Column(db.String(100),primary_key=True,nullable=False)
+    candidature = db.Column(db.String(100)) 
+    ancien = db.Column(db.Integer) #0 ou 1
+    nomV = db.Column(db.String(100))
+    prenomV = db.Column(db.String(100))
+    numTelV = db.Column(db.String(100),unique=True)
+    ddnV = db.Column(db.String(100))
+    mailV = db.Column(db.String(100),unique=True)
+    mdpV = db.Column(db.String(100))
+
+    cours_affectable = db.relationship("Cours",secondary=affectable)
+    selfdossier = db.relationship("GererDossier", back_populates = "dossierVacataire")
+    vacataire_assignee = db.relationship("Assigner", back_populates ="cours_a_vacataire")
+    dispo = db.relationship("Disponibilites", backref = "vacataire")
 
     def __init__(self,idv,candidature,est_ancien,nom,pnom,tel,ddn,mail,mdp):
         self.IDVacataire = idv
@@ -80,48 +133,25 @@ class Vacataire(UserMixin, db.Model):
         self.ddnV = ddn
         self.mailV = mail
         self.mdpV = mdp
-    
+   
     def get_id(self):
         return (self.IDVacataire)
 
     def __str__(self):
         return "Vacataire : "+" "+self.IDVacataire+" "+self.nomV+" "+self.prenomV+" né(e) le "+self.ddnV+" mail : "+self.mailV+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)
 
-class GererDossier(db.Model):
-    __tablename__= "GererDossier"
-
-    IDVacataire = db.Column(db.Text,primary_key=True)
-    IDpersAdmin = db.Column(db.Text,primary_key=True)
-    etat_dossier = db.Column(db.Text)
-    dateModif = db.Column(db.Text)
-    heureModif = db.Column(db.Integer)
-
-    # gerantdossier = db.relationship("PersonnelAdministratif",back_populates="gererdossier")
-    # dossierDuVacataire =db.relationship("Vacataire",back_populates="dossier_qui_se_fait_gerer")
-
-    def __init__(self,idv,idp,edoc,date,h):
-        self.IDVacataire = idv
-        self.IDpersAdmin = idp
-        self.etat_dossier = edoc
-        self.dateModif = date
-        self.heureModif = h
-    
-    def __str__(self):
-        return "Dossier du vacataire "+self.IDVacataire+", modification le ",self.dateModif," à "+ str(self.heureModif)+"par "+self.IDpersAdmin+", le dossier est "+self.etat_dossier
-
 class Cours(db.Model):
     __tablename__= "Cours"
 
-    IDcours = db.Column(db.Text,primary_key=True)
-    TypeCours = db.Column(db.Text,primary_key=True)
-    nomCours = db.Column(db.Text)
-    domaine = db.Column(db.Text)
+    IDcours = db.Column(db.String(100),primary_key=True,nullable=False)
+    TypeCours = db.Column(db.String(100),primary_key=True,nullable=False)
+    nomCours = db.Column(db.String(100),nullable=False)
+    domaine = db.Column(db.String(100),nullable=False)
     heuresTotale = db.Column(db.Integer)
     dureeCours = db.Column(db.Integer)
 
-    # cours_a_assigner = db.relationship("Assigner",back_populates="assigner_a_cours")
-    # cours_a_affectable = db.relationship("Affectable",back_populates="affectable_a_cours")
-    # cours_a_vacataire = db.relationship("Vacataire",back_populates="vacataire_a_cours")
+    cours_assignee = db.relationship("Assigner",back_populates="assigner_cours")
+    vacataires_affectable = db.relationship("Vacataire",secondary=affectable)
 
     def __init__(self,idc,t,n,d,h,dur):
         self.IDcours = idc
@@ -134,49 +164,31 @@ class Cours(db.Model):
     def __str__(self):
         return self.TypeCours+" "+str(self.IDcours)+" : "+self.nomCours+" domaine de "+self.domaine+" "+str(self.heuresTotale)+" d'heures totale pour une duree de "+str(self.dureeCours)+" par cours"
 
-class Affectable(db.Model):
-    __tablename__= "Affectable"
+class Disponibilites(db.Model):
+    __tablename__ = "Disponibilites"
 
-    IDVacataire = db.Column(db.Text,primary_key=True)
-    IDcours = db.Column(db.Text,db.ForeignKey("Cours.IDcours"),primary_key=True)
-    TypeCours = db.Column(db.Text,db.ForeignKey("Cours.TypeCours"),primary_key=True)
+    IDdispo = db.Column(db.String(100),primary_key=True)
+    jourDispo = db.Column(db.String(100))# lundi,mardi ... PAS DIMANCHE
+    semaineDispo = db.Column(db.Integer) # 1,2 jusqu'à 52
+    periodeDispo = db.Column(db.Integer) # 1 ou 2 ou 3 ou 4, il y a 2 périodes par semestre
+    heureDispoDebut = db.Column(db.String(100)) # "14:30"
+    heureDispoFin = db.Column(db.String(100)) # idem
+    IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),nullable=False,unique=True)
 
-    # affectable_a_vacataire = db.relationship("Vacataire",back_populates="vacataire_a_affectable")
-    # affectable_a_cours = db.relationship("Cours",back_populates="cours_a_affectable")
-
-    def __init__(self,idv,idc,tc):
+    def __init__(self,idd,j,s,p,hd,hf,idv):
+        self.IDdispo = idd
+        self.jourDispo = j
+        self.semaineDispo = s
+        self.periodeDispo = p
+        self.heureDispoDebut = hd
+        self.heureDispoFin = hf
         self.IDVacataire = idv
-        self.IDcours = idc
-        self.TypeCours = tc
     
     def __str__(self):
-        return self.IDVacataire+" est affectable à "+self.IDcours+" "+self.TypeCours
-
-class Assigner(db.Model):
-    __tablename__ = "Assigner"
-
-    IDVacataire = db.Column(db.Text,primary_key=True)
-    IDcours = db.Column(db.Text,db.ForeignKey("Cours.IDcours"),primary_key=True)
-    TypeCours = db.Column(db.Text,db.ForeignKey("Cours.TypeCours"),primary_key=True)
-    salle = db.Column(db.Text)
-    classe = db.Column(db.Text)
-    dateCours = db.Column(db.Text)
-    HeureCours = db.Column(db.Integer)
-
-    # assigner_a_vacataire = db.relationship("Vacataire",back_populates="vacataire_a_assigner")
-    # assigner_a_cours = db.relationship("Cours",back_populates="cours_a_assigner")
-
-    def __init__(self,idv,idc,t,s,c,d,h):
-        self.IDVacataire = idv
-        self.IDcours = idc
-        self.TypeCours = t
-        self.classe = c
-        self.salle = s
-        self.DateCours = d
-        self.HeureCours = h
-    
-    def __str__(self):
-        return "Le vacataire "+self.IDVacataire+" est assigné au cours "+self.TypeCours+" "+self.IDcours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",self.db.TextCours+" à "+str(self.HeureCours)
+        res = "Vacataire "+self.IDVacataire+" dispo. id : "+self.IDdispo+" : "+self.jourDispo
+        res += " semaine "+self.semaineDispo+" de la période "+self.periodeDispo
+        res += " disponible de "+self.heureDispoDebut +" jusqu'à "+self.heureDispoFin+"\n"
+        return res
 
 db.create_all()
 db.session.commit()
@@ -191,8 +203,8 @@ def new_vaca():
     if request.method == "POST":
         vac = Vacataire('V' + maxIdActu(),'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
         for i in range(1,4):
-            ez = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
-            for cours in ez:
+            les_cours = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
+            for cours in les_cours:
                 db.session.add(Affectable('V' + maxIdActu(),cours.IDcours,cours.TypeCours))
         db.session.add(vac)
         db.session.commit()
@@ -204,6 +216,7 @@ def EDT():
     return render_template('EDT.html')
 
 @app.route('/menu_admin.html')
+
 @login_required
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenomPa + " " + current_user.nomPa)
@@ -264,6 +277,20 @@ def maxIdActu():
             IDMAX = int(id[0][1:])
     return str(IDMAX+1)
 
+def menu_admin():
+    return render_template('menu_admin.html')
+
+@app.route('/profile.html')
+def profile():
+    return render_template('profile.html')
+
+@app.route('/recherche-dossiers.html')
+def check_doss():
+    return render_template('recherche-dossiers.html')           
+
+@app.route('/login.html')
+def log():
+    return render_template('/login.html')
 
 def test_connection():
     """
