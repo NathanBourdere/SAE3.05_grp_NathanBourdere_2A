@@ -89,8 +89,53 @@
                 <input type="button" value="Ajouter" onclick="ajouterDispoPeriode()">
             </article>
         </section>
-        <section id="dates_spe">
+        <section>
             <label for="dates">Dates spécifiques</label>
+            <article>
+                <div id="dates_spe">
+                    <ul>
+                        <li>
+                            <input type="date" value="2022-11-08">
+                        </li>
+                        <li>de</li>
+                        <li>
+                            <select name="heure_debut_date_spe">
+                                <option value="8" selected>8h</option>
+                                <option value="9">9h</option>
+                                <option value="10">10h</option>
+                                <option value="11">11h</option>
+                                <option value="12">12h</option>
+                                <option value="13">13h</option>
+                                <option value="14">14h</option>
+                                <option value="15">15h</option>
+                                <option value="16">16h</option>
+                                <option value="17">17h</option>
+                                <option value="18">18h</option>
+                            </select>
+                        </li>
+                        <li>à</li>
+                        <li>
+                            <select name="heure_fin_date_spe">
+                                <option value="8" selected>8h</option>
+                                <option value="9">9h</option>
+                                <option value="10">10h</option>
+                                <option value="11">11h</option>
+                                <option value="12">12h</option>
+                                <option value="13">13h</option>
+                                <option value="14">14h</option>
+                                <option value="15">15h</option>
+                                <option value="16">16h</option>
+                                <option value="17">17h</option>
+                                <option value="18">18h</option>
+                            </select>
+                        </li>
+                        <li>
+                            <button onclick="supprimerDispo()">Supprimer</button>
+                        </li>
+                    </ul>
+                </div>
+                <input type="button" value="Ajouter" onclick="ajouterDispoDate()">
+            </article>
         </section>
     </main>
     <footer>
@@ -106,7 +151,7 @@
     li {
         margin: 2%;
     }
-    article, div {
+    article, ul {
         border: solid 1px;
     }
 </style>
