@@ -136,7 +136,7 @@ class Cours(db.Model):
         self.dureeCours = dur
     
     def __str__(self):
-        return self.TypeCours+" "+self.IDcours+" : "+self.nomCours+" domaine de "+self.domaine+" "+self.heuresTotale+" d'heures totale pour une duree de "+self.dureeCours+" par cours"
+        return self.TypeCours+" "+str(self.IDcours)+" : "+self.nomCours+" domaine de "+self.domaine+" "+str(self.heuresTotale)+" d'heures totale pour une duree de "+str(self.dureeCours)+" par cours"
 
 class Affectable(db.Model):
     __tablename__= "Affectable"
@@ -181,6 +181,7 @@ class Assigner(db.Model):
     
     def __str__(self):
         return "Le vacataire "+self.IDVacataire+" est assigné au cours "+self.TypeCours+" "+self.IDcours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",self.db.TextCours+" à "+str(self.HeureCours)
+
 db.create_all()
 db.session.commit()
 
@@ -193,6 +194,11 @@ def home():
 def new_vaca():
     if request.method == "POST":
         vac = Vacataire('V' + maxIdActu(),'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
+        listeCours = []
+        for i in range(1,4):
+            ez = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
+            for cours in ez:
+                db.session.add(Affectable('V' + maxIdActu(),cours.IDcours,cours.TypeCours))
         db.session.add(vac)
         db.session.commit()
     return render_template('nouveau_vacataire.html')
@@ -242,27 +248,27 @@ def load_user(utilisateurID):
         return PersonnelAdministratif.query.filter_by(IDpersAdmin=utilisateurID).first()
 
 def estVacataire(user):
-    if user not in '123456789':
-        if user.get_id()[0] == 'V':
-            return True
-    else:
+    if type(user) == str:
         if user[0] == 'V':
             return True
+    else:
+        if user.get_id()[0] == 'V':
+            return True
+        
     return False
 
 def maxIdActu():
     IDMAX = 0
     VMax = db.session.query(Vacataire.IDVacataire).all()
-    print(VMax)
     for id in VMax:
         if IDMAX<int(id[0][1:]):
             IDMAX = int(id[0][1:])
     PAMax = db.session.query(PersonnelAdministratif.IDpersAdmin).all()
-    print(PAMax)
     for id in PAMax:
         if IDMAX<int(id[0][1:]):
             IDMAX = int(id[0][1:])
     return str(IDMAX+1)
+
 
 def test_connection():
     """
