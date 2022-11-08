@@ -103,7 +103,7 @@ affectable = db.Table("Affectable",
                                    db.Column("IDCours",db.String(100),db.ForeignKey("Cours.IDcours"),primary_key=True,nullable=False),
                                    db.Column("TypeCours",db.String(100),db.ForeignKey("Cours.TypeCours"),primary_key=True,nullable=False))
 
-class Vacataire(db.Model):
+class Vacataire(UserMixin,db.Model):
     __tablename__ = "Vacataire"
 
     IDVacataire = db.Column(db.String(100),primary_key=True,nullable=False)
@@ -237,15 +237,21 @@ def check_doss():
 def log():
     if request.method == "POST":
         if estVacataire(request.form['idUser']):
-            log = Vacataire.query.filter_by(IDVacataire=request.form['idUser']).first()
-            if request.form['password'] == log.mdpV:
-                login_user(log)
-                return EDT()
+            try:
+                log = Vacataire.query.filter_by(IDVacataire=request.form['idUser']).first()
+                if request.form['password'] == log.mdpV:
+                    login_user(log)
+                    return EDT()
+            except:
+                return render_template('login.html')
         else:
-            adm = PersonnelAdministratif.query.filter_by(IDpersAdmin=request.form['idUser']).first()
-            if request.form['password'] == adm.mdpPa:
-                login_user(adm)
-                return menu_admin()
+            try:
+                adm = PersonnelAdministratif.query.filter_by(IDpersAdmin=request.form['idUser']).first()
+                if request.form['password'] == adm.mdpPa:
+                    login_user(adm)
+                    return menu_admin()
+            except:
+                return render_template('login.html')
     return render_template('login.html')
 
 @login_manager.user_loader
