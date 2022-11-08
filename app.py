@@ -56,7 +56,8 @@ class Assigner(db.Model):
     HeureCours = db.Column(db.Integer)
 
     cours_a_vacataire = db.relationship("Vacataire",back_populates="vacataire_assignee")
-    assigner_cours = db.relationship("Cours",back_populates="cours_assignee", foreign_keys=[IDcours])
+    assigner_cours_id = db.relationship("Cours",back_populates="cours_assignee_id", foreign_keys=[IDcours])
+    assigner_cours_type = db.relationship("Cours",back_populates="cours_assignee_type", foreign_keys=[TypeCours])
 
     def __init__(self,idv,idc,t,s,c,d,h):
         self.IDVacataire = idv
@@ -98,17 +99,49 @@ class PersonnelAdministratif(UserMixin,db.Model):
     def __str__(self):
         return "PersonnelAdministratif :"+" "+self.IDpersAdmin+" "+self.nomPa+" "+self.prenomPa+" né(e) le ",self.ddnPa," mail : "+self.mailPa
 
-affectable = db.Table("Affectable",
-                                   db.Column("IDVacataire",db.Integer,db.ForeignKey("Vacataire.IDVacataire"),primary_key=True,nullable=False),
-                                   db.Column("IDCours",db.String(100),db.ForeignKey("Cours.IDcours"),primary_key=True,nullable=False),
-                                   db.Column("TypeCours",db.String(100),db.ForeignKey("Cours.TypeCours"),primary_key=True,nullable=False))
+
+class Affectable(db.Model):
+    tablename__ = "Affectable"
+
+    IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),primary_key=True)
+    IDcours = db.Column(db.String(100),db.ForeignKey("Cours.IDcours"),primary_key=True)
+    TypeCours = db.Column(db.String(100),db.ForeignKey("Cours.TypeCours"),primary_key=True)
+
+    cours_affecter_vacataire = db.relationship("Vacataire",back_populates="vacat_affectable")
+    affecter_cours_id = db.relationship("Cours",back_populates="cours_affecter_id", foreign_keys=[IDcours])
+    affecter_cours_type = db.relationship("Cours",back_populates="cours_affecter_type", foreign_keys=[TypeCours])
+
+    def __init__(self,idv,idc,t):
+        self.IDVacataire = idv
+        self.IDcours = idc
+        self.TypeCours = t
+    
+    def __str__(self):
+        return "Le vacataire "+self.IDVacataire+" est assigné au cours "+self.TypeCours+" "+self.IDcours
+
+class Domaine(db.Model):
+    __tablename__ = "Domaine"
+
+    domaine = db.Column(db.String(100),primary_key=True)
+    responsable = db.Column(db.String(100),nullable=False)
+
+    le_cours = db.relationship("Cours", backref = "cours")
+
+    def __init__(self,nomdom,resp):
+        self.domaine = nomdom
+        self.responsable = resp
+
+    
+    def __str__(self):
+        return "Le domaine "+self.domaine+" est sous la responsabilité de "+self.responsable
 
 class Vacataire(UserMixin,db.Model):
     __tablename__ = "Vacataire"
 
-    IDVacataire = db.Column(db.String(100),primary_key=True,nullable=False)
-    candidature = db.Column(db.String(100)) 
+    IDVacataire = db.Column(db.String(100),primary_key=True)
+    candidature = db.Column(db.String(100),nullable=False) 
     ancien = db.Column(db.Integer) #0 ou 1
+    entreprise = db.Column(db.String(100))
     nomV = db.Column(db.String(100))
     prenomV = db.Column(db.String(100))
     numTelV = db.Column(db.String(100),unique=True)
@@ -116,14 +149,15 @@ class Vacataire(UserMixin,db.Model):
     mailV = db.Column(db.String(100),unique=True)
     mdpV = db.Column(db.String(100))
 
-    # cours_affectable = db.relationship("Cours",secondary=affectable)
+    vacat_affectable = db.relationship("Affectable",back_populates="cours_affecter_vacataire",foreign_keys=[Affectable.IDVacataire])
     selfdossier = db.relationship("GererDossier", back_populates = "dossierVacataire")
     vacataire_assignee = db.relationship("Assigner", back_populates ="cours_a_vacataire")
     dispo = db.relationship("Disponibilites", backref = "vacataire")
 
-    def __init__(self,idv,candidature,est_ancien,nom,pnom,tel,ddn,mail,mdp):
+    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp):
         self.IDVacataire = idv
         self.candidature = candidature
+        self.entreprise = ent
         self.ancien = est_ancien
         self.nomV = nom
         self.prenomV = pnom
@@ -136,31 +170,33 @@ class Vacataire(UserMixin,db.Model):
         return (self.IDVacataire)
 
     def __str__(self):
-        return "Vacataire : "+" "+self.IDVacataire+" "+self.nomV+" "+self.prenomV+" né(e) le "+self.ddnV+" mail : "+self.mailV+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)
+        return "Vacataire : "+" "+self.IDVacataire+" "+self.nomV+" "+self.prenomV+" né(e) le "+self.ddnV+" mail : "+self.mailV+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)+" de l'entreprise "+self.entreprise
 
 class Cours(db.Model):
     __tablename__= "Cours"
 
-    IDcours = db.Column(db.String(100),primary_key=True,nullable=False)
-    TypeCours = db.Column(db.String(100),primary_key=True,nullable=False)
+    IDcours = db.Column(db.String(100),primary_key=True)
+    TypeCours = db.Column(db.String(100),primary_key=True)
     nomCours = db.Column(db.String(100),nullable=False)
-    domaine = db.Column(db.String(100),nullable=False)
     heuresTotale = db.Column(db.Integer)
     dureeCours = db.Column(db.Integer)
+    domaine = db.Column(db.String(100),db.ForeignKey("Domaine.domaine"),nullable=False)
 
-    cours_assignee = db.relationship("Assigner",back_populates="assigner_cours", foreign_keys=[Assigner.IDcours])
-    # vacataires_affectable = db.relationship("Vacataire",secondary=affectable,foreign_keys=[affectable.IDCours])
+    cours_assignee_id = db.relationship("Assigner",back_populates="assigner_cours_id", foreign_keys=[Assigner.IDcours])
+    cours_assignee_type = db.relationship("Assigner",back_populates="assigner_cours_type", foreign_keys=[Assigner.TypeCours])
+    cours_affecter_id = db.relationship("Affectable",back_populates="affecter_cours_id",foreign_keys=[Affectable.IDcours])
+    cours_affecter_type = db.relationship("Affectable",back_populates="affecter_cours_type",foreign_keys=[Affectable.TypeCours])
 
-    def __init__(self,idc,t,n,d,h,dur):
+    def __init__(self,idc,t,n,h,dur,dom):
         self.IDcours = idc
         self.TypeCours = t
         self.nomCours = n
-        self.domaine = d
         self.heuresTotale = h
         self.dureeCours = dur
+        self.domaine = dom
     
     def __str__(self):
-        return self.TypeCours+" "+str(self.IDcours)+" : "+self.nomCours+" domaine de "+self.domaine+" "+str(self.heuresTotale)+" d'heures totale pour une duree de "+str(self.dureeCours)+" par cours"
+        return self.TypeCours+" "+str(self.IDcours)+" : "+self.nomCours+" "+str(self.heuresTotale)+" d'heures totale pour une duree de "+str(self.dureeCours)+" par cours "+" du domaine "+self.domaine
 
 class Disponibilites(db.Model):
     __tablename__ = "Disponibilites"
@@ -171,9 +207,11 @@ class Disponibilites(db.Model):
     periodeDispo = db.Column(db.Integer) # 1 ou 2 ou 3 ou 4, il y a 2 périodes par semestre
     heureDispoDebut = db.Column(db.String(100)) # "14:30"
     heureDispoFin = db.Column(db.String(100)) # idem
+    dateModifDispo = db.Column(db.String(100))
+    heureModifDispo = db.Column(db.Integer)
     IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),nullable=False,unique=True)
 
-    def __init__(self,idd,j,s,p,hd,hf,idv):
+    def __init__(self,idd,j,s,p,hd,hf,idv,dmd,hmd):
         self.IDdispo = idd
         self.jourDispo = j
         self.semaineDispo = s
@@ -181,11 +219,14 @@ class Disponibilites(db.Model):
         self.heureDispoDebut = hd
         self.heureDispoFin = hf
         self.IDVacataire = idv
-    
+        self.dateModifDispo = dmd
+        self.heureModifDispo = hmd
+
     def __str__(self):
         res = "Vacataire "+self.IDVacataire+" dispo. id : "+self.IDdispo+" : "+self.jourDispo
         res += " semaine "+self.semaineDispo+" de la période "+self.periodeDispo
-        res += " disponible de "+self.heureDispoDebut +" jusqu'à "+self.heureDispoFin+"\n"
+        res += " disponible de "+str(self.heureDispoDebut) +" jusqu'à "+str(self.heureDispoFin)
+        res += "derniere modification le :"+self.dateModifDispo+" à "+str(self.heureModifDispo)+"\n"
         return res
 
 db.create_all()
@@ -204,7 +245,7 @@ def new_vaca():
         for i in range(1,4):
             les_cours = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
             for cours in les_cours:
-                db.session.execute(affectable.insert().values(IDVacataire='V' + id,IDCours=cours.IDcours,TypeCours=cours.TypeCours))
+                db.session.execute(Affectable.insert().values(IDVacataire='V' + id,IDCours=cours.IDcours,TypeCours=cours.TypeCours))
                 db.session.commit()
         db.session.add(vac)
         db.session.commit()
@@ -297,7 +338,7 @@ def test_connection():
                         db.session.add(PersonnelAdministratif(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
                 case 1:
                     for ligne in fileReader:
-                        db.session.add(Vacataire(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7],ligne[8]))
+                        db.session.add(Vacataire(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7],ligne[8],ligne[9]))
                 case 2:
                     for ligne in fileReader:
                         db.session.add(GererDossier(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4]))
@@ -306,9 +347,7 @@ def test_connection():
                         db.session.add(Cours(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5]))
                 case 4:
                     for ligne in fileReader:
-                        x = affectable.insert().values(IDVacataire=ligne[0],IDCours=ligne[1],TypeCours=ligne[2])
-                        db.session.execute(x)
-                        db.session.commit()
+                        db.session.add(Affectable(ligne[0],ligne[1],ligne[2]))
                 case 5:
                     for ligne in fileReader:
                         db.session.add(Assigner(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
