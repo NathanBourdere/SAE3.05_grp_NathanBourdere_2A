@@ -190,7 +190,6 @@ def home():
 def new_vaca():
     if request.method == "POST":
         vac = Vacataire('V' + maxIdActu(),'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
-        listeCours = []
         for i in range(1,4):
             ez = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
             for cours in ez:
