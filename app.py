@@ -1,8 +1,6 @@
-# pip install Flask
-# pip install flask_sqlalchemy
-
 from flask import Flask,render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
 import os
 import csv
 
@@ -13,14 +11,19 @@ if os.path.exists("instance/db.sqlite3"):
 
 # Configuration de l'application Flask
 app=Flask(__name__,template_folder='static/HTML')
+
+app.secret_key = "mot de passe trop crypté"
 app.app_context().push()
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 # Création de la base de donnée
 db = SQLAlchemy(app)
 
 # Initialisation des tables ORM
+
 class GererDossier(db.Model):
     __tablename__= "GererDossier"
 
@@ -69,7 +72,7 @@ class Assigner(db.Model):
     def __str__(self):
         return "Le vacataire "+self.IDVacataire+" est assigné au cours "+self.TypeCours+" "+self.IDcours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",str(self.DateCours)+" à "+str(self.HeureCours)
 
-class PersonnelAdministratif(db.Model):
+class PersonnelAdministratif(UserMixin,db.Model):
     __tablename__ = 'PersonnelAdministratif'
 
     IDpersAdmin = db.Column(db.String(100),primary_key=True,nullable=False)
@@ -80,7 +83,7 @@ class PersonnelAdministratif(db.Model):
     mailPa = db.Column(db.String(100),unique=True)
     mdpPa = db.Column(db.String(100))
 
-    gerant_dossier = db.relationship("GererDossier", backref = "personnelAdmin")
+    gerant_dossier = db.relationship("GererDossier", back_populates = "personnelAdmin")
 
     def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp):
         self.IDpersAdmin = idpa
@@ -90,7 +93,10 @@ class PersonnelAdministratif(db.Model):
         self.ddnPa = ddn
         self.mailPa = mail
         self.mdpPa = mdp
-    
+
+    def get_id(self):
+           return (self.IDpersAdmin)
+
     def __str__(self):
         return "PersonnelAdministratif :"+" "+self.IDpersAdmin+" "+self.nomPa+" "+self.prenomPa+" né(e) le ",self.ddnPa," mail : "+self.mailPa
 
@@ -127,7 +133,10 @@ class Vacataire(db.Model):
         self.ddnV = ddn
         self.mailV = mail
         self.mdpV = mdp
-    
+   
+    def get_id(self):
+        return (self.IDVacataire)
+
     def __str__(self):
         return "Vacataire : "+" "+self.IDVacataire+" "+self.nomV+" "+self.prenomV+" né(e) le "+self.ddnV+" mail : "+self.mailV+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)
 
@@ -153,7 +162,7 @@ class Cours(db.Model):
         self.dureeCours = dur
     
     def __str__(self):
-        return self.TypeCours+" "+self.IDcours+" : "+self.nomCours+" domaine de "+self.domaine+" "+self.heuresTotale+" d'heures totale pour une duree de "+self.dureeCours+" par cours"
+        return self.TypeCours+" "+str(self.IDcours)+" : "+self.nomCours+" domaine de "+self.domaine+" "+str(self.heuresTotale)+" d'heures totale pour une duree de "+str(self.dureeCours)+" par cours"
 
 class Disponibilites(db.Model):
     __tablename__ = "Disponibilites"
@@ -192,16 +201,82 @@ def home():
 @app.route('/nouveau_vacataire.html', methods= ['GET', 'POST'])
 def new_vaca():
     if request.method == "POST":
-        vac = Vacataire('V4','Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],'30-02-1997',request.form['email'],'177013')
+        vac = Vacataire('V' + maxIdActu(),'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
+        for i in range(1,4):
+            les_cours = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
+            for cours in les_cours:
+                db.session.add(Affectable('V' + maxIdActu(),cours.IDcours,cours.TypeCours))
         db.session.add(vac)
         db.session.commit()
     return render_template('nouveau_vacataire.html')
 
 @app.route('/EDT.html')
+@login_required
 def EDT():
     return render_template('EDT.html')
 
 @app.route('/menu_admin.html')
+
+@login_required
+def menu_admin():
+    return render_template('menu_admin.html',nom_prenom=current_user.prenomPa + " " + current_user.nomPa)
+
+@app.route('/profile.html')
+@login_required
+def profile():
+    if estVacataire(current_user):
+        return render_template('profile.html',profile_nom=current_user.nomV, profile_prenom=current_user.prenomV, profile_email=current_user.mailV, profile_tel=current_user.numTelV)
+    return render_template('profile.html',profile_nom=current_user.nomPa, profile_prenom=current_user.prenomPa, profile_email=current_user.mailPa, profile_tel=current_user.numTelPa)
+
+@app.route('/recherche-dossiers.html')
+@login_required
+def check_doss():
+    return render_template('recherche-dossiers.html')           
+
+@app.route('/login.html', methods= ['GET', 'POST'])
+def log():
+    if request.method == "POST":
+        if estVacataire(request.form['idUser']):
+            log = Vacataire.query.filter_by(IDVacataire=request.form['idUser']).first()
+            if request.form['password'] == log.mdpV:
+                login_user(log)
+                return EDT()
+        else:
+            adm = PersonnelAdministratif.query.filter_by(IDpersAdmin=request.form['idUser']).first()
+            if request.form['password'] == adm.mdpPa:
+                login_user(adm)
+                return menu_admin()
+    return render_template('login.html')
+
+@login_manager.user_loader
+def load_user(utilisateurID):
+    if utilisateurID[0] == 'V':
+        return Vacataire.query.filter_by(IDVacataire=utilisateurID).first()
+    else:
+        return PersonnelAdministratif.query.filter_by(IDpersAdmin=utilisateurID).first()
+
+def estVacataire(user):
+    if type(user) == str:
+        if user[0] == 'V':
+            return True
+    else:
+        if user.get_id()[0] == 'V':
+            return True
+        
+    return False
+
+def maxIdActu():
+    IDMAX = 0
+    VMax = db.session.query(Vacataire.IDVacataire).all()
+    for id in VMax:
+        if IDMAX<int(id[0][1:]):
+            IDMAX = int(id[0][1:])
+    PAMax = db.session.query(PersonnelAdministratif.IDpersAdmin).all()
+    for id in PAMax:
+        if IDMAX<int(id[0][1:]):
+            IDMAX = int(id[0][1:])
+    return str(IDMAX+1)
+
 def menu_admin():
     return render_template('menu_admin.html')
 
@@ -244,7 +319,7 @@ def test_connection():
                         db.session.commit()
                 case 4:
                     for ligne in fileReader:
-                        db.session.add(affectable(ligne[0],ligne[1],ligne[2]))
+                        db.session.add(Affectable(ligne[0],ligne[1],ligne[2]))
                         db.session.commit()
                 case 5:
                     for ligne in fileReader:
