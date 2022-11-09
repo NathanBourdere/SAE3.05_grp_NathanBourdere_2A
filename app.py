@@ -195,7 +195,6 @@ class Cours(db.Model):
         self.IDcours = idc
         self.TypeCours = t
         self.nomCours = n
-        self.domaine = d
         self.heuresTotale = h
         self.dureeCours = dur
         self.domaine = dom
