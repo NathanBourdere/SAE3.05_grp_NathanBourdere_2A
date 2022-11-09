@@ -1,79 +1,72 @@
 <!DOCTYPE html>
 <html lang="'fr">
-  <head>
-    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
-    <link
-      href="https://fonts.googleapis.com/css?family=Pacifico"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Oswald"
-      rel="stylesheet"
-    />
-    <title>VACAT'O</title>
-    <link
-      href="{{ url_for('static', filename='CSS/generalCSS.css')}}"
-      rel="stylesheet"
-    />
-    <link
-      href="{{ url_for('static', filename='CSS/headerSpe.css')}}"
-      rel="stylesheet"
-    />
-  </head>
 
-  <body>
-    <header>
-      <h1>Vacat'o</h1>
-      <a href="infos.html">
-        <img
-          src="{{ url_for('static', filename='IMG/person.png')}}"
-          alt="Icone de connexion"
-        />
-      </a>
-    </header>
-    <main>
-      <h1>Rechercher cours</h1>
-      <section id="table">
-        <article>
-          <input type="text" placeholder="Nom, Prénom, email, telephone, ..." />
-          <select nom="filtre">
-            <option value="null">Filtrer les dossiers ↓</option>
-            <option value="candidat">Candidats</option>
-            <option value="dossier">Dossiers</option>
-            <option value="vaca">Vacataires</option>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" />
+  <title>VACAT'O</title>
+  <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet" />
+</head>
+
+<body>
+  <header>
+    <h1>Vacat'o</h1>
+    <a href="infos.html">
+      <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion" />
+    </a>
+  </header>
+  <main>
+    <h1>Rechercher cours</h1>
+    <section id="table">
+      <article>
+        <form method="POST">
+          <input type="text" name="search" placeholder="{{placeHolder}}" />
+          <select name="infos">
+            <option value="{{filtre[0]}}">{{filtre[0]}}</option>
+            <option value="{{filtre[1]}}">{{filtre[1]}}</option>
+            <option value="{{filtre[2]}}">{{filtre[2]}}</option>
+            <option value="{{filtre[3]}}">{{filtre[3]}}</option>
+            <option value="{{filtre[4]}}">{{filtre[4]}}</option>
+            <option value="{{filtre[5]}}">{{filtre[5]}}</option>
+            <option value="{{filtre[6]}}">{{filtre[6]}}</option>
+            <option value="{{filtre[7]}}">{{filtre[7]}}</option>
           </select>
-        </article>
-        <article id="table">
-          <table>
-            <table id="table">
-              <tr>
-                <td>Nom</td>
-                <td>Prenom</td>
-                <td>NomCours</td>
-                <td>TypeCours</td>
-                <td>Durée</td>
-                <td>Date</td>
-                <td>Classe/Salle</td>
-              </tr>
-              {% for item in cours %}
-              <tr>
-                <td>{{item[3]}}</td>
-                <td>{{item[2]}}</td>
-                <td>{{item[4]}}</td>
-                <td>{{item[5]}}</td>
-                <td>{{item[6]}}min</td>
-                <td>{{item[0]}}-{{item[7]}}</td>
-                <td>{{item[8]}}/{{item[9]}}</td>
-              </tr>
-              {% endfor %}
-            </table>
+          <input type="submit">
+        </form>
+      </article>
+      <article id="table">
+        <table>
+          <table id="table">
+            <tr>
+              <td>Nom</td>
+              <td>Prenom</td>
+              <td>NomCours</td>
+              <td>TypeCours</td>
+              <td>Durée</td>
+              <td>Date</td>
+              <td>Classe/Salle</td>
+            </tr>
+            {% for item in cours %}
+            <tr>
+              <td>{{item[3]}}</td>
+              <td>{{item[2]}}</td>
+              <td>{{item[4]}}</td>
+              <td>{{item[5]}}</td>
+              <td>{{item[6]}}min</td>
+              <td>{{item[0]}}-{{item[7]}}h</td>
+              <td>{{item[8]}}/{{item[9]}}</td>
+            </tr>
+            {% endfor %}
           </table>
-        </article>
-      </section>
-    </main>
-    <footer>
-      <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
-    </footer>
-  </body>
-  <script src="{{ url_for('static', filename='JS/jquery-3.6.1.min.js')}}"></script>
+        </table>
+      </article>
+    </section>
+  </main>
+  <footer>
+    <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
+  </footer>
+</body>
+<script src="{{ url_for('static', filename='JS/jquery-3.6.1.min.js')}}"></script>
+
 </html>
