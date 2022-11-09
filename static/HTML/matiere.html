@@ -2,13 +2,12 @@
 <html lang="'fr">
 
 <head>
+    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     <title>VACAT'O</title>
-    <link href="../CSS/generalCSS.css" rel="stylesheet">
-    <script src="../SCRIPTS/matieres.js"></script>
+    <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet">
 </head>
-
 <body>
     <header>
         <h1>Vacat'o</h1>
@@ -55,4 +54,5 @@
         border: solid 1px;
     }
 </style>
+<script src="{{ url_for('static', filename='JS/matieres.js')}}"></script>
 </html>
