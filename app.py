@@ -408,7 +408,9 @@ def check_cours():
 @app.route('/dossier_vacataire.html',)
 @login_required
 def editdoss():
-    return render_template('dossier_vacataire.html',profile_nom=current_user.nomV, profile_prenom=current_user.prenomV, profile_email=current_user.mailV, profile_tel=current_user.numTelV)
+    etat_dossier_user = db.session.query(GererDossier.etat_dossier).filter(current_user.IDVacataire==GererDossier.IDVacataire).join(Vacataire,Vacataire.IDVacataire==GererDossier.IDVacataire).first()
+    date_fr_modif = db.session.query(GererDossier.dateModif,GererDossier.heureModif).filter(current_user.IDVacataire==GererDossier.IDVacataire).join(Vacataire,Vacataire.IDVacataire==GererDossier.IDVacataire).first()
+    return render_template('dossier_vacataire.html',etat_doc=etat_dossier_user,date_modif=date_fr_modif)
 
 @app.route('/menu_vacataire.html')
 @login_required
