@@ -16,26 +16,29 @@
     <main>
         <h1>Vos Disponibilités</h1>
         <section>
-            <label for="periodes">Période</label>
-            <select name="periode">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-            <select name="annee">
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
-                <option value="2030">2030</option>
-                <option value="2031">2031</option>
-                <option value="2032">2032</option>
-            </select>
+            <div id="head_periodes">
+                <h2>Période</h2>
+                <select name="periode">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+                <select name="annee">
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                    <option value="2031">2031</option>
+                    <option value="2032">2032</option>
+                </select>
+            </div>
+            
             <article>
                 <div id="periodes">
                     <ul>
@@ -90,7 +93,7 @@
             </article>
         </section>
         <section>
-            <label for="dates">Dates spécifiques</label>
+            <h2>Dates spcécifiques</h2>
             <article>
                 <div id="dates_spe">
                     <ul>
@@ -136,8 +139,8 @@
                 </div>
                 <input type="button" value="Ajouter" onclick="ajouterDispoDate()">
             </article>
-            <input type="button" value="Enregistrer" onclick="verifier_valeur()">
         </section>
+        <input type="button" value="Enregistrer" onclick="verifier_valeur()">
     </main>
     <footer>
         <p>
@@ -148,12 +151,24 @@
 <style>
     ul {
         display: flex;
+        background: linear-gradient(#e1dae6, #50ccc2);
     }
     li {
         margin: 2%;
     }
-    article, ul {
-        border: solid 1px;
+    #head_periodes {
+        display: flex;
+        text-align: center;
+        justify-content: space-between;
+        margin-left: 41%;
+        margin-right: 41%;
+        align-items: center;
+    }
+    section {
+        border: solid 1px #e1dae6;
+        margin: 3%;
+        padding-left: 1%;
+        padding-right: 1%;
     }
 </style>
 </html>
