@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="'fr">
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <title>VACAT'O</title>
+    <link href="../CSS/generalCSS.css" rel="stylesheet">
+    <script src="../SCRIPTS/matieres.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Vacat'o</h1>
+    </header>
+    <main>
+        <h1>Vos matières</h1>
+        <section>
+            <article>
+                <div id="matieres">
+                    <ul>
+                        <li>
+                            <select name="listes_matieres">
+                                <option value="Maths">Maths</option>
+                                <option value="Français">Français</option>
+                                <option value="Anglais">Anglais</option>
+                                <option value="Histoire">Histoire</option>
+                            </select>
+                        </li>
+                        <li>
+                            <button id="BP0" onclick="supprimerMatiere('BP0')">Supprimer</button>
+                        </li>
+                    </ul>
+                </div>
+                <input type="button" value="Ajouter" onclick="ajouterMatiere()">
+            </article>
+            <input type="button" value="Enregistrer" onclick="verifier_valeur()">
+        </section>
+    </main>
+    <footer>
+        <p>
+            Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés
+        </p>
+    </footer>
+</body>
+<style>
+    ul {
+        display: flex;
+        justify-content: center;
+    }
+    li {
+        margin: 2%;
+    }
+    article, ul {
+        border: solid 1px;
+    }
+</style>
+</html>

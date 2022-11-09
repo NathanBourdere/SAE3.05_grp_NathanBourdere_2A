@@ -1,81 +1,87 @@
 <!DOCTYPE html>
 <html lang="'fr">
-
-<head>
-    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+  <head>
+    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
+    <link
+      href="https://fonts.googleapis.com/css?family=Pacifico"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Oswald"
+      rel="stylesheet"
+    />
     <title>VACAT'O</title>
-    <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
-</head>
+    <link
+      href="{{ url_for('static', filename='CSS/generalCSS.css')}}"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='CSS/headerSpe.css')}}"
+      rel="stylesheet"
+    />
+  </head>
 
 <body>
-    <header>
-        <h1>Vacat'o</h1>
-        <a href="infos.html">
-            <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion">
-        </a>
-    </header>
-    <main>
-        <h1>
-            Rechercher dossier
-        </h1>
-        <section id="table">
-            <article>
-            <input type="text" placeholder="Nom, Prénom, email, telephone, ...">
-            <select nom="filtre">
-                <option value="null">Filtrer les dossiers ↓ </option>
-                <option value="candidat">Candidats</option>
-                <option value="dossier">Dossiers</option>
-                <option value="vaca">Vacataires</option>
-            </select>
-        </article>
-            <article>
-                <table>
-                    <tr>
-                      <th>Nom</th>
-                      <th>Prenom</th>
-                      <th>Email</th>
-                      <th>Telephone</th>
-                      <th>Status</th>
-                    </tr>
-                    <tr>
-                      <td>Viard</td>
-                      <td>Théo</td>
-                      <td>viard.theo@gmail.com</td>
-                      <td>0695347118</td>
-                      <td><a href="infoDossier.html">Distribué</a></td>
-                    </tr>
-                    <tr>
-                        <td>Bourdere</td>
-                        <td>Nathan</td>
-                        <td>bourdere.nathan@gmail.com</td>
-                        <td>0697841236</td>
-                        <td><a href="infoDossier.html">Distribué</a></td>
-                    </tr>
-                    <tr>
-                        <td>Blin-Dorard</td>
-                        <td>Bryan</td>
-                        <td>blin.bryan@gmail.com</td>
-                        <td>0784512365</td>
-                        <td><a href="infoDossier.html">Distribué</a></td>
-                    </tr>
-                    <tr>
-                        <td>Loszach</td>
-                        <td>Constantin</td>
-                        <td>loszach.constantin@gmail.com</td>
-                        <td>0694578412</td>
-                        <td><a href="infoDossier.html">Distribué</a></td>
-                    </tr>
-                  </table>
-            </article>
-        </section>
-    </main>
-    <footer>
-        <p>
-            Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés
-        </p>
-    </footer>
+  <header>
+    <h1>Vacat'o</h1>
+    <a href="infos.html">
+      <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion" />
+    </a>
+  </header>
+  <main>
+    <h1>Rechercher dossier</h1>
+    <section id="table">
+      <article>
+        <form method="POST">
+          <input type="text" name="search" placeholder="{{placeHold}}"/>
+          <select name="tri">
+            <option value="{{tri[0]}}">{{tri[0]}}</option>
+            <option value="{{tri[1]}}">{{tri[1]}}</option>
+            <option value="{{tri[2]}}">{{tri[2]}}</option>
+            <option value="{{tri[3]}}">{{tri[3]}}</option>
+            <option value="{{tri[4]}}">{{tri[4]}}</option>
+          </select>
+          <select name="filtre">
+            <option value="{{filtre[0]}}">{{filtre[0]}}</option>
+            <option value="{{filtre[1]}}">{{filtre[1]}}</option>
+            <option value="{{filtre[2]}}">{{filtre[2]}}</option>
+            <option value="{{filtre[3]}}">{{filtre[3]}}</option>
+            <option value="{{filtre[4]}}">{{filtre[4]}}</option>
+          </select>
+          <input type="submit">
+        </form>
+      </article>
+      <article id="table">
+        <table>
+          <table id="table">
+            <tr>
+              <td>Nom</td>
+              <td>Prenom</td>
+              <td>Mail</td>
+              <td>Telephone</td>
+              <td>Status</td>
+            </tr>
+            {% for item in vaca %}
+            <tr>
+              <td>{{item.nomV}}</td>
+              <td>{{item.prenomV}}</td>
+              <td>{{item.mailV}}</td>
+              <td>{{item.numTelV}}</td>
+              <td>{{item.etat_dossier}}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </table>
+      </article>
+    </section>
+  </main>
+  <footer>
+    <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
+  </footer>
 </body>
+<script src="{{ url_for('static', filename='JS/jquery-3.6.1.min.js')}}"></script>
+<script>
+
+</script>
 
 </html>
