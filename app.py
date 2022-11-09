@@ -243,7 +243,12 @@ def check_cours():
 @app.route('/dossier_vacataire.html')
 @login_required
 def editdoss():
-    return render_template('dossier_vacataire.html',profile_nom=current_user.nomPa, profile_prenom=current_user.prenomPa, profile_email=current_user.mailPa, profile_tel=current_user.numTelPa)
+    return render_template('dossier_vacataire.html',profile_nom=current_user.nomV, profile_prenom=current_user.prenomV, profile_email=current_user.mailV, profile_tel=current_user.numTelV)
+
+@app.route('/menu_vacataire.html')
+@login_required
+def menu_vacataire():
+    return render_template('menu_vacataire.html',nom_prenom=current_user.prenomV + " " + current_user.nomV)
 
 @app.route('/login.html', methods= ['GET', 'POST'])
 def log():
@@ -253,7 +258,7 @@ def log():
                 log = Vacataire.query.filter_by(IDVacataire=request.form['idUser']).first()
                 if request.form['password'] == log.mdpV:
                     login_user(log)
-                    return EDT()
+                    return menu_vacataire()
             except:
                 return render_template('login.html')
         else:
@@ -265,6 +270,11 @@ def log():
             except:
                 return render_template('login.html')
     return render_template('login.html')
+
+@app.route('/EDT.html')
+@login_required
+def load_edt():
+    return render_template("EDT.html",current_user.prenomV + " " + current_user.nomV)
 
 @login_manager.user_loader
 def load_user(utilisateurID):
