@@ -106,18 +106,22 @@ class Affectable(db.Model):
     IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),primary_key=True)
     IDcours = db.Column(db.String(100),db.ForeignKey("Cours.IDcours"),primary_key=True)
     TypeCours = db.Column(db.String(100),db.ForeignKey("Cours.TypeCours"),primary_key=True)
+    DateModifMatiere = db.Column(db.String(100))
+    HeureModifMatiere = db.Column(db.String(100))
 
     cours_affecter_vacataire = db.relationship("Vacataire",back_populates="vacat_affectable")
     affecter_cours_id = db.relationship("Cours",back_populates="cours_affecter_id", foreign_keys=[IDcours])
     affecter_cours_type = db.relationship("Cours",back_populates="cours_affecter_type", foreign_keys=[TypeCours])
 
-    def __init__(self,idv,idc,t):
+    def __init__(self,idv,idc,t,dmd,hmm):
         self.IDVacataire = idv
         self.IDcours = idc
         self.TypeCours = t
+        self.DateModifMatiere = dmd
+        self.HeureModifMatiere = hmm
     
     def __str__(self):
-        return "Le vacataire "+self.IDVacataire+" est assigné au cours "+self.TypeCours+" "+self.IDcours
+        return "Le vacataire "+self.IDVacataire+" est assigné au cours "+self.TypeCours+" "+self.IDcours+" dernière modif : "+self.DateModifMatiere+" "+self.HeureModifMatiere
 
 class Domaine(db.Model):
     __tablename__ = "Domaine"
@@ -208,7 +212,7 @@ class Disponibilites(db.Model):
     heureDispoDebut = db.Column(db.String(100)) # "14:30"
     heureDispoFin = db.Column(db.String(100)) # idem
     dateModifDispo = db.Column(db.String(100))
-    heureModifDispo = db.Column(db.Integer)
+    heureModifDispo = db.Column(db.String(100))
     IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),nullable=False,unique=True)
 
     def __init__(self,idd,j,s,p,hd,hf,idv,dmd,hmd):
@@ -225,8 +229,8 @@ class Disponibilites(db.Model):
     def __str__(self):
         res = "Vacataire "+self.IDVacataire+" dispo. id : "+self.IDdispo+" : "+self.jourDispo
         res += " semaine "+self.semaineDispo+" de la période "+self.periodeDispo
-        res += " disponible de "+str(self.heureDispoDebut) +" jusqu'à "+str(self.heureDispoFin)
-        res += "derniere modification le :"+self.dateModifDispo+" à "+str(self.heureModifDispo)+"\n"
+        res += " disponible de "+self.heureDispoDebut +" jusqu'à "+self.heureDispoFin
+        res += "derniere modification le :"+self.dateModifDispo+" à "+self.heureModifDispo+"\n"
         return res
 
 db.create_all()
@@ -347,7 +351,7 @@ def test_connection():
                         db.session.add(Cours(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5]))
                 case 4:
                     for ligne in fileReader:
-                        db.session.add(Affectable(ligne[0],ligne[1],ligne[2]))
+                        db.session.add(Affectable(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4]))
                 case 5:
                     for ligne in fileReader:
                         db.session.add(Assigner(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
