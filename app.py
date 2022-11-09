@@ -216,7 +216,6 @@ def EDT():
     return render_template('EDT.html')
 
 @app.route('/menu_admin.html')
-
 @login_required
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenomPa + " " + current_user.nomPa)
@@ -231,7 +230,20 @@ def profile():
 @app.route('/recherche-dossiers.html')
 @login_required
 def check_doss():
-    return render_template('recherche-dossiers.html')           
+    listeVaca = Vacataire.query.all()
+    return render_template('recherche-dossiers.html',vaca=listeVaca)           
+
+@app.route('/recherche-cours.html')
+@login_required
+def check_cours():
+    listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).all()
+    print(listeCours)
+    return render_template('recherche-cours.html',cours=listeCours)           
+
+@app.route('/dossier_vacataire.html')
+@login_required
+def editdoss():
+    return render_template('dossier_vacataire.html',profile_nom=current_user.nomPa, profile_prenom=current_user.prenomPa, profile_email=current_user.mailPa, profile_tel=current_user.numTelPa)
 
 @app.route('/login.html', methods= ['GET', 'POST'])
 def log():

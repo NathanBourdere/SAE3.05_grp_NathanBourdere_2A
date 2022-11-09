@@ -31,7 +31,7 @@
       </a>
     </header>
     <main>
-      <h1>Rechercher dossier</h1>
+      <h1>Rechercher cours</h1>
       <section id="table">
         <article>
           <input type="text" placeholder="Nom, Prénom, email, telephone, ..." />
@@ -48,17 +48,21 @@
               <tr>
                 <td>Nom</td>
                 <td>Prenom</td>
-                <td>Mail</td>
-                <td>Telephone</td>
-                <td>Status</td>
+                <td>NomCours</td>
+                <td>TypeCours</td>
+                <td>Durée</td>
+                <td>Date</td>
+                <td>Classe/Salle</td>
               </tr>
-              {% for item in vaca %}
+              {% for item in cours %}
               <tr>
-                <td>{{item.nomV}}</td>
-                <td>{{item.prenomV}}</td>
-                <td>{{item.mailV}}</td>
-                <td>{{item.numTelV}}</td>
-                <td>{{item.candidature}}</td>
+                <td>{{item[3]}}</td>
+                <td>{{item[2]}}</td>
+                <td>{{item[4]}}</td>
+                <td>{{item[5]}}</td>
+                <td>{{item[6]}}min</td>
+                <td>{{item[0]}}-{{item[7]}}</td>
+                <td>{{item[8]}}/{{item[9]}}</td>
               </tr>
               {% endfor %}
             </table>
