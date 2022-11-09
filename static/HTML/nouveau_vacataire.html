@@ -1,243 +1,132 @@
 <!DOCTYPE html>
 <html lang="'fr">
-  <head>
-    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
-    <link
-      href="https://fonts.googleapis.com/css?family=Pacifico"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Oswald"
-      rel="stylesheet"
-    />
-    <title>VACAT'O</title>
-    <link href="generalCSS.css" rel="stylesheet" />
-  </head>
 
-  <body>
-    <header>
-      <h1>Vacat'o</h1>
-    </header>
-    <main>
-      <h1>Inscrire un nouveau vacataire</h1>
-      <form method="POST">
-        <section>
-          <article id="infosPrincipales">
-            <ol>
-              <li>
-                <label for="nom">Nom: </label
-                ><input type="text" name="nom" id="nom" />
-              </li>
-              <li>
-                <label for="prenom">Prenom: </label
-                ><input type="text" name="prenom" id="prenom" />
-              </li>
-              <li>
-                <label for="tele">Telephone: </label
-                ><input type="tel" name="tel" id="tele" />
-              </li>
-              <li>
-                <label for="mail">Email: </label
-                ><input type="email" name="email" id="mail" />
-              </li>
-              <li>
-                <label for="mail">Date De Naissance: </label
-                ><input type="date" name="date" id="date" />
-              </li>
-              <li>
-                <label for="mail">Entreprise: </label
-                ><input type="text" name="entreprise" id="entreprise" />
-              </li>
-            </ol>
-          </article>
-        </section>
-        <article id="dispos">
-          <section>
-            <h1>Vos Disponibilités</h1>
-            <label for="periodes">Période</label>
-            <select name="periode">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </select>
-            <select name="annee">
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-              <option value="2030">2030</option>
-              <option value="2031">2031</option>
-              <option value="2032">2032</option>
-            </select>
-            <article>
-              <div id="periodes">
-                <ul>
-                  <li>
-                    <select name="jours_semaine">
-                      <option value="lundi">Lundi</option>
-                      <option value="mardi" selected>Mardi</option>
-                      <option value="mercredi">Mercredi</option>
-                      <option value="jeudi">Jeudi</option>
-                      <option value="vendredi">Vendredi</option>
-                      <option value="samedi">Samedi</option>
-                    </select>
-                  </li>
-                  <li>de</li>
-                  <li>
-                    <select name="heure_debut_periode">
-                      <option value="8" selected>8h</option>
-                      <option value="9">9h</option>
-                      <option value="10">10h</option>
-                      <option value="11">11h</option>
-                      <option value="12">12h</option>
-                      <option value="13">13h</option>
-                      <option value="14">14h</option>
-                      <option value="15">15h</option>
-                      <option value="16">16h</option>
-                      <option value="17">17h</option>
-                      <option value="18">18h</option>
-                    </select>
-                  </li>
-                  <li>à</li>
-                  <li>
-                    <select name="heure_fin_periode">
-                      <option value="8">8h</option>
-                      <option value="9">9h</option>
-                      <option value="10">10h</option>
-                      <option value="11">11h</option>
-                      <option value="12" selected>12h</option>
-                      <option value="13">13h</option>
-                      <option value="14">14h</option>
-                      <option value="15">15h</option>
-                      <option value="16">16h</option>
-                      <option value="17">17h</option>
-                      <option value="18">18h</option>
-                    </select>
-                  </li>
-                  <li>
-                    <input type="button" value="supprimer" onclick="supprimerDispo()"/>
-                  </li>
-                </ul>
-              </div>
-              <input
-                type="button"
-                value="Ajouter"
-                onclick="ajouterDispoPeriode()"
-              />
-            </article>
-          </section>
-          <section>
-            <label for="dates">Dates spécifiques</label>
-            <article>
-              <div id="dates_spe">
-                <ul>
-                  <li>
-                    <input type="date" value="2022-11-08" />
-                  </li>
-                  <li>de</li>
-                  <li>
-                    <select name="heure_debut_date_spe">
-                      <option value="8" selected>8h</option>
-                      <option value="9">9h</option>
-                      <option value="10">10h</option>
-                      <option value="11">11h</option>
-                      <option value="12">12h</option>
-                      <option value="13">13h</option>
-                      <option value="14">14h</option>
-                      <option value="15">15h</option>
-                      <option value="16">16h</option>
-                      <option value="17">17h</option>
-                      <option value="18">18h</option>
-                    </select>
-                  </li>
-                  <li>à</li>
-                  <li>
-                    <select name="heure_fin_date_spe">
-                      <option value="8" selected>8h</option>
-                      <option value="9">9h</option>
-                      <option value="10">10h</option>
-                      <option value="11">11h</option>
-                      <option value="12">12h</option>
-                      <option value="13">13h</option>
-                      <option value="14">14h</option>
-                      <option value="15">15h</option>
-                      <option value="16">16h</option>
-                      <option value="17">17h</option>
-                      <option value="18">18h</option>
-                    </select>
-                  </li>
-                  <li>
-                    <input type="button" value="supprimer" onclick="supprimerDispo()"/>
-                  </li>
-                </ul>
-              </div>
-              <input
-                type="button"
-                value="Ajouter"
-                onclick="ajouterDispoDate()"
-              />
-            </article>
-          </section>
-        </article>
-        <input
-          type="button"
-          value="Renseigner les disponibilités"
-          onclick="setDispo()"
-          id="button1"
-        />
-        <input type="button" value="Renseigner les matières" />
+<head>
+  <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
+  <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" />
+  <title>VACAT'O</title>
+  <link href="{{ url_for('static',filename='CSS/generalCSS.css')}}" rel="stylesheet" />
+</head>
+
+<body>
+  <header>
+    <h1>Vacat'o</h1>
+  </header>
+  <main>
+    <h1>Inscrire un nouveau vacataire</h1>
+    <form method="POST">
+      <section>
         <article>
-          <input type="submit" id="submit" />
+          <ol>
+            <li>
+              <label for="nom">Nom: </label><input type="text" name="nom" id="nom" />
+            </li>
+            <li>
+              <label for="prenom">Prenom: </label><input type="text" name="prenom" id="prenom" />
+            </li>
+            <li>
+              <label for="tele">Telephone: </label><input type="tel" name="tel" id="tele" />
+            </li>
+            <li>
+              <label for="mail">Email: </label><input type="email" name="email" id="mail" />
+            </li>
+            <li>
+              <label for="ddn">Date De Naissance: </label><input type="date" name="ddn" id="date" />
+            </li>
+            <li>
+              <label for="entreprise">Entreprise: </label><input type="text" name="entreprise" id="entreprise" />
+            </li>
+            <li>
+              <select name="candid">
+                <option value="Spontanée">Spontanée</option>
+                <option value="Recommandée">Recommandée</option>
+                <option value="Selectionnée">Selectionnée</option>
+              </select>
+            </li>
+            <li>
+              <label for="mdp">Mot de passe: </label><input type="text" name="mdpp" id="mdp"
+                placeholder="Laisser vierge pour mdp random" />
+            </li>
+          </ol>
         </article>
-      </form>
-    </main>
-    <footer>
-      <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
-    </footer>
-  </body>
-  <script src="jquery-3.6.1.min.js"></script>
-  <script src="inscript_vaca.js"></script>
-  <style>
-    input[type="submit"] {
-      display: none;
-    }
-    #dispos {
-      display: none;
-    }
-    ul {
-        display: flex;
-    }
-    li {
-        margin: 2%;
-    }
-    article, ul {
-        border: solid 1px;
-    }
-    @keyframes insert {
-      0% {
-        transform: translate3d(-150px, 0, 0);
-        opacity: 0;
-      }
-      100% {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-      }
+        <input type="submit" id="submit">
+      </section>
+    </form>
+  </main>
+  <footer>
+    <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
+  </footer>
+</body>
+<script src="{{ url_for('static',filename='JS/jquery-3.6.1.min.js')}}"></script>
+<style>
+  input[type="submit"] {
+    display: none;
+  }
+
+  #dispos {
+    display: none;
+  }
+
+  ul {
+    display: flex;
+  }
+
+  li {
+    margin: 2%;
+  }
+
+  article,
+  ul {
+    border: solid 1px;
+  }
+
+  @keyframes insert {
+    0% {
+      transform: translate3d(-150px, 0, 0);
+      opacity: 0;
     }
 
-    @keyframes remove {
-      0% {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-      }
-      100% {
-        transform: translate3d(-150px, 0, 0);
-        opacity: 0;
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes remove {
+    0% {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translate3d(-150px, 0, 0);
+      opacity: 0;
+    }
+  }
+</style>
+<script>
+  $("body").on("change", function () {
+    verif = true;
+    let lst = $("article input");
+    console.log(lst)
+    for (i = 0; i < lst.length; i++) {
+      if (lst.get(i).type != "submit") {
+        console.log(lst.get(i).id)
+        if (lst.get(i).id != "mdp") {
+          if (lst.get(i).value == "") {
+            verif = false;
+          }
+        }
       }
     }
-  </style>
+    console.log(verif)
+    if (verif) {
+      $("#submit").css("display", "flex");
+    } else {
+      $("#submit").css("display", "none");
+    }
+  });
+</script>
+
 </html>

@@ -1,3 +1,4 @@
+import random
 from flask import Flask,render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
@@ -255,12 +256,11 @@ def disponibilites():
 def new_vaca():
     if request.method == "POST":
         id = maxIdActu()
-        vac = Vacataire('V' + id,'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
-        for i in range(1,4):
-            les_cours = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
-            for cours in les_cours:
-                db.session.execute(Affectable.insert().values(IDVacataire='V' + id,IDCours=cours.IDcours,TypeCours=cours.TypeCours))
-                db.session.commit()
+        if request.form['mdpp'] != "":
+            vac = Vacataire('V'+id,request.form['candid'],request.form['entreprise'],'0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],request.form['mdpp'])
+        else:
+            mdp = ''.join(random.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789') for i in range(6))
+            vac = Vacataire('V'+id,request.form['candid'],request.form['entreprise'],'0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],mdp)
         db.session.add(vac)
         db.session.commit()
     return render_template('nouveau_vacataire.html')
