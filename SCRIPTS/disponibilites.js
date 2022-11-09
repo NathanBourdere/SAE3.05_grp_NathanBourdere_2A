@@ -55,6 +55,7 @@ function ajouterDispoDate() {
 
 function verifier_valeur() {
     const periodes = document.getElementById("periodes");
+    const dates_spe = document.getElementById("dates_spe");
     let verif = false
     for (let i = 0; i < periodes.children.length; i++) {
         const ul = periodes.children[i];
@@ -64,6 +65,25 @@ function verifier_valeur() {
                 for (let k = 0; k < li.children.length; k++) {
                     const select = li.children[k]; 
                     if (select.tagName == "SELECT") {
+                        if (select.value == "") {
+                            verif = true;
+                            select.style.backgroundColor = "red";
+                        } else {
+                            select.style.backgroundColor = "white";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for (let i = 0; i < dates_spe.children.length; i++) {
+        const ul = dates_spe.children[i];
+        for (let j = 0; j < ul.children.length; j++) {
+            const li = ul.children[j];
+            if (li.children.length>0){
+                for (let k = 0; k < li.children.length; k++) {
+                    const select = li.children[k]; 
+                    if (select.tagName == "SELECT" || select.tagName == "INPUT") {
                         if (select.value == "") {
                             verif = true;
                             select.style.backgroundColor = "red";
