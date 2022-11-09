@@ -2,6 +2,7 @@
 <html lang="'fr">
 
 <head>
+    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     <title>VACAT'O</title>
@@ -15,7 +16,6 @@
     <main>
         <form>
             <section id="flexAvatar">
-                <img id="avatar" src="{{ url_for('static', filename='IMG/avatar.png')}}" alt="Photo de la personne du profil">
                 <article>
                     <ol>
                         <li><label for="identifiant">Nom: {{ profile_nom }}</label></li>
@@ -23,11 +23,14 @@
                         <li><label for="mdp">Email: {{ profile_email }}</label></li>
                         <li><label for="mdp">Telephone:{{ profile_tel }}</label></li>
                     </ol>
+                    <input type="button" value="Modifier les matières renseignées">
+                    <input type="button" value="Modifier les disponibilités">
                 </article>
             </section>
             <input type="button" value="Deconnexion">
-            <a href="https://ent.univ-orleans.fr/uPortal/f/welcome/normal/render.uP">Changer mon mot de
-                passe</a>
+            <a href="https://ent.univ-orleans.fr/uPortal/f/welcome/normal/render.uP">
+                <input type="button" value="Changer mon mot de passe">
+            </a>
         </form>
     </main>
     <footer>
