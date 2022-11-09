@@ -99,3 +99,29 @@ function verifier_valeur() {
         alert("Veuillez remplir tous les champs");
     }
 }
+
+function verifierDates() {
+    // Renvoie true si les dates renseignées est bonne. False sinon.
+    let res = true;
+    const datesSpe = document.getElementById("dates_spe");
+    const dateAujourdhui = new Date();
+
+    for (let ul of datesSpe.children) {
+        if (ul.children[0].value === "") {
+            res = false;
+            break;
+        }
+        let dateDonnee = new Date(ul.children[0].children[0].value);
+        if (dateAujourdhui.getFullYear()>dateDonnee.getFullYear()) {
+            res = false;
+            break;
+        }else if (dateAujourdhui.getFullYear() === dateDonnee.getFullYear() && dateAujourdhui.getMonth()+1 > dateDonnee.getMonth()+1) {
+            res = false;
+            break;
+        }else if (dateAujourdhui.getMonth() === dateDonnee.getMonth() && dateAujourdhui.getDate() > dateDonnee.getDate()) {
+            res = false;
+            break;
+        }
+    }
+    return res;
+}
