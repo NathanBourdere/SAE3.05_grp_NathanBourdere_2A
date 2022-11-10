@@ -8,33 +8,35 @@
     <title>VACAT'O</title>
     <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet">
 </head>
+
 <body>
     <header>
         <h1>Vacat'o</h1>
     </header>
     <main>
         <h1>Vos matières</h1>
-        <section>
-            <article>
-                <div id="matieres">
-                    <ul>
-                        <li>
-                            <select name="listes_matieres">
-                                <option value="Maths">Maths</option>
-                                <option value="Français">Français</option>
-                                <option value="Anglais">Anglais</option>
-                                <option value="Histoire">Histoire</option>
-                            </select>
-                        </li>
-                        <li>
-                            <button id="BP0" onclick="supprimerMatiere('BP0')">Supprimer</button>
-                        </li>
-                    </ul>
-                </div>
-                <input type="button" value="Ajouter" onclick="ajouterMatiere()">
-            </article>
-            <input type="button" value="Enregistrer" onclick="verifier_valeur()">
-        </section>
+        <form method="POST">
+            <section>
+                <article>
+                    <div id="matieres">
+                        <ul>
+                            <li>
+                                <select name="listes_matieres0">
+                                    {% for matiere in lstmatiere %}
+                                    <option value="`{{matiere.nomCours}}`">{{matiere.nomCours}}</option>
+                                    {% endfor %}
+                                </select>
+                            </li>
+                            <li>
+                                <button id="BP0" onclick="supprimerMatiere('BP0')">Supprimer</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <input type="button" value="Ajouter" onclick="ajouterMatiere()">
+                </article>
+                <input type="button" value="Enregistrer" onclick="verifier_valeur()">
+            </section>
+        </form>
     </main>
     <footer>
         <p>
@@ -47,12 +49,16 @@
         display: flex;
         justify-content: center;
     }
+
     li {
         margin: 2%;
     }
-    article, ul {
+
+    article,
+    ul {
         border: solid 1px;
     }
 </style>
+<script src="{{ url_for('static', filename='JS/jquery-3.6.1.min.js')}}"></script>
 <script src="{{ url_for('static', filename='JS/matieres.js')}}"></script>
 </html>

@@ -242,10 +242,13 @@ db.session.commit()
 def home():
     return render_template('main.html')
 
-@app.route('/matiere.html')
+@app.route('/matiere.html', methods=['GET','POST'])
 @login_required
 def matiere():
-    return render_template('matiere.html')
+    matieres = db.session.query(Cours.nomCours).distinct(Cours.nomCours).all()
+    if request.method == "POST":
+        print('oui')
+    return render_template('matiere.html',lstmatiere=matieres)
 
 @app.route('/disponibilites.html')
 @login_required
@@ -559,4 +562,4 @@ def test_connection():
 test_connection()
 
 if __name__=="__main__":
-    app.run()
+    app.run(port=4875)
