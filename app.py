@@ -247,7 +247,20 @@ def home():
 def matiere():
     matieres = db.session.query(Cours.nomCours).distinct(Cours.nomCours).all()
     if request.method == "POST":
-        print('oui')
+        loop=True
+        listMat=[]
+        nbMat=0
+        while loop==True:
+            try:
+                listMat.append(request.form['listes_matieres'+nbMat])
+                nbMat+=1
+            except:
+                loop=False
+        for mat in listMat:
+            idMat = Cours.query(Cours.IDcours,Cours.TypeCours).filter_by(nomCours=mat).all()
+            for matiereCours in idMat:
+                db.session.add(Affectable(current_user.IDVacataire,matiereCours.idMatiere,matiereCours.TypeCours,'oe','oe'))
+        db.session.commit()
     return render_template('matiere.html',lstmatiere=matieres)
 
 @app.route('/disponibilites.html')
