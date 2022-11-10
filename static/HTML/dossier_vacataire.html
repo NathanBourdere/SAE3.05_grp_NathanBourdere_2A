@@ -19,25 +19,25 @@
   <script src="{{ url_for('static', filename='JS/verifAge.js')}}"></script>
   <body>
     <header>
-      <h1>Vacat'o</h1>
+      <h1>Vacat'O</h1>
     </header>
     <main>
       <section id="flexAvatar">
         <h2>Votre Dossier</h2>
-        <label>Etat du dossier : {{etat_doc.etat_dossier}}</label>
+        <label>État du dossier : {{etat_doc.etat_dossier}}</label>
         <br>
         <form name=”formulaireTD1” action=”TP3_quizz.html” method=”POST”>
           <label>Votre nom</label>
           <input class="doc" type="Text" name="nomDoc" required placeholder="Dupont Moretti">
           <label>Votre prénom</label>
           <input class="doc" type="Text" name="prenomDoc" required placeholder="Jean Paul">
-          <label>Votre Date de Naissance</label>
+          <label>Votre date de naissance</label>
           <input class="doc" type="date" name="ddnDoc" pattern="[0-9]{2})-([0-9]{2})-([0-9]{4})" value="" required onchange="check_ddn(value,this)">
-          <label>Votre Mail</label>
+          <label>Votre adresse mail</label>
           <input class="doc" type="email" name="mailDoc" required placeholder="example@gmail.com">
-          <label>Votre Numéro de Telephone</label>
+          <label>Votre numéro de téléphone</label>
           <input class="doc" type="tel" name="telDoc" pattern=[\d]{10,12} required placeholder="0612345678">
-          <label>Votre Entreprise</label>
+          <label>Votre entreprise</label>
           <input class="doc" type="Text" name="Entreprise" placeholder="Behaviour Interactive">
           <a href="disponibilites.html"><input class="doc" type="Button" value="Renseignez vos disponibilités"></a>
           <a href="matiere.html"><input class="doc" type="button" value="Renseignez vos matières"></a>
