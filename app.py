@@ -284,7 +284,7 @@ def profile():
 
 @app.route('/recherche-dossiers.html',methods=['GET', 'POST'])
 @login_required
-def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prénom','Téléphone','Status'],filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]):
+def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Status'],filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]):
     listeVaca = Vacataire.query.all()
     textPlace="Veuillez sélectionner une méthode de tri..."
     if request.method == "POST":
@@ -307,7 +307,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prénom','Téléphone','S
                         else:
                             print('pkpas')
                             listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(Vacataire.nomV).all()
-                    lstTri=['Nom','Prénom','Téléphone','Status','Ne pas trier']
+                    lstTri=['Nom','Prenom','Telephone','Status','Ne pas trier']
                     if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
                         filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
                     elif request.form['filtre'] == 'Distribué':
@@ -318,8 +318,8 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prénom','Téléphone','S
                         filtre=["Incomplet","Complet","Distribué","Validé","Ne pas trier"]
                     elif request.form['filtre'] == 'Validé':
                         filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
-                case 'Prénom':
-                    textPlace="Chercher un prénom..."
+                case 'Prenom':
+                    textPlace="Chercher un prenom..."
                     if request.form['filtre'] != "Filtrer les dossiers ↓":
                         if request.form['search']!="":
                             listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.prenomV.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
@@ -330,7 +330,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prénom','Téléphone','S
                             listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.prenomV.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                         else:
                             listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(Vacataire.prenomV).all()
-                    lstTri=['Prénom','Nom','Téléphone','Status','Ne pas trier']
+                    lstTri=['Prenom','Nom','Telephone','Status','Ne pas trier']
                     if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
                         filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
                     elif request.form['filtre'] == 'Distribué':
@@ -341,7 +341,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prénom','Téléphone','S
                         filtre=["Incomplet","Complet","Distribué","Validé","Ne pas trier"]
                     elif request.form['filtre'] == 'Validé':
                         filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
-                case 'Téléphone':
+                case 'Telephone':
                     textPlace="Chercher un numéro de téléphone..."
                     if request.form['filtre'] != "Filtrer les dossiers ↓":
                         if request.form['search']!="":
@@ -353,7 +353,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prénom','Téléphone','S
                             listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.numTelV.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                         else:
                             listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(Vacataire.numTelV).all()
-                    lstTri=['Téléphone','Prénom','Nom','Status','Ne pas trier']
+                    lstTri=['Telephone','Prenom','Nom','Status','Ne pas trier']
                     if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
                         filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
                     elif request.form['filtre'] == 'Distribué':
@@ -376,7 +376,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prénom','Téléphone','S
                             listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                         else:
                             listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(GererDossier.etat_dossier).all()
-                    lstTri=['Status','Téléphone','Prénom','Nom','Ne pas trier']
+                    lstTri=['Status','Telephone','Prenom','Nom','Ne pas trier']
                     if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
                         filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
                     elif request.form['filtre'] == 'Distribué':
@@ -404,56 +404,56 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prénom','Téléphone','S
 @app.route('/recherche-cours.html', methods=['GET','POST'])
 @login_required
 def check_cours():
-    filtre=['Filtrer les infos ↓','Nom','Prénom','Cours','Domaine','Date','Classe','Salle']
-    plh="Sélectionnez un filtre..."
+    filtre=['Filtrer les infos ↓','Nom','Prenom','Cours','Domaine','Date','Classe','Salle']
+    plh="Selectionnez un filtre..."
     listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).all()
     if request.method == "POST":
         if request.form['infos'] != "Filtrer les infos ↓":
             match(request.form['infos']):
                 case "Nom":
-                    filtre=['Nom','Prénom','Cours','Domaine','Date','Classe','Salle','Ne pas filtrer']
+                    filtre=['Nom','Prenom','Cours','Domaine','Date','Classe','Salle','Ne pas filtrer']
                     if request.form['search']!="":
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).filter(Vacataire.nomV==request.form['search']).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Vacataire.nomV).all()
                     else:
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Vacataire.nomV).all()
-                case "Prénom":
+                case "Prenom":
                     plh="Entrez un prénom..."
-                    filtre=['Prénom','Nom','Cours','Domaine','Date','Classe','Salle','Ne pas filtrer']
+                    filtre=['Prenom','Nom','Cours','Domaine','Date','Classe','Salle','Ne pas filtrer']
                     if request.form['search']!="":
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).filter(Vacataire.prenomV==request.form['search']).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Vacataire.prenomV).all()
                     else:
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Vacataire.prenomV).all()
                 case "Cours":
                     plh="Entrez un nom..."
-                    filtre=['Cours','Domaine','Prénom','Nom','Date','Classe','Salle','Ne pas filtrer']
+                    filtre=['Cours','Domaine','Prenom','Nom','Date','Classe','Salle','Ne pas filtrer']
                     if request.form['search']!="":
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).filter(Cours.nomCours==request.form['search']).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Cours.nomCours).all()
                     else:
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Cours.nomCours).all()
                 case "Domaine":
                     plh="Entrez un domaine..."
-                    filtre=['Domaine','Cours','Prénom','Nom','Date','Classe','Salle','Ne pas filtrer']
+                    filtre=['Domaine','Cours','Prenom','Nom','Date','Classe','Salle','Ne pas filtrer']
                     if request.form['search']!="":
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).filter(Cours.TypeCours==request.form['search']).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Cours.TypeCours).all()
                     else:
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Cours.TypeCours).all()
                 case "Date":
                     plh="Entrez une Date..."
-                    filtre=['Date','Domaine','Cours','Prénom','Nom','Classe','Salle','Ne pas filtrer']
+                    filtre=['Date','Domaine','Cours','Prenom','Nom','Classe','Salle','Ne pas filtrer']
                     if request.form['search']!="":
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).filter(Assigner.dateCours==request.form['search']).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Assigner.dateCours).all()
                     else:
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Assigner.dateCours).all()
                 case "Classe":
                     plh="Entrez une classe..."
-                    filtre=['Classe','Domaine','Cours','Prénom','Nom','Date','Salle','Ne pas filtrer']
+                    filtre=['Classe','Domaine','Cours','Prenom','Nom','Date','Salle','Ne pas filtrer']
                     if request.form['search']!="":
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).filter(Assigner.classe==request.form['search']).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Assigner.classe).all()
                     else:
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Assigner.classe).all()
                 case "Salle":
                     plh="Entrez une Salle..."
-                    filtre=['Salle','Classe','Domaine','Cours','Prénom','Nom','Date','Ne pas filtrer']
+                    filtre=['Salle','Classe','Domaine','Cours','Prenom','Nom','Date','Ne pas filtrer']
                     if request.form['search']!="":
                         listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).filter(Assigner.classe==request.form['search']).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Assigner.salle).all()
                     else:
@@ -559,4 +559,4 @@ def test_connection():
 test_connection()
 
 if __name__=="__main__":
-    app.run()
+    app.run(port=5001)
