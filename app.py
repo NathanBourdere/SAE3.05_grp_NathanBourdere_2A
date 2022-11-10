@@ -1,3 +1,4 @@
+from datetime import datetime
 import random
 from flask import Flask,render_template, request
 from flask_sqlalchemy import SQLAlchemy
@@ -252,14 +253,21 @@ def matiere():
         nbMat=0
         while loop==True:
             try:
-                listMat.append(request.form['listes_matieres'+nbMat])
+                print('listes_matieres'+str(nbMat))
+                listMat.append(request.form['listes_matieres'+str(nbMat)])
                 nbMat+=1
-            except:
+            except Exception as e:
+                print(e)
                 loop=False
+        print(listMat)
         for mat in listMat:
-            idMat = Cours.query(Cours.IDcours,Cours.TypeCours).filter_by(nomCours=mat).all()
+            mat = mat[1:]
+            mat = mat[:len(mat)-1]
+            print(mat)
+            idMat = db.session.query(Cours.IDcours,Cours.TypeCours).filter(Cours.nomCours==mat).all()
+            print(idMat)
             for matiereCours in idMat:
-                db.session.add(Affectable(current_user.IDVacataire,matiereCours.idMatiere,matiereCours.TypeCours,'oe','oe'))
+                db.session.add(Affectable(current_user.IDVacataire,matiereCours[0],matiereCours[1],str(datetime.now())[:10],str(datetime.now().time())[:8]))
         db.session.commit()
     return render_template('matiere.html',lstmatiere=matieres)
 
@@ -481,6 +489,7 @@ def check_cours():
 def editdoss():
     etat_dossier_user = db.session.query(GererDossier.etat_dossier).filter(current_user.IDVacataire==GererDossier.IDVacataire).join(Vacataire,Vacataire.IDVacataire==GererDossier.IDVacataire).first()
     date_fr_modif = db.session.query(GererDossier.dateModif,GererDossier.heureModif).filter(current_user.IDVacataire==GererDossier.IDVacataire).join(Vacataire,Vacataire.IDVacataire==GererDossier.IDVacataire).first()
+    
     return render_template('dossier_vacataire.html',etat_doc=etat_dossier_user,date_modif=date_fr_modif)
 
 @app.route('/menu_vacataire.html')

@@ -41,7 +41,7 @@ function ajouterMatiere() {
     idBoutonDernierUL = "BP0";
   }
   strId = String(parseInt(idBoutonDernierUL.substring(2))+1)
-  let newhtml = "<li><select name=liste_matieres"+strId+">"
+  let newhtml = "<li><select name=listes_matieres"+strId+">"
   for (i=0;i<lstMatiereGenesis.length;i++) {
     newhtml += "<option value='`"+ lstMatiereGenesis[i] + "`'>" + lstMatiereGenesis[i] +" </option>"
   }
