@@ -135,13 +135,18 @@ class Vacataire(UserMixin,db.Model):
     ddnV = db.Column(db.String(100))
     mailV = db.Column(db.String(100),unique=True)
     mdpV = db.Column(db.String(100))
+    nationnalite = db.Column(db.String(100))
+    profession = db.Column(db.String(100))
+    meilleur_diplome = db.Column(db.String(100))
+    annee_obtiention = db.Column(db.String(100))
+    adresse_postale = db.Column(db.String(100))
 
     vacat_affectable = db.relationship("Affectable",back_populates="cours_affecter_vacataire",foreign_keys=[Affectable.IDVacataire])
     selfdossier = db.relationship("GererDossier", back_populates = "dossierVacataire")
     vacataire_assignee = db.relationship("Assigner", back_populates ="cours_a_vacataire")
     dispo = db.relationship("Disponibilites", backref = "vacataire")
 
-    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp):
+    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp,nationnalite,profession,meilleur_diplome,annee_obtention,adresse_postale):
         self.IDVacataire = idv
         self.candidature = candidature
         self.entreprise = ent
@@ -152,7 +157,12 @@ class Vacataire(UserMixin,db.Model):
         self.ddnV = ddn
         self.mailV = mail
         self.mdpV = mdp
-   
+        self.nationnalite = nationnalite
+        self.profession = profession
+        self.meilleur_diplome = meilleur_diplome
+        self.annee_obtiention = annee_obtention
+        self.adresse_postale = adresse_postale
+    
     def get_id(self):
         return (self.IDVacataire)
 
