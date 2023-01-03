@@ -218,3 +218,15 @@ class Disponibilites(db.Model):
 
 db.create_all()
 db.session.commit()
+
+def maxIdActu():
+    IDMAX = 0
+    VMax = db.session.query(Vacataire.IDVacataire).all()
+    for id in VMax:
+        if IDMAX<int(id[0][1:]):
+            IDMAX = int(id[0][1:])
+    PAMax = db.session.query(PersonnelAdministratif.IDpersAdmin).all()
+    for id in PAMax:
+        if IDMAX<int(id[0][1:]):
+            IDMAX = int(id[0][1:])
+    return str(IDMAX+1)

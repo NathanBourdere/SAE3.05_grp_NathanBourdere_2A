@@ -289,18 +289,6 @@ def estVacataire(user):
         
     return False
 
-def maxIdActu():
-    IDMAX = 0
-    VMax = db.session.query(Vacataire.IDVacataire).all()
-    for id in VMax:
-        if IDMAX<int(id[0][1:]):
-            IDMAX = int(id[0][1:])
-    PAMax = db.session.query(PersonnelAdministratif.IDpersAdmin).all()
-    for id in PAMax:
-        if IDMAX<int(id[0][1:]):
-            IDMAX = int(id[0][1:])
-    return str(IDMAX+1)
-
 def test_connection():
     """
         Insère les valeurs des CSV courants dans /data dans la base de donnée
