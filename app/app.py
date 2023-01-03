@@ -5,9 +5,8 @@ import os
 import csv
 
 # Suppression de l'ancienne BD
-if os.path.exists("instance/db.sqlite3"):
-  os.remove("instance/db.sqlite3")
-  os.rmdir('instance')
+if os.path.exists("../db.sqlite3"):
+  os.remove("../db.sqlite3")
 
 def mkpath(p):
     return os.path.normpath(os.path.join(os.path.dirname(__file__),p))

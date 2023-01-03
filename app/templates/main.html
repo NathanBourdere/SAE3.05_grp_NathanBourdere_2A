@@ -12,6 +12,9 @@
 <body>
     <header>
         <h1>Vacat'o</h1>
+        {% if current_user.is_authenticated %}
+                <a href="/logout/">Logout</a>
+        {% endif %}
     </header>
     <main>
         <article>

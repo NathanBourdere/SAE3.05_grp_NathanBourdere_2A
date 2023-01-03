@@ -35,19 +35,15 @@
         <form method="POST">
           <input type="text" name="search" placeholder="{{placeHold}}"/>
           <select name="tri">
-            <option value="{{tri[0]}}">{{tri[0]}}</option>
-            <option value="{{tri[1]}}">{{tri[1]}}</option>
-            <option value="{{tri[2]}}">{{tri[2]}}</option>
-            <option value="{{tri[3]}}">{{tri[3]}}</option>
-            <option value="{{tri[4]}}">{{tri[4]}}</option>
+            {{% for t in tri %}}
+            <option value="{{t}}">{{t}}</option>
           </select>
+          {% endfor %}
           <select name="filtre">
-            <option value="{{filtre[0]}}">{{filtre[0]}}</option>
-            <option value="{{filtre[1]}}">{{filtre[1]}}</option>
-            <option value="{{filtre[2]}}">{{filtre[2]}}</option>
-            <option value="{{filtre[3]}}">{{filtre[3]}}</option>
-            <option value="{{filtre[4]}}">{{filtre[4]}}</option>
+            {{% for f in filtre %}}
+            <option value="{{f}}">{{f}}</option>
           </select>
+          {% endfor %}
           <input type="submit">
         </form>
       </article>
