@@ -9,6 +9,7 @@
     <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet">
     <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
 </head>
+
 <body>
     <header>
         <h1>Vacat'O</h1>
@@ -17,6 +18,31 @@
         </a>
     </header>
     <main>
+<<<<<<< HEAD
+        <h1>Vos matières</h1>
+        <form method="POST">
+            <section>
+                <article>
+                    <div id="matieres">
+                        <ul>
+                            <li>
+                                <select name="listes_matieres0">
+                                    {% for matiere in lstmatiere %}
+                                    <option value="`{{matiere.nomCours}}`">{{matiere.nomCours}}</option>
+                                    {% endfor %}
+                                </select>
+                            </li>
+                            <li>
+                                <button id="BP0" onclick="supprimerMatiere('BP0')">Supprimer</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <input type="button" value="Ajouter" onclick="ajouterMatiere()">
+                </article>
+                <input type="submit" value="Enregistrer" onclick="verifier_valeur()">
+            </section>
+        </form>
+=======
         <h1>Mes matières</h1>
         <section>
             <article>
@@ -39,6 +65,7 @@
             </article>
         </section>
         <input type="button" value="Enregistrer" onclick="verifier_valeur()">
+>>>>>>> feffff0f3e072286403defcba82164bb8996b3f9
     </main>
     <footer>
         <p>
@@ -60,9 +87,16 @@
         margin-top: 2%;
         justify-content: center;
     }
+
     li {
         margin: 2%;
     }
+<<<<<<< HEAD
+
+    article,
+    ul {
+        border: solid 1px;
+=======
     section {
         background-color: #FFFFFF;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -71,7 +105,9 @@
         padding-left: 1%;
         padding-right: 1%;
         padding-top: 1%;
+>>>>>>> feffff0f3e072286403defcba82164bb8996b3f9
     }
 </style>
+<script src="{{ url_for('static', filename='JS/jquery-3.6.1.min.js')}}"></script>
 <script src="{{ url_for('static', filename='JS/matieres.js')}}"></script>
 </html>
