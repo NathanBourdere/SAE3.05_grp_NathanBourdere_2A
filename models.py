@@ -1,3 +1,6 @@
+from .app import db
+from flask_login import UserMixin
+
 class GererDossier(db.Model):
     __tablename__= "GererDossier"
 
