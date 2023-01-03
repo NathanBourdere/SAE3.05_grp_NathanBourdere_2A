@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from app.formulaires import InscriptionVacataire, NewAccount
 from .app import db,app
 from flask import render_template,url_for,redirect,request,send_from_directory
@@ -13,10 +14,32 @@ import os
 def home():
     return render_template('main.html')
 
-@app.route('/matiere.html')
+@app.route('/matiere.html', methods=['GET','POST'])
 @login_required
 def matiere():
-    return render_template('matiere.html')
+    if request.method == "POST":
+        lstMat = set()
+        loop = True
+        i = 0
+        while(loop):
+            try:
+                lstMat.add(request.form['listes_matieres'+str(i)])
+                i+=1
+            except Exception as e:
+                print(e)
+                loop = False
+        print(lstMat)
+        for mat in lstMat:
+            for typeMat in db.session.query(Cours.IDcours, Cours.TypeCours, Cours.nomCours).filter(Cours.nomCours == mat).group_by(Cours.nomCours, Cours.TypeCours).all():
+                db.session.add(Affectable(current_user.IDVacataire,typeMat[0],typeMat[1],date.today(),datetime.now().strftime("%H:%M:%S")))
+        db.session.commit()
+        return render_template('menu_vacataire.html')
+
+    lstMatiereDispo = db.session.query(Cours.nomCours).all()
+    setMatiere = set()
+    for item in lstMatiereDispo:
+        setMatiere.add(item[0])
+    return render_template('matiere.html', listeMatiere = setMatiere)
 
 @app.route('/disponibilites.html')
 @login_required

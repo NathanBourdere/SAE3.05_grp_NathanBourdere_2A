@@ -26,8 +26,13 @@ function ajouterMatiere() {
   }else {
       idBoutonDernierUL = "BP0";
   }
-
-  ul.innerHTML = `<li><select name="listes_matieres"><option value="Maths">Maths</option><option value="Français">Français</option><option value="Anglais">Anglais</option><option value="Histoire">Histoire</option></select></li><li><button id="BP${parseInt(idBoutonDernierUL.slice(-1))+1}" onclick="supprimerMatiere('BP${parseInt(idBoutonDernierUL.slice(-1))+1}')">Supprimer</button></li>`
+  numberId = idBoutonDernierUL.substring(2);
+  listeMatiere = document.getElementsByName("listes_matieres0");
+  numberId = parseInt(numberId)+1
+  console.log(listeMatiere[0].innerHTML)
+  let strin = `<li><select name="listes_matieres` + numberId + `"> `+ listeMatiere[0].innerHTML + `</select></li><li><button id="BP${parseInt(idBoutonDernierUL.slice(-1))+1}" onclick="supprimerMatiere('BP${parseInt(idBoutonDernierUL.slice(-1))+1}')">Supprimer</button></li>`
+  console.log(strin)
+  ul.innerHTML = strin
   matieres.appendChild(ul);
   
 }
