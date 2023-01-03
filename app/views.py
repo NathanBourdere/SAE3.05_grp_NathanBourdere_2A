@@ -1,13 +1,11 @@
-from .app import db,app,photos
+from app.formulaires import InscriptionVacataire, NewAccount
+from .app import db,app
 from flask import render_template,url_for,redirect,request,send_from_directory
 from .models import *
-
-from flask_wtf import FlaskForm
-from wtforms import StringField,HiddenField,PasswordField,FileField,FileRequired,FileAllowed
-from wtforms.validators import DataRequired
 from hashlib import sha256
+import csv
 from flask_login import login_user, current_user, logout_user,login_required
-from flask_uploads import UploadSet,configure_uploads, IMAGES, patch_request_class
+# from flask_uploads import UploadSet,configure_uploads, IMAGES, patch_request_class
 import os
 
 # Initialisation des routes
@@ -27,17 +25,15 @@ def disponibilites():
 
 @app.route('/nouveau_vacataire.html', methods= ['GET', 'POST'])
 def new_vaca():
-    if request.method == "POST":
+    form = InscriptionVacataire(csrf_enabled=False)
+    if form.validate_on_submit():
         id = maxIdActu()
-        vac = Vacataire('V' + id,'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
-        for i in range(1,4):
-            les_cours = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
-            for cours in les_cours:
-                db.session.execute(Affectable.insert().values(IDVacataire='V' + id,IDCours=cours.IDcours,TypeCours=cours.TypeCours))
-                db.session.commit()
+        vac = Vacataire('V' + id,'Spontanée', '0',form.entreprise.data, form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,form.password.data)
         db.session.add(vac)
         db.session.commit()
-    return render_template('nouveau_vacataire.html')
+        return url_for('menu_admin')
+    else:
+        return render_template('nouveau_vacataire.html', form = form)
 
 @app.route('/EDT.html')
 @login_required
@@ -286,7 +282,6 @@ def estVacataire(user):
     else:
         if user.get_id()[0] == 'V':
             return True
-        
     return False
 
 def maxIdActu():
