@@ -1,6 +1,5 @@
 from yaml import *
-import os.path
-from .app import db,login_manager
+from .app import db, login_manager
 from flask_login import UserMixin
 
 # Initialisation des tables ORM

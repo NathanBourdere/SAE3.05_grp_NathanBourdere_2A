@@ -1,14 +1,9 @@
-from .app import db,app,photos
-from flask import render_template,url_for,redirect,request,send_from_directory
+import csv
+from .app import db,app
+from flask import render_template,request
 from .models import *
 
-from flask_wtf import FlaskForm
-from wtforms import StringField,HiddenField,PasswordField,FileField,FileRequired,FileAllowed
-from wtforms.validators import DataRequired
-from hashlib import sha256
-from flask_login import login_user, current_user, logout_user,login_required
-from flask_uploads import UploadSet,configure_uploads, IMAGES, patch_request_class
-import os
+from flask_login import login_user, current_user,login_required
 
 # Initialisation des routes
 @app.route('/')
