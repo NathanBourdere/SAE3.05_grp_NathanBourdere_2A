@@ -1,6 +1,0 @@
-Flask
-Flask-Login
-Flask-SQLAlchemy
-SQLAlchemy
-mysql-connector-python
-
