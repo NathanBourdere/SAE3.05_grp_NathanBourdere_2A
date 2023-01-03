@@ -16,18 +16,14 @@
       href="{{ url_for('static', filename='CSS/generalCSS.css')}}"
       rel="stylesheet"
     />
-    <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
 </head>
 <script src="{{ url_for('static', filename='JS/disponibilites.js')}}"></script>
 <body>
     <header>
-        <h1>Vacat'O</h1>
-        <a href="profile.html">
-            <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion">
-        </a>
+        <h1>Vacat'o</h1>
     </header>
     <main>
-        <h1>Mes disponibilités</h1>
+        <h1>Vos Disponibilités</h1>
         <section>
             <div id="head_periodes">
                 <h2>Période</h2>
@@ -38,7 +34,7 @@
                     <option value="4">4</option>
                 </select>
                 <select name="annee">
-                    <option value="2022">2022</option>rgb(226, 226, 226);
+                    <option value="2022">2022</option>
                     <option value="2023">2023</option>
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
@@ -162,16 +158,9 @@
     </footer>
 </body>
 <style>
-    .main-color {
-        background-color: rgb(226, 226, 226);
-    }
     ul {
         display: flex;
-        background-color: #427adb;
-        border-radius: 10px;
-        padding-left: 10%;
-        margin-left: 10%;
-        margin-right: 10%;
+        background: linear-gradient(#e1dae6, #50ccc2);
     }
     li {
         margin: 2%;
@@ -185,9 +174,7 @@
         align-items: center;
     }
     section {
-        background-color: #FFFFFF;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 10px;
+        border: solid 1px #e1dae6;
         margin: 3%;
         padding-left: 1%;
         padding-right: 1%;
