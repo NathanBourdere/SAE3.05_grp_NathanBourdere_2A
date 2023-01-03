@@ -240,3 +240,13 @@ def maxIdActu():
         if IDMAX<int(id[0][1:]):
             IDMAX = int(id[0][1:])
     return str(IDMAX+1)
+
+def estVacataire(user):
+    if type(user) == str:
+        if user[0] == 'V':
+            return True
+    else:
+        if user.get_id()[0] == 'V':
+            return True
+        
+    return False

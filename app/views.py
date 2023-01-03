@@ -279,16 +279,6 @@ def load_user(utilisateurID):
     else:
         return PersonnelAdministratif.query.filter_by(IDpersAdmin=utilisateurID).first()
 
-def estVacataire(user):
-    if type(user) == str:
-        if user[0] == 'V':
-            return True
-    else:
-        if user.get_id()[0] == 'V':
-            return True
-        
-    return False
-
 def test_connection():
     """
         Insère les valeurs des CSV courants dans /data dans la base de donnée
