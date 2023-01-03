@@ -1,9 +1,12 @@
-import csv
+from app.formulaires import InscriptionVacataire, NewAccount
 from .app import db,app
-from flask import render_template,request
+from flask import render_template,url_for,redirect,request,send_from_directory
 from .models import *
+from hashlib import sha256
+import csv
+from flask_login import login_user, current_user, logout_user,login_required
+import os
 
-from flask_login import login_user, current_user,login_required
 
 # Initialisation des routes
 @app.route('/')
@@ -32,7 +35,9 @@ def new_vaca():
                 db.session.commit()
         db.session.add(vac)
         db.session.commit()
-    return render_template('nouveau_vacataire.html')
+        return url_for('menu_admin')
+    else:
+        return render_template('nouveau_vacataire.html', form = form)
 
 @app.route('/EDT.html')
 @login_required
@@ -241,6 +246,11 @@ def edit_dossier():
 def menu_vacataire():
     return render_template('menu_vacataire.html',nom_prenom=current_user.prenomV + " " + current_user.nomV)
 
+@app.route("/logout/")
+def logout():
+    logout_user()
+    return redirect(url_for('main'))
+    
 @app.route('/login.html', methods= ['GET', 'POST'])
 def log():
     if request.method == "POST":
