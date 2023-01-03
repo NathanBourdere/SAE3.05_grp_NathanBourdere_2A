@@ -1,25 +1,35 @@
 body {
     text-align: center;
-    background:linear-gradient(135deg,rgb(153, 202, 89),rgb(211, 60, 131));
+    background-color: white;
     font-family: oswald;
-    margin-bottom:70px;
+    margin-bottom: 70px;
+}
+
+h1 {
+    color: white;
 }
 
 header {
     font-family: pacifico;
-    background-color: #89B0AE;
+    background: linear-gradient(135deg, rgb(118, 193, 255), rgb(45, 129, 255));
     text-align: center;
+
 }
 
 main {
-    background-color: cadetblue;
+    background-color: rgb(137, 184, 255);
     margin-left: 15%;
     margin-right: 15%;
-    padding:0.5%;
+    margin-top: 2%;
+    padding: 0.5%;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
 }
-main>form p{
+
+main>form p {
     background-color: #455EB5;
 }
+
 input[type="checkbox"] {
     appearance: none;
     background-color: #fff;
@@ -32,10 +42,10 @@ input[type="checkbox"] {
     border-radius: 0.15em;
     transform: translateY(-0.075em);
     display: grid;
-    float:left;
+    float: left;
     place-content: center;
-  }
-    
+}
+
 input[type="checkbox"]::before {
     content: "";
     width: 0.65em;
@@ -55,30 +65,34 @@ input[type="checkbox"]:checked::before {
 input[type="checkbox"]:focus {
     outline: max(2px, 0.15em) solid currentColor;
     outline-offset: max(2px, 0.15em);
-  }
+}
 
 footer {
     position: fixed;
-    background:linear-gradient(135deg,rgb(153, 202, 89),rgb(211, 60, 131));
+    background: linear-gradient(135deg, rgb(51, 101, 141), rgb(45, 129, 255));
     bottom: 0px;
     left: 0px;
     right: 0px;
     margin-bottom: 0px;
 }
-main>img{
+
+main>img {
     height: 12rem;
     width: auto;
     margin-bottom: 0.7em;
 }
+
 ol {
     display: inline-block;
     text-align: left;
     list-style-type: none;
     padding-left: 0px;
 }
+
 li {
     list-style: none;
 }
+
 table {
     margin-top: 2rem;
     margin-left: auto;
@@ -86,12 +100,14 @@ table {
     font-size: 1.4rem;
     border-collapse: collapse;
 }
+
 td,
 th {
     padding: 10px;
     border: 2px solid #C49799;
     text-align: center;
 }
+
 /** INPUTS */
 
 input[type="text"],
@@ -100,7 +116,6 @@ input[type="tel"],
 input[type="password"],
 input[type="date"] {
     width: 100%;
-    height: 48px;
     font-size: 16px;
     font-weight: 500;
     background: none;
@@ -118,15 +133,19 @@ input[type="password"]:focus,
 input[type="date"]:focus {
     outline: none;
 }
+
 input[type="checkbox"] {
     width: 1.7em;
     height: 1.7em;
 }
-input[type="checkbox"]:checked{
+
+input[type="checkbox"]:checked {
     background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%);
     transition: all .5s;
 }
-input[type="button"],input[type="submit"] {
+
+input[type="button"],
+input[type="submit"] {
     /* code button*/
     margin: 0.4rem 0rem 0.4rem 0rem;
     background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%);
@@ -141,18 +160,19 @@ input[type="button"],input[type="submit"] {
     transition: all .5s;
 }
 
-input[type="button"]:hover,input[type="submit"]:hover {
+input[type="button"]:hover,
+input[type="submit"]:hover {
     box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
     transition-duration: .1s;
 }
 
-select{
+select {
     padding: 0.3rem 0rem 0.3rem 0.3rem;
     font-weight: 500;
     border-radius: 6px;
 }
 
-.doc{
+.doc {
     text-align: center;
     margin-bottom: 1em;
 }
