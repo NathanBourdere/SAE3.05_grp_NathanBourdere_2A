@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="'fr">
+
+<head>
+    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <title>VACAT'O</title>
+    <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>Vacat'o</h1>
+        <a href="profile.html">
+            <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion">
+        </a>
+    </header>
+    <main>
+        <section id="table">
+            <h1>Mon emploi du temps</h1>
+            <article>
+                <select nom="classe">
+                    <option value="all">Tout afficher</option>
+                    <option value="c1">11B</option>
+                    <option value="c2">13A</option>
+                    <option value="c3">22A</option>
+                    <option value="c4">31A</option>
+                </select>
+                <table>
+                    <tr>
+                        <th>Jours/Heures</th>
+                        <th>Lundi</th>
+                        <th>Mardi</th>
+                        <th>Mercredi</th>
+                        <th>Jeudi</th>
+                        <th>Vendredi</th>
+                        <th>Samedi</th>
+                    </tr>
+                    <tr>
+                        <td>8h</td>
+                        <td id="SQL">
+                            <p>SQL I22</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td id="Python">
+                            <p>Python I003</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>9h</td>
+                        <td id="SQL">
+                            <a onclick="detailHeure()">
+                                <p>SQL I22</p>
+                                <p>WEB I28</p>
+                            </a>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>10h</td>
+                        <td id="WEB">
+                            <p>WEB I28</p>
+                        </td>
+                        <td></td>
+                        <td id="WEB">
+                            <p>WEB M002</p>
+                        </td>
+                        <td></td>
+                        <td id="Anglais">
+                            <p>Anglais I003</p>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>11h</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td id="WEB">
+                            <p>WEB M002</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>12h</td>
+                        <td></td>
+                        <td id="Python">
+                            <p>Python I22</p>
+                        </td>
+                        <td id="Python">
+                            <p>Python I22</p>
+                        </td>
+                        <td id="SQL">
+                            <p>SQL I11</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>13h</td>
+                        <td></td>
+                        <td id="SQL">
+                            <p>SQL I003</p>
+                        </td>
+                        <td></td>
+                        <td id="Anglais">
+                            <p>Anglais M002</p>
+                        </td>
+                        <td id="Anglais">
+                            <p>Anglais M002</p>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>14h</td>
+                        <td></td>
+                        <td></td>
+                        <td id="SQL">
+                            <p>SQL I22</p>
+                        </td>
+                        <td></td>
+                        <td id="WEB">
+                            <p>WEB I11</p>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>15h</td>
+                        <td></td>
+                        <td></td>
+                        <td id="Python">
+                            <p>Python I003</p>
+                        </td>
+                        <td id="Python">
+                            <p>Python I003</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>16h</td>
+                        <td></td>
+                        <td></td>
+                        <td id="SQL">
+                            <p>SQL I22</p>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>17h</td>
+                        <td id="Anglais">
+                            <p>Anglais M002</p>
+                        </td>
+                        <td></td>
+                        <td id="WEB">
+                            <p>WEB I11</p>
+                        </td>
+                        <td id="WEB">
+                            <p>WEB I11</p>
+                        </td>
+                        <td></td>
+                        <td id="SQL">
+                            <p>SQL I22</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>18h</td>
+                        <td></td>
+                        <td></td>
+                        <td id="Python">
+                            <p>Python I003</p>
+                        </td>
+                        <td></td>
+                        <td id="Anglais">
+                            <p>Anglais I11</p>
+                        </td>
+                        <td id="Anglais">
+                            <p>Anglais I22</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>19h</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>20h</td>
+                        <td></td>
+                        <td></td>
+                        <td id="WEB">
+                            <p>WEB M002</p>
+                        </td>
+                        <td></td>
+                        <td id="Anglais">
+                            <p>Anglais I003</p>
+                        </td>
+                        <td id="Python">
+                            <p>Python I22</p>
+                        </td>
+                    </tr>
+                </table>
+            </article>
+        </section>
+    </main>
+    <footer>
+        <p>
+            Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés
+        </p>
+    </footer>
+</body>
+<script>
+    function detailHeure() {
+        let msg = 'SQL I22 8H-9H30 \nWEB I28 9H30-11H'
+        alert(msg)
+    }
+</script>
+<style>
+    #SQL {
+        background-color: #e47105;
+    }
+
+    #WEB {
+        background-color: blueviolet;
+    }
+
+    #Anglais {
+        background-color: brown;
+    }
+
+    #Python {
+        background-color: aqua;
+    }
+</style>
+
+</html>
