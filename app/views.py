@@ -26,7 +26,7 @@ def new_vaca():
         id = max_id_actuel()
         vac = Vacataire('V' + id,'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
         for i in range(1,4):
-            les_cours = Cours.query.filter_by(nomCours=request.form['Matiere'+str(i)]).all()
+            les_cours = Cours.query.filter_by(nom_cours=request.form['Matiere'+str(i)]).all()
             for cours in les_cours:
                 db.session.execute(Affectable.insert().values(id_vacataire='V' + id,id_cours=cours.id_cours,type_cours=cours.type_cours))
                 db.session.commit()
