@@ -1,39 +1,20 @@
-<!DOCTYPE html>
-<html lang="'fr">
-
-<head>
-    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
-    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-    <title>VACAT'O</title>
-    <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet">
-</head>
-
-<body>
-    <header>
-        <h1>Vacat'o</h1>
-    </header>
-    <main>
-        <form method="POST">
-            <section>
-                <article>
-                    <h3>Accéder a mon espace personnel</h3>
-                        <ol>
-                            <li><label for="identifiant">Identifiant: </label><input type="text" name="idUser" id="identifiant"></li>
-                            <li><label for="mdp">Mot de passe: </label><input type="password" name="password" id="mdp"></li>
-                        </ol>
-                </article>
-                <input type="submit" value="Se connecter">
-                <a href="menu_admin.html">J'ai oublié mon mot de passe</a>
-                <!-- C'est evidement temporaire -->
-            </section>
-        </form>
-    </main>
-    <footer>
-        <p>
-            Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés
-        </p>
-    </footer>
-</body>
-
-</html>
+{% extends "base.html" %}
+{% block styles %}
+{{ super() }}
+{% endblock %}
+{% block contents %}
+    <form method="POST">
+        <section>
+            <article>
+                <h3>Accéder a mon espace personnel</h3>
+                    <ol>
+                        <li><label for="identifiant">Identifiant: </label><input type="text" name="idUser" id="identifiant"></li>
+                        <li><label for="mdp">Mot de passe: </label><input type="password" name="password" id="mdp"></li>
+                    </ol>
+            </article>
+            <input type="submit" value="Se connecter">
+            <a href="/menu_admin/">J'ai oublié mon mot de passe</a>
+            <!-- C'est evidement temporaire -->
+        </section>
+    </form>
+{% endblock %}
