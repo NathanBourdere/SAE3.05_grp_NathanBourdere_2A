@@ -188,21 +188,22 @@ class Cours(db.Model):
 class Disponibilites(db.Model):
     __tablename__ = "Disponibilites"
 
-    IDdispo = db.Column(db.String(100),primary_key=True)
+    IDDISPO = db.Column(db.Integer, primary_key=True)
+    IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),nullable=False)
     jourDispo = db.Column(db.String(100))# lundi,mardi ... PAS DIMANCHE
-    semaineDispo = db.Column(db.Integer) # 1,2 jusqu'à 52
-    periodeDispo = db.Column(db.Integer) # 1 ou 2 ou 3 ou 4, il y a 2 périodes par semestre
+    periodeAnneeDispo = db.Column(db.Integer)
+    periodeSemestreDispo = db.Column(db.Integer) # 1 ou 2 ou 3 ou 4, il y a 2 périodes par semestre
     heureDispoDebut = db.Column(db.String(100)) # "14:30"
     heureDispoFin = db.Column(db.String(100)) # idem
     dateModifDispo = db.Column(db.String(100))
     heureModifDispo = db.Column(db.String(100))
-    IDVacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.IDVacataire"),nullable=False,unique=True)
+    
 
-    def __init__(self,idd,j,s,p,hd,hf,idv,dmd,hmd):
+    def __init__(self,idd,idv,j,pA,pS,hd,hf,dmd,hmd):
         self.IDdispo = idd
         self.jourDispo = j
-        self.semaineDispo = s
-        self.periodeDispo = p
+        self.periodeAnneeDispo = pA
+        self.periodeSemestreDispo = pS
         self.heureDispoDebut = hd
         self.heureDispoFin = hf
         self.IDVacataire = idv
