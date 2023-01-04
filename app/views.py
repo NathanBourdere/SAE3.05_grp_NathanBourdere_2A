@@ -358,7 +358,22 @@ def maxIdDispo():
     if x == None:
         return 0
     return len(x)
- 
+
+
+def encode_mdp(mdp:str)->str:
+    """Permet d'encoder un mot de passe donné avec sha256.
+
+    Args:
+        mdp (str): Une chaine de caractères représentant un mot de passe.
+
+    Returns:
+        str: Une chaine de caractères représentant un mot de passe chiffré.
+    """ 
+    from hashlib import sha256
+    m = sha256()
+    m.update(mdp.encode())
+    return m.hexdigest()
+
 def test_connection():
     """
         Insère les valeurs des CSV courants dans /data dans la base de données
