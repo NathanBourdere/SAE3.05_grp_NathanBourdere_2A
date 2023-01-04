@@ -15,7 +15,7 @@ import os
 def home():
     return render_template('main.html')
 
-@app.route('/matiere/', methods=['GET','POST'])
+@app.route('/matieres/', methods=['GET','POST'])
 @login_required
 def matiere():
     if request.method == "POST":
