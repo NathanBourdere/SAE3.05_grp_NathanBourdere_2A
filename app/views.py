@@ -66,14 +66,11 @@ def disponibilites():
                         i+=1
                     except Exception as a:
                         loop = False
-        print(periodes)
-        print(jours_spe)
         for item in range(2,len(periodes)):
-            db.session.add(Disponibilites(maxIdDispo()+1,current_user.IDVacataire,periodes[item][0],periodes[1],periodes[0], periodes[item][1], periodes[item][2], date.today(),datetime.now().strftime("%H:%M:%S")))
-            print("uwu")
+            db.session.add(Disponibilites(maxIdDispo()+1,current_user.id_vacataire,periodes[item][0],periodes[1],periodes[0], periodes[item][1], periodes[item][2], date.today(),datetime.now().strftime("%H:%M:%S")))
             db.session.commit()
         for item in jours_spe:
-            db.session.add(Disponibilites(maxIdDispo()+1,current_user.IDVacataire,item[0],-1,-1, item[1], item[2],date.today(),datetime.now().strftime("%H:%M:%S")))
+            db.session.add(Disponibilites(maxIdDispo()+1,current_user.id_vacataire,item[0],-1,-1, item[1], item[2],date.today(),datetime.now().strftime("%H:%M:%S")))
             db.session.commit()
     return render_template('disponibilites.html')
 
@@ -354,10 +351,10 @@ def maxIdActu():
     return str(IDMAX+1)
 
 def maxIdDispo():
-    x = db.session.query(Disponibilites.IDDISPO).first()
+    x = db.session.query(Disponibilites.id_dispo).all()
     if x == None:
         return 0
-    return x.IDDISPO
+    return len(x)
  
 def test_connection():
     """
