@@ -1,173 +1,144 @@
-<!DOCTYPE html>
-<html lang="'fr">
-
-<head>
-    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
-    <link
-      href="https://fonts.googleapis.com/css?family=Pacifico"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Oswald"
-      rel="stylesheet"
-    />
-    <title>VACAT'O</title>
-    <link
-      href="{{ url_for('static', filename='CSS/generalCSS.css')}}"
-      rel="stylesheet"
-    />
-</head>
+{% extends "base.html" %}
 <script src="{{ url_for('static', filename='JS/disponibilites.js')}}"></script>
-<body>
-    <header>
-        <h1>Vacat'o</h1>
-        <a href="infos.html">
-            <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion" />
-          </a>
-    </header>
-    <main>
-        <h1>Vos Disponibilités</h1>
-        <section>
-            <div id="head_periodes">
-                <h2>Période</h2>
-                <select name="periode">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
-                <select name="annee">
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                    <option value="2030">2030</option>
-                    <option value="2031">2031</option>
-                    <option value="2032">2032</option>
-                </select>
-            </div>
-            
-            <article>
-                <div id="periodes">
-                    <ul>
-                        <li>
-                            <select name="jours_semaine">
-                                <option value="lundi">Lundi</option>
-                                <option value="mardi" selected>Mardi</option>
-                                <option value="mercredi">Mercredi</option>
-                                <option value="jeudi">Jeudi</option>
-                                <option value="vendredi">Vendredi</option>
-                                <option value="samedi">Samedi</option>
-                            </select>
-                        </li>
-                        <li>de</li>
-                        <li>
-                            <select name="heure_debut_periode">
-                                <option value="8" selected>8h</option>
-                                <option value="9">9h</option>
-                                <option value="10">10h</option>
-                                <option value="11">11h</option>
-                                <option value="12">12h</option>
-                                <option value="13">13h</option>
-                                <option value="14">14h</option>
-                                <option value="15">15h</option>
-                                <option value="16">16h</option>
-                                <option value="17">17h</option>
-                                <option value="18">18h</option>
-                            </select>
-                        </li>
-                        <li>à</li>
-                        <li>
-                            <select name="heure_fin_periode">
-                                <option value="8">8h</option>
-                                <option value="9">9h</option>
-                                <option value="10">10h</option>
-                                <option value="11">11h</option>
-                                <option value="12" selected>12h</option>
-                                <option value="13">13h</option>
-                                <option value="14">14h</option>
-                                <option value="15">15h</option>
-                                <option value="16">16h</option>
-                                <option value="17">17h</option>
-                                <option value="18">18h</option>
-                            </select>
-                        </li>
-                        <li>
-                            <button id="BP0" onclick="supprimerDispo('BP0')">Supprimer</button>
-                        </li>
-                    </ul>
-                </div>
-                <input type="button" value="Ajouter" onclick="ajouterDispoPeriode()">
-            </article>
-        </section>
-        <section>
-            <h2>Dates spécifiques</h2>
-            <article>
-                <div id="dates_spe">
-                    <ul>
-                        <li>
-                            <input type="date" value="2022-11-08">
-                        </li>
-                        <li>de</li>
-                        <li>
-                            <select name="heure_debut_date_spe">
-                                <option value="8" selected>8h</option>
-                                <option value="9">9h</option>
-                                <option value="10">10h</option>
-                                <option value="11">11h</option>
-                                <option value="12">12h</option>
-                                <option value="13">13h</option>
-                                <option value="14">14h</option>
-                                <option value="15">15h</option>
-                                <option value="16">16h</option>
-                                <option value="17">17h</option>
-                                <option value="18">18h</option>
-                            </select>
-                        </li>
-                        <li>à</li>
-                        <li>
-                            <select name="heure_fin_date_spe">
-                                <option value="8" selected>8h</option>
-                                <option value="9">9h</option>
-                                <option value="10">10h</option>
-                                <option value="11">11h</option>
-                                <option value="12">12h</option>
-                                <option value="13">13h</option>
-                                <option value="14">14h</option>
-                                <option value="15">15h</option>
-                                <option value="16">16h</option>
-                                <option value="17">17h</option>
-                                <option value="18">18h</option>
-                            </select>
-                        </li>
-                        <li>
-                            <button id="BD0" onclick="supprimerDispo('BD0')">Supprimer</button>
-                        </li>
-                    </ul>
-                </div>
-                <input type="button" value="Ajouter" onclick="ajouterDispoDate()">
-            </article>
-        </section>
-        <input type="button" value="Enregistrer" onclick="verifier_valeur()">
-    </main>
-    <footer>
-        <p>
-            Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés
-        </p>
-    </footer>
-</body>
+{% block content %}
+<h1>Vos Disponibilités</h1>
+<section>
+    <div id="head_periodes">
+        <h2>Période</h2>
+        <select name="periode">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
+        <select name="annee">
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+            <option value="2031">2031</option>
+            <option value="2032">2032</option>
+        </select>
+    </div>
+
+    <article>
+        <div id="periodes">
+            <ul>
+                <li>
+                    <select name="jours_semaine">
+                        <option value="lundi">Lundi</option>
+                        <option value="mardi" selected>Mardi</option>
+                        <option value="mercredi">Mercredi</option>
+                        <option value="jeudi">Jeudi</option>
+                        <option value="vendredi">Vendredi</option>
+                        <option value="samedi">Samedi</option>
+                    </select>
+                </li>
+                <li>de</li>
+                <li>
+                    <select name="heure_debut_periode">
+                        <option value="8" selected>8h</option>
+                        <option value="9">9h</option>
+                        <option value="10">10h</option>
+                        <option value="11">11h</option>
+                        <option value="12">12h</option>
+                        <option value="13">13h</option>
+                        <option value="14">14h</option>
+                        <option value="15">15h</option>
+                        <option value="16">16h</option>
+                        <option value="17">17h</option>
+                        <option value="18">18h</option>
+                    </select>
+                </li>
+                <li>à</li>
+                <li>
+                    <select name="heure_fin_periode">
+                        <option value="8">8h</option>
+                        <option value="9">9h</option>
+                        <option value="10">10h</option>
+                        <option value="11">11h</option>
+                        <option value="12" selected>12h</option>
+                        <option value="13">13h</option>
+                        <option value="14">14h</option>
+                        <option value="15">15h</option>
+                        <option value="16">16h</option>
+                        <option value="17">17h</option>
+                        <option value="18">18h</option>
+                    </select>
+                </li>
+                <li>
+                    <button id="BP0" onclick="supprimerDispo('BP0')">Supprimer</button>
+                </li>
+            </ul>
+        </div>
+        <input type="button" value="Ajouter" onclick="ajouterDispoPeriode()">
+    </article>
+</section>
+<section>
+    <h2>Dates spécifiques</h2>
+    <article>
+        <div id="dates_spe">
+            <ul>
+                <li>
+                    <input type="date" value="2022-11-08">
+                </li>
+                <li>de</li>
+                <li>
+                    <select name="heure_debut_date_spe">
+                        <option value="8" selected>8h</option>
+                        <option value="9">9h</option>
+                        <option value="10">10h</option>
+                        <option value="11">11h</option>
+                        <option value="12">12h</option>
+                        <option value="13">13h</option>
+                        <option value="14">14h</option>
+                        <option value="15">15h</option>
+                        <option value="16">16h</option>
+                        <option value="17">17h</option>
+                        <option value="18">18h</option>
+                    </select>
+                </li>
+                <li>à</li>
+                <li>
+                    <select name="heure_fin_date_spe">
+                        <option value="8" selected>8h</option>
+                        <option value="9">9h</option>
+                        <option value="10">10h</option>
+                        <option value="11">11h</option>
+                        <option value="12">12h</option>
+                        <option value="13">13h</option>
+                        <option value="14">14h</option>
+                        <option value="15">15h</option>
+                        <option value="16">16h</option>
+                        <option value="17">17h</option>
+                        <option value="18">18h</option>
+                    </select>
+                </li>
+                <li>
+                    <button id="BD0" onclick="supprimerDispo('BD0')">Supprimer</button>
+                </li>
+            </ul>
+        </div>
+        <input type="button" value="Ajouter" onclick="ajouterDispoDate()">
+    </article>
+</section>
+<input type="button" value="Enregistrer" onclick="verifier_valeur()">
+{% endblock %}
 <style>
     ul {
         display: flex;
         background: linear-gradient(#e1dae6, #50ccc2);
     }
+
     li {
         margin: 2%;
     }
+
     #head_periodes {
         display: flex;
         text-align: center;
@@ -176,6 +147,7 @@
         margin-right: 41%;
         align-items: center;
     }
+
     section {
         border: solid 1px #e1dae6;
         margin: 3%;
@@ -183,4 +155,3 @@
         padding-right: 1%;
     }
 </style>
-</html>
