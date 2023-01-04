@@ -1,36 +1,22 @@
-<!DOCTYPE html>
-<html lang="'fr">
-
-<head>
-    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
-    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-    <title>VACAT'O</title>
-    <link href="{{ url_for('static', filename='CSS/generalCSS.css') }}" rel="stylesheet">
-</head>
-
-<body>
-    <header>
-        <h1>Vacat'o</h1>
-    </header>
-    <main>
+{% extends "base.html" %}
+{% block styles %}
+{{ super() }}
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+{% block contents %}
         <article>
             <h1>
                 Environement numérique de gestion de vacataires
             </h1>
         </article>
         <img src="{{ url_for('static', filename='IMG/vacato_logo.png')}}" alt="logo_vacato">
+        {% if not current_user.is_authenticated %}
         <article>
-            <a href="login.html">
+            <a href="/login/">
                 <input type="button" value="Se connecter"/>
             </a>
+        {% endif %}
         </article>
-    </main>
-    <footer>
-        <p>
-            Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés
-        </p>
-    </footer>
-</body>
-
-</html>
+{% endblock %}

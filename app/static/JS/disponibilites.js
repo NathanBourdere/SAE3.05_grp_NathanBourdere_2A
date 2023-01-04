@@ -1,16 +1,18 @@
+
+
 function supprimerDispo(idBouton) {
     let div;
     let ulBouton;
 
     if (window.confirm("Êtes-vous sûr ?")) {
-        if (idBouton.slice(0,2) === "BP") {
+        if (idBouton.slice(0, 2) === "BP") {
             div = document.getElementById("periodes");
-        }else{
+        } else {
             div = document.getElementById("dates_spe");
         }
     }
     for (let enfant of div.children) {
-        if (enfant.children[enfant.children.length-1].children[0].id === idBouton) {
+        if (enfant.children[enfant.children.length - 1].children[0].id === idBouton) {
             ulBouton = enfant;
             break;
         }
@@ -18,22 +20,24 @@ function supprimerDispo(idBouton) {
     ulBouton.remove();
 }
 
-function ajouterDispoPeriode() { 
+function ajouterDispoPeriode() {
     const periodes = document.getElementById("periodes");
     const ul = document.createElement("ul");
     let idBoutonDernierUL;
 
     if (periodes.children.length > 0) {
-        const dernierUL = periodes.children[periodes.children.length-1];
-        const boutonDernierUL = dernierUL.children[dernierUL.children.length-1].children[0];
+        const dernierUL = periodes.children[periodes.children.length - 1];
+        const boutonDernierUL = dernierUL.children[dernierUL.children.length - 1].children[0];
         idBoutonDernierUL = boutonDernierUL.id;
-    }else {
+    } else {
         idBoutonDernierUL = "BP0";
     }
-
-    ul.innerHTML = `<li><select name="jour_semaine"><option value="">Jour de la semaine</option><option value="lundi">Lundi</option><option value="mardi">Mardi</option><option value="mercredi">Mercredi</option><option value="jeudi">Jeudi</option><option value="vendredi">Vendredi</option><option value="samedi">Samedi</option></select></li><li>de</li><li><select name="heure_debut"><option value="">Heure de début</option><option value="8">8h</option><option value="9">9h</option><option value="10">10h</option><option value="11">11h</option><option value="12">12h</option><option value="13">13h</option><option value="14">14h</option><option value="15">15h</option><option value="16">16h</option><option value="17">17h</option><option value="18">18h</option></select></li><li>à</li><li><select name="heure_fin"><option value="">Heure de fin</option><option value="8">8h</option><option value="9">9h</option><option value="10">10h</option><option value="11">11h</option><option value="12">12h</option><option value="13">13h</option><option value="14">14h</option><option value="15">15h</option><option value="16">16h</option><option value="17">17h</option><option value="18">18h</option></select></li><li><button id="BP${parseInt(idBoutonDernierUL.slice(-1))+1}" onclick="supprimerDispo('BP${parseInt(idBoutonDernierUL.slice(-1))+1}')">Supprimer</button></li>`
+    numberId = parseInt(idBoutonDernierUL.substring(2)) + 1;
+    listeJours = document.getElementById("periodes").firstElementChild.children;
+    renduListeString = `<li><select name="jours_semaine` + numberId + `">` + listeJours[0].firstElementChild.innerHTML + `</select></li> <li>de</li> <li> <select name="heure_debut_periode` + numberId + `">` + listeJours[2].firstElementChild.innerHTML + `</select></li> <li>à</li> <li> <select name="heure_fin_periode` + numberId + `">` + listeJours[4].firstElementChild.innerHTML + `</select></li><li><button id="BP${parseInt(idBoutonDernierUL.slice(-1)) + 1}" onclick="supprimerDispo('BP${parseInt(idBoutonDernierUL.slice(-1)) + 1}')">Supprimer</button></li>`
+    ul.innerHTML = renduListeString
     periodes.appendChild(ul);
-    
+
 }
 
 function ajouterDispoDate() {
@@ -42,14 +46,16 @@ function ajouterDispoDate() {
     let idBoutonDernierUL;
 
     if (datesSpe.children.length !== 0) {
-        const dernierUL = datesSpe.children[datesSpe.children.length-1];
-        const boutonDernierUL = dernierUL.children[dernierUL.children.length-1].children[0];
+        const dernierUL = datesSpe.children[datesSpe.children.length - 1];
+        const boutonDernierUL = dernierUL.children[dernierUL.children.length - 1].children[0];
         idBoutonDernierUL = boutonDernierUL.id;
-    }else{
+    } else {
         idBoutonDernierUL = "BD0";
     }
-
-    ul.innerHTML = `<li><input type="date"></li><li>de</li><li><select name="heure_debut"><option value="">Heure de début</option><option value="8">8h</option><option value="9">9h</option><option value="10">10h</option><option value="11">11h</option><option value="12">12h</option><option value="13">13h</option><option value="14">14h</option><option value="15">15h</option><option value="16">16h</option><option value="17">17h</option><option value="18">18h</option></select></li><li>à</li><li><select name="heure_fin"><option value="">Heure de fin</option><option value="8">8h</option><option value="9">9h</option><option value="10">10h</option><option value="11">11h</option><option value="12">12h</option><option value="13">13h</option><option value="14">14h</option><option value="15">15h</option><option value="16">16h</option><option value="17">17h</option><option value="18">18h</option></select></li><li><button id="BD${parseInt(idBoutonDernierUL.slice(-1))+1}" onclick="supprimerDispo('BD${parseInt(idBoutonDernierUL.slice(-1))+1}')">Supprimer</button></li>`
+    numberId = parseInt(idBoutonDernierUL.substring(2)) + 1;
+    listeHeures = document.getElementById("dates_spe").firstElementChild.children[2].children[0];
+    renduStr = `<li><input type="date" name="date_spe` + numberId + `"></li><li>de</li><li><select name="heure_debut_date_spe` + numberId + `">` + listeHeures.innerHTML + `</select></li><li>de</li><li><select name="heure_fin_date_spe` + numberId + `">` + listeHeures.innerHTML + `</select></li><li><button id="BD${parseInt(idBoutonDernierUL.slice(-1)) + 1}" onclick="supprimerDispo('BD${parseInt(idBoutonDernierUL.slice(-1)) + 1}')">Supprimer</button></li>`
+    ul.innerHTML = renduStr
     datesSpe.appendChild(ul);
 }
 
@@ -58,11 +64,11 @@ function verifierDates(date) {
     let res = true;
     const dateAujourdhui = new Date();
 
-    if (dateAujourdhui.getFullYear()>date.getFullYear()) {
+    if (dateAujourdhui.getFullYear() > date.getFullYear()) {
         res = false;
-    }else if (dateAujourdhui.getFullYear() === date.getFullYear() && dateAujourdhui.getMonth()+1 > date.getMonth()+1) {
+    } else if (dateAujourdhui.getFullYear() === date.getFullYear() && dateAujourdhui.getMonth() + 1 > date.getMonth() + 1) {
         res = false;
-    }else if (dateAujourdhui.getMonth() === date.getMonth() && dateAujourdhui.getDate() > date.getDate()) {
+    } else if (dateAujourdhui.getMonth() === date.getMonth() && dateAujourdhui.getDate() > date.getDate()) {
         res = false;
     }
     return res;
@@ -80,7 +86,7 @@ function verifier_valeur() {
         const ul = periodes.children[i]; // récupère l'élément ul
         for (let j = 0; j < ul.children.length; j++) {
             const li = ul.children[j]; // récupère l'élément li dans l'élément ul
-            if (li.children.length>0){
+            if (li.children.length > 0) {
                 for (let k = 0; k < li.children.length; k++) {
                     const balise = li.children[k];  // récupère l'élément dans l'élément li 
                     // on vérifie que l'élément est un select
@@ -110,9 +116,9 @@ function verifier_valeur() {
         const ul = dates_spe.children[i];
         for (let j = 0; j < ul.children.length; j++) {
             const li = ul.children[j];
-            if (li.children.length>0){
+            if (li.children.length > 0) {
                 for (let k = 0; k < li.children.length; k++) {
-                    const balise = li.children[k]; 
+                    const balise = li.children[k];
                     if (balise.tagName == "SELECT") {
                         if (balise.value == "") {
                             verif = true;
