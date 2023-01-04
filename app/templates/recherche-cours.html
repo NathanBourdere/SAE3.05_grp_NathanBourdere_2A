@@ -1,37 +1,21 @@
-<!DOCTYPE html>
-<html lang="'fr">
-
-<head>
-  <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" />
-  <title>VACAT'O</title>
-  <link href="{{ url_for('static', filename='CSS/generalCSS.css')}}" rel="stylesheet" />
-  <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet" />
-</head>
-
-<body>
-  <header>
-    <h1>Vacat'o</h1>
-    <a href="infos.html">
-      <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion" />
-    </a>
-  </header>
-  <main>
+{% extends "base.html" %}
+{% block styles_spe %}
+{{ super() }}
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+{% block contents %}
     <h1>Rechercher cours</h1>
     <section id="table">
       <article>
         <form method="POST">
           <input type="text" name="search" placeholder="{{placeHolder}}" />
           <select name="infos">
-            <option value="{{filtre[0]}}">{{filtre[0]}}</option>
-            <option value="{{filtre[1]}}">{{filtre[1]}}</option>
-            <option value="{{filtre[2]}}">{{filtre[2]}}</option>
-            <option value="{{filtre[3]}}">{{filtre[3]}}</option>
-            <option value="{{filtre[4]}}">{{filtre[4]}}</option>
-            <option value="{{filtre[5]}}">{{filtre[5]}}</option>
-            <option value="{{filtre[6]}}">{{filtre[6]}}</option>
-            <option value="{{filtre[7]}}">{{filtre[7]}}</option>
+            {{% for f in filtre %}}
+            <option value="{{f}}">{{f}}</option>
           </select>
+          {% endfor %}
           <input type="submit">
         </form>
       </article>
@@ -62,11 +46,4 @@
         </table>
       </article>
     </section>
-  </main>
-  <footer>
-    <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
-  </footer>
-</body>
-<script src="{{ url_for('static', filename='JS/jquery-3.6.1.min.js')}}"></script>
-
-</html>
+{% endblock %}
