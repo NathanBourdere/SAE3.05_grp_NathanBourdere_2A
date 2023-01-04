@@ -1,13 +1,10 @@
 from datetime import date, datetime
-import time
-from app.formulaires import InscriptionVacataire, NewAccount
+from app.formulaires import InscriptionVacataire
 from .app import db,app
-from flask import render_template,url_for,redirect,request,send_from_directory
+from flask import render_template,url_for,redirect,request
 from .models import *
-from hashlib import sha256
 import csv
 from flask_login import login_user, current_user, logout_user,login_required
-import os
 
 
 # Initialisation des routes
