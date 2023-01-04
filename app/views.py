@@ -81,7 +81,7 @@ def new_vaca():
     if request.method == "POST":
         id = max_id_actuel()
         if form.validate_on_submit():
-            vac = Vacataire('V' + id,'Spontanée','0',form.entreprise.data, form.nom_v.data ,form.prenom_v.data ,form.num_tel_v.data,form.ddn_v.data,form.mail_v.data,form.mdp_v.data)
+            vac = Vacataire('V' + id,'Spontanée','0',form.entreprise.data, form.nom_v.data ,form.prenom_v.data ,form.num_tel_v.data,form.ddn_v.data,form.mail_v.data,encode_mdp(form.mdp_v.data))
             db.session.add(vac)
             db.session.commit()
             return url_for('menu_admin')
@@ -303,7 +303,7 @@ def log():
         if est_vacataire(request.form['idUser']):
             try:
                 log = Vacataire.query.filter_by(id_vacataire=request.form['idUser']).first()
-                if request.form['password'] == log.mdp_v:
+                if encode_mdp(request.form['password']) == log.mdp_v:
                     login_user(log)
                     return redirect(url_for('menu_vacataire'))
             except:
@@ -311,7 +311,7 @@ def log():
         else:
             try:
                 adm = PersonnelAdministratif.query.filter_by(id_pers_admin=request.form['idUser']).first()
-                if request.form['password'] == adm.mdp_pa:
+                if encode_mdp(request.form['password']) == adm.mdp_pa:
                     login_user(adm)
                     return redirect(url_for('menu_admin'))
             except:
