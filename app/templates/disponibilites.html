@@ -1,4 +1,33 @@
 {% extends "base.html" %}
+{% block style %}
+{{ super() }}
+<style>
+    ul {
+        display: flex;
+        background: linear-gradient(#e1dae6, #50ccc2);
+    }
+
+    li {
+        margin: 2%;
+    }
+
+    #head_periodes {
+        display: flex;
+        text-align: center;
+        justify-content: space-between;
+        margin-left: 41%;
+        margin-right: 41%;
+        align-items: center;
+    }
+
+    section {
+        border: solid 1px #e1dae6;
+        margin: 3%;
+        padding-left: 1%;
+        padding-right: 1%;
+    }
+</style>
+{% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='JS/disponibilites.js')}}"></script>
 {% endblock %}
@@ -131,29 +160,3 @@
 </section>
 <input type="button" value="Enregistrer" onclick="verifier_valeur()">
 {% endblock %}
-<style>
-    ul {
-        display: flex;
-        background: linear-gradient(#e1dae6, #50ccc2);
-    }
-
-    li {
-        margin: 2%;
-    }
-
-    #head_periodes {
-        display: flex;
-        text-align: center;
-        justify-content: space-between;
-        margin-left: 41%;
-        margin-right: 41%;
-        align-items: center;
-    }
-
-    section {
-        border: solid 1px #e1dae6;
-        margin: 3%;
-        padding-left: 1%;
-        padding-right: 1%;
-    }
-</style>
