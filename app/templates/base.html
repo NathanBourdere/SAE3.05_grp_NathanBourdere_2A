@@ -8,9 +8,18 @@
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     <link href="{{ url_for('static', filename='CSS/generalCSS.css') }}" rel="stylesheet">
     {% endblock %}
+    {% block styles_spe %}
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link href="{{ url_for('static', filename='CSS/generalCSS.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet"/>
+    {% endblock %}
     <title>VACAT'O</title>
     {% endblock %}
 </head>
+{% block scripts %}
+ <script src="{{ url_for('static', filename='JS/verifAge.js')}}"></script>
+{% endblock %}
   <body>
     <header>
       <h1>Vacat'o</h1>
