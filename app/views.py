@@ -245,7 +245,7 @@ def menu_vacataire():
 @app.route("/logout/")
 def logout():
     logout_user()
-    return redirect(url_for('main'))
+    return redirect(url_for('login'))
     
 @app.route('/login/', methods= ['GET', 'POST'])
 def log():
@@ -271,7 +271,7 @@ def log():
 @app.route('/EDT/')
 @login_required
 def load_edt():
-    return render_template("EDT.html",current_user.prenom_v + " " + current_user.nom_v)
+    return render_template("EDT.html")
 
 @login_manager.user_loader
 def load_user(utilisateur_id):
