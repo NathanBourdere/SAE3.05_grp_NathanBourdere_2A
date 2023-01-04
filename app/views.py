@@ -23,7 +23,7 @@ def matiere():
 def disponibilites():
     return render_template('disponibilites.html')
 
-@app.route('/nouveau_vacataire.html', methods= ['GET', 'POST'])
+@app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
 def new_vaca():
     form = InscriptionVacataire(csrf_enabled=False)
     if form.validate_on_submit():
