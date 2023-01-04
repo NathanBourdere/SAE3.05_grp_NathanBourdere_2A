@@ -1,19 +1,5 @@
 <!DOCTYPE html>
 <html lang="'fr">
-  <head>
-    <link rel="icon" href="{{ url_for('static',filename='IMG/vacato_logo.png')}}" sizes="192x192">
-    <link
-      href="https://fonts.googleapis.com/css?family=Pacifico"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Oswald"
-      rel="stylesheet"
-    />
-    <title>VACAT'O</title>
-    <link href="generalCSS.css" rel="stylesheet"/>
-  </head>
-
   <body>
     <header>
       <h1>Vacat'o</h1>
@@ -195,52 +181,92 @@
         />
         <input type="button" value="Renseigner les matières" />
         <article>
-          <input type="submit" id="submit" />
+          <ol>
+            {% for item in form %}
+            <li>
+              {{ item.label }}
+              {{ item }}
+            </li>
+            {% endfor %}
+          </ol>
         </article>
-      </form>
-    </main>
-    <footer>
-      <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
-    </footer>
-  </body>
-  <script src="jquery-3.6.1.min.js"></script>
-  <script src="inscript_vaca.js"></script>
-  <style>
-    input[type="submit"] {
-      display: none;
-    }
-    #dispos {
-      display: none;
-    }
-    ul {
-        display: flex;
-    }
-    li {
-        margin: 2%;
-    }
-    article, ul {
-        border: solid 1px;
-    }
-    @keyframes insert {
-      0% {
-        transform: translate3d(-150px, 0, 0);
-        opacity: 0;
-      }
-      100% {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-      }
+        <input type="submit" id="submit">
+      </section>
+    </form>
+  </main>
+  <footer>
+    <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
+  </footer>
+</body>
+<script src="{{ url_for('static',filename='JS/jquery-3.6.1.min.js')}}"></script>
+<style>
+  input[type="submit"] {
+    display: none;
+  }
+
+  #dispos {
+    display: none;
+  }
+
+  ul {
+    display: flex;
+  }
+
+  li {
+    margin: 2%;
+  }
+
+  article,
+  ul {
+    border: solid 1px;
+  }
+
+  @keyframes insert {
+    0% {
+      transform: translate3d(-150px, 0, 0);
+      opacity: 0;
     }
 
-    @keyframes remove {
-      0% {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-      }
-      100% {
-        transform: translate3d(-150px, 0, 0);
-        opacity: 0;
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes remove {
+    0% {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translate3d(-150px, 0, 0);
+      opacity: 0;
+    }
+  }
+</style>
+<script>
+  $("body").on("change", function () {
+    verif = true;
+    let lst = $("article input");
+    console.log(lst)
+    for (i = 0; i < lst.length; i++) {
+      if (lst.get(i).type != "submit") {
+        console.log(lst.get(i).id)
+        if (lst.get(i).id != "mdp") {
+          if (lst.get(i).value == "") {
+            verif = false;
+          }
+        }
       }
     }
-  </style>
+    console.log(verif)
+    if (verif) {
+      $("#submit").css("display", "flex");
+    } else {
+      $("#submit").css("display", "none");
+    }
+  });
+</script>
+
 </html>

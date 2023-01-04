@@ -12,7 +12,7 @@ def mkpath(p):
     return os.path.normpath(os.path.join(os.path.dirname(__file__),p))
 
 # Configuration de l'application Flask et la base de données
-app=Flask(__name__,template_folder='app/templates')
+app=Flask(__name__)
 app.config['SECRET_KEY'] = "IUTO"
 app.app_context().push()
 login_manager = LoginManager()
