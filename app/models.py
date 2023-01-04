@@ -207,7 +207,7 @@ class Disponibilites(db.Model):
     heure_modif_dispo = db.Column(db.String(100))
     id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),nullable=False,unique=True)
 
-    def __init__(self,idd,j,s,p,hd,hf,idv,dmd,hmd):
+    def __init__(self,idd,idv,j,s,p,hd,hf,idv,dmd,hmd):
         self.id_dispo = idd
         self.jour_dispo = j
         self.semaine_dispo = s
