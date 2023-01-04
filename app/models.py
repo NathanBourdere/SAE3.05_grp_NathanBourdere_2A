@@ -64,7 +64,7 @@ class PersonnelAdministratif(UserMixin,db.Model):
     mail_pa = db.Column(db.String(100),unique=True)
     mdp_pa = db.Column(db.String(100))
 
-    gerant_dossier = db.relationship("GererDossier", back_populates = "personnelAdmin")
+    gerant_dossier = db.relationship("GererDossier", back_populates = "personnel_admin")
 
     def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp):
         self.id_pers_admin = idpa
@@ -85,7 +85,7 @@ class PersonnelAdministratif(UserMixin,db.Model):
 class Affectable(db.Model):
     tablename__ = "Affectable"
 
-    id_acataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),primary_key=True)
+    id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),primary_key=True)
     id_cours = db.Column(db.String(100),db.ForeignKey("Cours.id_cours"),primary_key=True)
     type_cours = db.Column(db.String(100),db.ForeignKey("Cours.type_cours"),primary_key=True)
     date_modif_matiere = db.Column(db.String(100))

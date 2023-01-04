@@ -126,7 +126,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Stat
                         if request.form['search']!="":
                             liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
                         else:
-                            liste_vaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(Vacataire.numTelV).all()
+                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(Vacataire.numTelV).all()
                     lstTri=['Telephone','Prenom','Nom','Status','Ne pas trier']
                     if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
                         filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
@@ -147,7 +147,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Stat
                             liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
                     else:
                         if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
+                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                         else:
                             liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(GererDossier.etat_dossier).all()
                     lstTri=['Status','Telephone','Prenom','Nom','Ne pas trier']
@@ -210,7 +210,7 @@ def check_cours():
                     if request.form['search']!="":
                         listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).filter(Cours.type_cours==request.form['search']).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Cours.type_cours).all()
                     else:
-                        listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nomV,Vacataire.prenomV,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Cours.TypeCours).all()
+                        listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Cours.TypeCours).all()
                 case "Date":
                     plh="Entrez une Date..."
                     filtre=['Date','Domaine','Cours','Prenom','Nom','Classe','Salle','Ne pas filtrer']
@@ -244,7 +244,7 @@ def edit_dossier():
 @app.route('/menu_vacataire.html')
 @login_required
 def menu_vacataire():
-    return render_template('menu_vacataire.html',nom_prenom=current_user.prenomV + " " + current_user.nomV)
+    return render_template('menu_vacataire.html',nom_prenom=current_user.prenom_v + " " + current_user.nom_v)
 
 @app.route("/logout/")
 def logout():
@@ -254,10 +254,10 @@ def logout():
 @app.route('/login.html', methods= ['GET', 'POST'])
 def log():
     if request.method == "POST":
-        if estVacataire(request.form['idUser']):
+        if est_vacataire(request.form['idUser']):
             try:
                 log = Vacataire.query.filter_by(id_vacataire=request.form['idUser']).first()
-                if request.form['password'] == log.mdpV:
+                if request.form['password'] == log.mdp_v:
                     login_user(log)
                     return menu_vacataire()
             except:
@@ -284,6 +284,17 @@ def load_user(utilisateur_id):
     else:
         return PersonnelAdministratif.query.filter_by(id_pers_admin=utilisateur_id).first()
 
+def est_vacataire(user):
+    if type(user) == str:
+        if user[0] == 'V':
+            return True
+    else:
+        if user.get_id()[0] == 'V':
+            return True
+        
+    return False
+
+    
 def test_connection():
     """
         Insère les valeurs des CSV courants dans /data dans la base de données
@@ -298,7 +309,7 @@ def test_connection():
                         db.session.add(PersonnelAdministratif(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
                 case 1:
                     for ligne in file_reader:
-                        db.session.add(Vacataire(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7],ligne[8],ligne[9]))
+                        db.session.add(Vacataire(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7],ligne[8],ligne[9],ligne[10],ligne[11],ligne[12],ligne[13],ligne[14]))
                 case 2:
                     for ligne in file_reader:
                         db.session.add(GererDossier(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4]))
