@@ -66,11 +66,8 @@ def disponibilites():
                         i+=1
                     except Exception as a:
                         loop = False
-        print(periodes)
-        print(jours_spe)
         for item in range(2,len(periodes)):
             db.session.add(Disponibilites(maxIdDispo()+1,current_user.IDVacataire,periodes[item][0],periodes[1],periodes[0], periodes[item][1], periodes[item][2], date.today(),datetime.now().strftime("%H:%M:%S")))
-            print("uwu")
             db.session.commit()
         for item in jours_spe:
             db.session.add(Disponibilites(maxIdDispo()+1,current_user.IDVacataire,item[0],-1,-1, item[1], item[2],date.today(),datetime.now().strftime("%H:%M:%S")))
@@ -79,19 +76,17 @@ def disponibilites():
 
 @app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
 def new_vaca():
+    form = InscriptionVacataire()
     if request.method == "POST":
         id = max_id_actuel()
-        vac = Vacataire('V' + id,'Spontanée','0',request.form['nom'],request.form['prenom'],request.form['tel'],request.form['ddn'],request.form['email'],'177013')
-        for i in range(1,4):
-            les_cours = Cours.query.filter_by(nom_cours=request.form['Matiere'+str(i)]).all()
-            for cours in les_cours:
-                db.session.execute(Affectable.insert().values(id_vacataire='V' + id,id_cours=cours.id_cours,type_cours=cours.type_cours))
-                db.session.commit()
-        db.session.add(vac)
-        db.session.commit()
-        return url_for('menu_admin')
-    else:
-        return render_template('nouveau_vacataire.html', form = form)
+        if form.validate_on_submit():
+            vac = Vacataire('V' + id,'Spontanée','0',form.entreprise.data, form.nom_v.data ,form.prenom_v.data ,form.num_tel_v.data,form.ddn_v.data,form.mail_v.data,form.mdp_v.data)
+            db.session.add(vac)
+            db.session.commit()
+            return url_for('menu_admin')
+        else:
+            return render_template('nouveau_vacataire.html', form = form)
+    return render_template('nouveau_vacataire.html', form = form)
 
 
 @app.route('/menu_admin/')
@@ -119,14 +114,14 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Stat
                     text_place = "Chercher un nom..."
                     if request.form['filtre'] != "Filtrer les dossiers ↓":
                         if request.form['search']!="":
-                            listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.nomV.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
+                            liste_vaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.nomV.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                         else:
-                            listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
+                            liste_vaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                     else:
                         if request.form['search']!="":
-                            listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.nomV.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
+                            liste_vaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.nomV.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                         else:
-                            listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(Vacataire.nomV).all()
+                            liste_vaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(Vacataire.nomV).all()
                     lstTri=['Nom','Prenom','Telephone','Status','Ne pas trier']
                     if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
                         filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
@@ -219,7 +214,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Stat
                         filtre=["Incomplet","Complet","Distribué","Validé","Ne pas trier"]
                     elif request.form['filtre'] == 'Validé':
                         filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
-    return render_template('recherche-dossiers.html',vaca=liste_vaca,tri=lstTri,filtre=filtre,placeHold=textPlace)                    
+    return render_template('recherche-dossiers.html',vaca=liste_vaca,tri=lstTri,filtre=filtre,placeHold=text_place)                    
 
 @app.route('/recherche-cours/', methods=['GET','POST'])
 @login_required
@@ -295,6 +290,10 @@ def menu_vacataire():
 @app.route("/logout/")
 def logout():
     logout_user()
+    #on attends d'abord que l'utilisateur soit bien déconnecté avant de redirect
+    while True:
+        if not current_user.is_authenticated:
+            break
     return redirect(url_for('home'))
     
 @app.route('/login/', methods= ['GET', 'POST'])

@@ -13,10 +13,11 @@
         <form method="POST">
           <input type="text" name="search" placeholder="{{placeHolder}}" />
           <select name="infos">
-            {{% for f in filtre %}}
+            {% for f in filtre %}
             <option value="{{f}}">{{f}}</option>
+            {% endfor %}
           </select>
-          {% endfor %}
+          <br>
           <input type="submit">
         </form>
       </article>
