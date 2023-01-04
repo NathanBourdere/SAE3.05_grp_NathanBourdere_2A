@@ -199,19 +199,19 @@ class Disponibilites(db.Model):
 
     id_dispo = db.Column(db.String(100),primary_key=True)
     jour_dispo = db.Column(db.String(100))# lundi,mardi ... PAS DIMANCHE
-    semaine_dispo = db.Column(db.Integer) # 1,2 jusqu'à 52
+    semestre_dispo = db.Column(db.Integer) # 1,2 jusqu'à 52
     periode_dispo = db.Column(db.Integer) # 1 ou 2 ou 3 ou 4, il y a 2 périodes par semestre
     heure_dispo_debut = db.Column(db.String(100)) # "14:30"
     heure_dispo_fin = db.Column(db.String(100)) # idem
     date_modif_dispo = db.Column(db.String(100))
     heure_modif_dispo = db.Column(db.String(100))
-    id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),nullable=False,unique=True)
+    id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),nullable=False)
 
-    def __init__(self,idd,j,s,p,hd,hf,idv,dmd,hmd):
+    def __init__(self,idd,idv,j,pA,pS,hd,hf,dmd,hmd):
         self.id_dispo = idd
         self.jour_dispo = j
-        self.semaine_dispo = s
-        self.periode_dispo = p
+        self.semestre_dispo = pS
+        self.periode_dispo = pA
         self.heure_dispo_debut = hd
         self.heure_dispo_fin = hf
         self.id_vacataire = idv

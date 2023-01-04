@@ -29,14 +29,15 @@ def matiere():
             except Exception as e:
                 loop = False
         for mat in lstMat:
-            for typeMat in db.session.query(Cours.IDcours, Cours.TypeCours, Cours.nomCours).filter(Cours.nomCours == mat).group_by(Cours.nomCours, Cours.TypeCours).all():
+            for typeMat in db.session.query(Cours.id_cours, Cours.type_cours, Cours.nom_cours).filter(Cours.nom_cours == mat).group_by(Cours.nom_cours, Cours.type_cours).all():
                 try:
-                    db.session.add(Affectable(current_user.IDVacataire,typeMat[0],typeMat[1],date.today(),datetime.now().strftime("%H:%M:%S")))
+                    db.session.add(Affectable(current_user.id_vacataire,typeMat[0],typeMat[1],date.today(),datetime.now().strftime("%H:%M:%S")))
                     db.session.commit()
-                except:
+                except Exception as e:
+                    print(e)
                     print("Erreur d'insertion, le vacataire est déjà affectable a la matiere " + mat)
         return render_template('menu_vacataire.html')
-    lstMatiereDispo = db.session.query(Cours.nomCours).all()
+    lstMatiereDispo = db.session.query(Cours.nom_cours).all()
     setMatiere = set()
     for item in lstMatiereDispo:
         setMatiere.add(item[0])
@@ -67,10 +68,10 @@ def disponibilites():
                     except Exception as a:
                         loop = False
         for item in range(2,len(periodes)):
-            db.session.add(Disponibilites(maxIdDispo()+1,current_user.IDVacataire,periodes[item][0],periodes[1],periodes[0], periodes[item][1], periodes[item][2], date.today(),datetime.now().strftime("%H:%M:%S")))
+            db.session.add(Disponibilites(maxIdDispo()+1,current_user.id_vacataire,periodes[item][0],periodes[1],periodes[0], periodes[item][1], periodes[item][2], date.today(),datetime.now().strftime("%H:%M:%S")))
             db.session.commit()
         for item in jours_spe:
-            db.session.add(Disponibilites(maxIdDispo()+1,current_user.IDVacataire,item[0],-1,-1, item[1], item[2],date.today(),datetime.now().strftime("%H:%M:%S")))
+            db.session.add(Disponibilites(maxIdDispo()+1,current_user.id_vacataire,item[0],-1,-1, item[1], item[2],date.today(),datetime.now().strftime("%H:%M:%S")))
             db.session.commit()
     return render_template('disponibilites.html')
 
@@ -353,10 +354,10 @@ def maxIdActu():
     return str(IDMAX+1)
 
 def maxIdDispo():
-    x = db.session.query(Disponibilites.IDDISPO).first()
+    x = db.session.query(Disponibilites.id_dispo).all()
     if x == None:
         return 0
-    return x.IDDISPO
+    return len(x)
  
 def test_connection():
     """
