@@ -13,17 +13,17 @@ import os
 def home():
     return render_template('main.html')
 
-@app.route('/matiere.html')
+@app.route('/matieres/')
 @login_required
 def matiere():
     return render_template('matiere.html')
 
-@app.route('/disponibilites.html')
+@app.route('/disponibilites/')
 @login_required
 def disponibilites():
     return render_template('disponibilites.html')
 
-@app.route('/nouveau_vacataire.html', methods= ['GET', 'POST'])
+@app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
 def new_vaca():
     if request.method == "POST":
         id = max_id_actuel()
@@ -39,24 +39,20 @@ def new_vaca():
     else:
         return render_template('nouveau_vacataire.html', form = form)
 
-@app.route('/EDT.html')
-@login_required
-def EDT():
-    return render_template('EDT.html')
 
-@app.route('/menu_admin.html')
+@app.route('/menu_admin/')
 @login_required
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenom_pa + " " + current_user.nom_pa)
 
-@app.route('/profile.html')
+@app.route('/profile/')
 @login_required
 def profile():
     if est_vacataire(current_user):
         return render_template('profile.html',profile_nom=current_user.nom_v, profile_prenom=current_user.prenom_v, profile_email=current_user.mail_v, profile_tel=current_user.num_tel_v)
     return render_template('profile.html',profile_nom=current_user.nom_pa, profile_prenom=current_user.prenom_pa, profile_email=current_user.mail_pa, profile_tel=current_user.num_tel_pa)
 
-@app.route('/recherche-dossiers.html',methods=['GET', 'POST'])
+@app.route('/recherche-dossiers/',methods=['GET', 'POST'])
 @login_required
 def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Status'],filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]):
     liste_vaca = Vacataire.query.all()
@@ -175,7 +171,7 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Stat
                         filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
     return render_template('recherche-dossiers.html',vaca=liste_vaca,tri=lstTri,filtre=filtre,placeHold=textPlace)                    
 
-@app.route('/recherche-cours.html', methods=['GET','POST'])
+@app.route('/recherche-cours/', methods=['GET','POST'])
 @login_required
 def check_cours():
     filtre=['Filtrer les infos ↓','Nom','Prenom','Cours','Domaine','Date','Classe','Salle']
@@ -234,14 +230,14 @@ def check_cours():
                         listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.salle).all()
     return render_template('recherche-cours.html',cours=listeCours,filtre=filtre,placeHolder=plh)           
 
-@app.route('/dossier_vacataire.html',)
+@app.route('/dossier_vacataire/',)
 @login_required
 def edit_dossier():
     etat_dossier_user = db.session.query(GererDossier.etat_dossier).filter(current_user.id_vacataire==GererDossier.id_vacataire).join(Vacataire,Vacataire.id_vacataire==GererDossier.id_vacataire).first()
     date_fr_modif = db.session.query(GererDossier.date_modif,GererDossier.heure_modif).filter(current_user.id_vacataire==GererDossier.id_vacataire).join(Vacataire,Vacataire.id_vacataire==GererDossier.id_vacataire).first()
     return render_template('dossier_vacataire.html',etat_doc=etat_dossier_user,date_modif=date_fr_modif)
 
-@app.route('/menu_vacataire.html')
+@app.route('/menu_vacataire/')
 @login_required
 def menu_vacataire():
     return render_template('menu_vacataire.html',nom_prenom=current_user.prenom_v + " " + current_user.nom_v)
@@ -251,7 +247,7 @@ def logout():
     logout_user()
     return redirect(url_for('main'))
     
-@app.route('/login.html', methods= ['GET', 'POST'])
+@app.route('/login/', methods= ['GET', 'POST'])
 def log():
     if request.method == "POST":
         if est_vacataire(request.form['idUser']):
@@ -272,7 +268,7 @@ def log():
                 return render_template('login.html')
     return render_template('login.html')
 
-@app.route('/EDT.html')
+@app.route('/EDT/')
 @login_required
 def load_edt():
     return render_template("EDT.html",current_user.prenom_v + " " + current_user.nom_v)

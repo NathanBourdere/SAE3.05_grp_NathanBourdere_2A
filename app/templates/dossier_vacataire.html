@@ -20,7 +20,7 @@
   <body>
     <header>
       <h1>Vacat'o</h1>
-      <a href="infos.html">
+      <a href="/profile/">
         <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion" />
       </a>
     </header>
@@ -42,8 +42,8 @@
           <input class="doc" type="tel" name="telDoc" pattern=[\d]{10,12} required placeholder="0612345678">
           <label>Votre Entreprise</label>
           <input class="doc" type="Text" name="Entreprise" placeholder="Behaviour Interactive">
-          <a href="disponibilites.html"><input class="doc" type="Button" value="Renseignez vos disponibilités"></a>
-          <a href="matiere.html"><input class="doc" type="button" value="Renseignez vos matières"></a>
+          <a href="/disponibilites/"><input class="doc" type="Button" value="Renseignez vos disponibilités"></a>
+          <a href="/matieres/"><input class="doc" type="button" value="Renseignez vos matières"></a>
           <br>
           <p><input type="checkbox" id="dossier_blabla_legal" required/>En cochant cette case, vous consentez au traitement des données à caractère personnel fournies dans le
             présent formulaire afin d’être recruté comme vacataire enseignant par l’Université d’Orléans.
