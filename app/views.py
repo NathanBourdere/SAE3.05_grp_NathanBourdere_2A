@@ -245,7 +245,7 @@ def menu_vacataire():
 @app.route("/logout/")
 def logout():
     logout_user()
-    return redirect(url_for('main'))
+    return redirect(url_for('home'))
     
 @app.route('/login/', methods= ['GET', 'POST'])
 def log():
@@ -255,7 +255,7 @@ def log():
                 log = Vacataire.query.filter_by(id_vacataire=request.form['idUser']).first()
                 if request.form['password'] == log.mdp_v:
                     login_user(log)
-                    return menu_vacataire()
+                    return redirect(url_for('menu_vacataire'))
             except:
                 return render_template('login.html')
         else:
@@ -263,7 +263,7 @@ def log():
                 adm = PersonnelAdministratif.query.filter_by(id_pers_admin=request.form['idUser']).first()
                 if request.form['password'] == adm.mdp_pa:
                     login_user(adm)
-                    return menu_admin()
+                    return redirect(url_for('menu_admin'))
             except:
                 return render_template('login.html')
     return render_template('login.html')
@@ -271,7 +271,7 @@ def log():
 @app.route('/EDT/')
 @login_required
 def load_edt():
-    return render_template("EDT.html",current_user.prenom_v + " " + current_user.nom_v)
+    return render_template("EDT.html",nom_prenom = current_user.prenom_v + " " + current_user.nom_v)
 
 @login_manager.user_loader
 def load_user(utilisateur_id):
