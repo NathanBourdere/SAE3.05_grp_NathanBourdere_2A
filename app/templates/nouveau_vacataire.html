@@ -1,13 +1,80 @@
-<!DOCTYPE html>
-<html lang="'fr">
-  <body>
-    <header>
-      <h1>Vacat'o</h1>
-      <a href="/profile/">
-        <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de connexion" />
-      </a>
-    </header>
-    <main>
+{% extends "base.html" %}
+{% block styles_spe %}
+{{ super() }}
+    <style>
+      input[type="submit"] {
+        display: none;
+      }
+    
+      #dispos {
+        display: none;
+      }
+    
+      ul {
+        display: flex;
+      }
+    
+      li {
+        margin: 2%;
+      }
+    
+      article,
+      ul {
+        border: solid 1px;
+      }
+    
+      @keyframes insert {
+        0% {
+          transform: translate3d(-150px, 0, 0);
+          opacity: 0;
+        }
+    
+        100% {
+          transform: translate3d(0, 0, 0);
+          opacity: 1;
+        }
+      }
+    
+      @keyframes remove {
+        0% {
+          transform: translate3d(0, 0, 0);
+          opacity: 1;
+        }
+    
+        100% {
+          transform: translate3d(-150px, 0, 0);
+          opacity: 0;
+        }
+      }
+    </style>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+  $("body").on("change", function () {
+    verif = true;
+    let lst = $("article input");
+    console.log(lst)
+    for (i = 0; i < lst.length; i++) {
+      if (lst.get(i).type != "submit") {
+        console.log(lst.get(i).id)
+        if (lst.get(i).id != "mdp") {
+          if (lst.get(i).value == "") {
+            verif = false;
+          }
+        }
+      }
+    }
+    console.log(verif)
+    if (verif) {
+      $("#submit").css("display", "flex");
+    } else {
+      $("#submit").css("display", "none");
+    }
+  });
+</script>
+{% endblock %}
+{% block contents %}
       <h1>Inscrire un nouveau vacataire</h1>
       <form method="POST">
         <section>
@@ -193,80 +260,4 @@
         <input type="submit" id="submit">
       </section>
     </form>
-  </main>
-  <footer>
-    <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
-  </footer>
-</body>
-<script src="{{ url_for('static',filename='JS/jquery-3.6.1.min.js')}}"></script>
-<style>
-  input[type="submit"] {
-    display: none;
-  }
-
-  #dispos {
-    display: none;
-  }
-
-  ul {
-    display: flex;
-  }
-
-  li {
-    margin: 2%;
-  }
-
-  article,
-  ul {
-    border: solid 1px;
-  }
-
-  @keyframes insert {
-    0% {
-      transform: translate3d(-150px, 0, 0);
-      opacity: 0;
-    }
-
-    100% {
-      transform: translate3d(0, 0, 0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes remove {
-    0% {
-      transform: translate3d(0, 0, 0);
-      opacity: 1;
-    }
-
-    100% {
-      transform: translate3d(-150px, 0, 0);
-      opacity: 0;
-    }
-  }
-</style>
-<script>
-  $("body").on("change", function () {
-    verif = true;
-    let lst = $("article input");
-    console.log(lst)
-    for (i = 0; i < lst.length; i++) {
-      if (lst.get(i).type != "submit") {
-        console.log(lst.get(i).id)
-        if (lst.get(i).id != "mdp") {
-          if (lst.get(i).value == "") {
-            verif = false;
-          }
-        }
-      }
-    }
-    console.log(verif)
-    if (verif) {
-      $("#submit").css("display", "flex");
-    } else {
-      $("#submit").css("display", "none");
-    }
-  });
-</script>
-
-</html>
+{% endblock %}

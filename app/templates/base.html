@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="'fr">
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    {% block styles %}
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link href="{{ url_for('static', filename='CSS/generalCSS.css') }}" rel="stylesheet">
+    {% endblock %}
+    {% block styles_spe %}
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link href="{{ url_for('static', filename='CSS/generalCSS.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet"/>
+    {% endblock %}
+    <title>VACAT'O</title>
+    {% endblock %}
+</head>
+{% block scripts %}
+{% endblock %}
+  <body>
+    <header>
+        {% if current_user.is_authenticated %}
+        <a href ="/logout/">
+            <img src="{{ url_for('static', filename='IMG/deconnexion.png')}}" alt="Icone de déconnexion" />
+        </a>
+        {% endblock %}
+      <h1>Vacat'o</h1>
+      {% if current_user.is_authenticated %}
+      <a href="profile.html">
+        <img src="{{ url_for('static', filename='IMG/person.png')}}" alt="Icone de profile" />
+      </a>
+      {% endif %}
+    </header>
+    <main>
+    {% block contents %}
+    {% endblock %}
+    </main>
+ <footer>
+      <p>Vacat'O Project, Copyright IUT’O 2022 | Tous droits réservés</p>
+    </footer>
+  </body>
+</html>
