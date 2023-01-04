@@ -22,15 +22,15 @@
 {% block contents %}
   <h1>Vos matières</h1>
         <section>
+            <form method="POST">
             <article>
                 <div id="matieres">
                     <ul>
                         <li>
-                            <select name="listes_matieres">
-                                <option value="Maths">Maths</option>
-                                <option value="Français">Français</option>
-                                <option value="Anglais">Anglais</option>
-                                <option value="Histoire">Histoire</option>
+                            <select name="listes_matieres0">
+                                {% for item in listeMatiere %}
+                                <option value={{item}}>{{item}}</option>
+                                {% endfor %}
                             </select>
                         </li>
                         <li>
@@ -40,6 +40,7 @@
                 </div>
                 <input type="button" value="Ajouter" onclick="ajouterMatiere()">
             </article>
-            <input type="button" value="Enregistrer" onclick="verifier_valeur()">
+            <input type="submit" value="Enregistrer">
+            </form>
         </section>
 {% endblock %}

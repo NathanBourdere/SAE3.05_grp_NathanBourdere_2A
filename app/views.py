@@ -1,3 +1,5 @@
+from datetime import date, datetime
+import time
 from app.formulaires import InscriptionVacataire, NewAccount
 from .app import db,app
 from flask import render_template,url_for,redirect,request,send_from_directory
@@ -13,14 +15,66 @@ import os
 def home():
     return render_template('main.html')
 
-@app.route('/matieres/')
+@app.route('/matiere/', methods=['GET','POST'])
 @login_required
 def matiere():
-    return render_template('matiere.html')
+    if request.method == "POST":
+        lstMat = set()
+        loop = True
+        i = 0
+        while(loop):
+            try:
+                lstMat.add(request.form['listes_matieres'+str(i)])
+                i+=1
+            except Exception as e:
+                loop = False
+        for mat in lstMat:
+            for typeMat in db.session.query(Cours.IDcours, Cours.TypeCours, Cours.nomCours).filter(Cours.nomCours == mat).group_by(Cours.nomCours, Cours.TypeCours).all():
+                try:
+                    db.session.add(Affectable(current_user.IDVacataire,typeMat[0],typeMat[1],date.today(),datetime.now().strftime("%H:%M:%S")))
+                    db.session.commit()
+                except:
+                    print("Erreur d'insertion, le vacataire est déjà affectable a la matiere " + mat)
+        return render_template('menu_vacataire.html')
+    lstMatiereDispo = db.session.query(Cours.nomCours).all()
+    setMatiere = set()
+    for item in lstMatiereDispo:
+        setMatiere.add(item[0])
+    return render_template('matiere.html', listeMatiere = setMatiere)
 
-@app.route('/disponibilites/')
+@app.route('/disponibilites/', methods=['GET','POST'])
 @login_required
 def disponibilites():
+    if request.method == "POST":
+        periodes = [request.form["periode"], request.form["annee"]]
+        jours_spe = []
+        loop = True
+        i = 0
+        while(loop):
+            try:
+                periodes.append([request.form['jours_semaine'+str(i)], request.form["heure_debut_periode"+str(i)], request.form["heure_fin_periode"+str(i)]])
+                i+=1
+            except Exception as e:
+                i=0
+                while(loop):
+                    try:
+                        jour_particulier = []
+                        jour_particulier.append(request.form["date_spe"+str(i)])
+                        jour_particulier.append(request.form["heure_debut_date_spe"+str(i)])
+                        jour_particulier.append(request.form["heure_fin_date_spe"+str(i)])
+                        jours_spe.append(jour_particulier)
+                        i+=1
+                    except Exception as a:
+                        loop = False
+        print(periodes)
+        print(jours_spe)
+        for item in range(2,len(periodes)):
+            db.session.add(Disponibilites(maxIdDispo()+1,current_user.IDVacataire,periodes[item][0],periodes[1],periodes[0], periodes[item][1], periodes[item][2], date.today(),datetime.now().strftime("%H:%M:%S")))
+            print("uwu")
+            db.session.commit()
+        for item in jours_spe:
+            db.session.add(Disponibilites(maxIdDispo()+1,current_user.IDVacataire,item[0],-1,-1, item[1], item[2],date.today(),datetime.now().strftime("%H:%M:%S")))
+            db.session.commit()
     return render_template('disponibilites.html')
 
 @app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
@@ -65,18 +119,14 @@ def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Stat
                     text_place = "Chercher un nom..."
                     if request.form['filtre'] != "Filtrer les dossiers ↓":
                         if request.form['search']!="":
-                            print("non1")
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.nom_v.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
+                            listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.nomV.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                         else:
-                            print("%"+request.form['search']+"%")
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
+                            listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                     else:
                         if request.form['search']!="":
-                            print("non2")
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.nom_v.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
+                            listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).filter(Vacataire.nomV.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
                         else:
-                            print('pkpas')
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.nom_v).all()
+                            listeVaca = db.session.query(Vacataire.nomV,Vacataire.prenomV,Vacataire.numTelV,Vacataire.mailV,GererDossier.etat_dossier).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).order_by(Vacataire.nomV).all()
                     lstTri=['Nom','Prenom','Telephone','Status','Ne pas trier']
                     if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
                         filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
@@ -290,7 +340,25 @@ def est_vacataire(user):
         
     return False
 
-    
+
+def maxIdActu():
+    IDMAX = 0
+    VMax = db.session.query(Vacataire.IDVacataire).all()
+    for id in VMax:
+        if IDMAX<int(id[0][1:]):
+            IDMAX = int(id[0][1:])
+    PAMax = db.session.query(PersonnelAdministratif.IDpersAdmin).all()
+    for id in PAMax:
+        if IDMAX<int(id[0][1:]):
+            IDMAX = int(id[0][1:])
+    return str(IDMAX+1)
+
+def maxIdDispo():
+    x = db.session.query(Disponibilites.IDDISPO).first()
+    if x == None:
+        return 0
+    return x.IDDISPO
+ 
 def test_connection():
     """
         Insère les valeurs des CSV courants dans /data dans la base de données
