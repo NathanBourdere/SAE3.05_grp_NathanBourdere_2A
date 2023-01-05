@@ -9,7 +9,7 @@
 {% block contents %}
 <section id="flexAvatar">
   <h2>Votre Dossier</h2>
-  <label>Etat du dossier : {{etat_doc.etat_dossier}}</label>
+  <label>Etat du dossier : {{ etat_doc }}</label>
   <br>
   <form name=”formulaireTD1” method=”POST”>
     <label>Votre nom</label>
@@ -68,6 +68,6 @@
     <br>
     <input type="submit" value="Enregistrer" method="POST" id="submitter">
   </form>
-  <p>Dernière modification: {{date_modif.dateModif}} à {{date_modif.heureModif}}</p>
+  <p>Dernière modification: le {{ date_modif }} à {{ heure_modif }}</p>
 </section>
 {% endblock %}
