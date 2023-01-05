@@ -264,3 +264,33 @@ def get_vacataire(id_vaca:int)->Vacataire:
         if vacataire.id_vacataire == id_vaca:
             return vacataire
     return None
+
+def actualiser_date_dossier(dossier:GererDossier):
+    """Actualise l'heure et la date de dernière modification du dossier du vacataire donné avec la date et l'heure actuelle.
+
+    Args:
+        dossier (GererDossier): Le dossier à mettre à jour.
+    """    
+    from datetime import date, datetime
+
+    date_actuelle = date.today()
+    heure_actuelle = datetime.now().strftime("%H:%M")
+    dossier.date_modif = date_actuelle
+    dossier.heure_modif = heure_actuelle
+
+    db.session.commit()
+
+def get_dossier(id_vaca:int)->GererDossier:
+    """Récupère les informations relatives à u
+
+    Args:
+        id_vaca (int): _description_
+
+    Returns:
+        GererDossier: _description_
+    """   
+    dossiers = GererDossier.query.all()
+    for dossier in dossiers:
+        if dossier.id_vacataire == id_vaca:
+            return dossier
+    return None
