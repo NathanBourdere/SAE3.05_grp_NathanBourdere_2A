@@ -249,3 +249,18 @@ def est_vacataire(user):
             return True
         
     return False
+
+def get_vacataire(id_vaca:int)->Vacataire:
+    """Retourne les informations d'un vacataire grâce à un identifiant donné.
+
+    Args:
+        id_vaca (int): L'identifiant du vacataire recherché.
+
+    Returns:
+        Vacataire: Le vacataire recherché.
+    """    
+    vacataires = Vacataire.query.all()
+    for vacataire in vacataires:
+        if vacataire.id == id_vaca:
+            return vacataire
+    return None
