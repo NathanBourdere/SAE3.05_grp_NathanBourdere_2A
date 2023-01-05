@@ -261,6 +261,6 @@ def get_vacataire(id_vaca:int)->Vacataire:
     """    
     vacataires = Vacataire.query.all()
     for vacataire in vacataires:
-        if vacataire.id == id_vaca:
+        if vacataire.id_vacataire == id_vaca:
             return vacataire
     return None

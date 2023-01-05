@@ -276,6 +276,8 @@ def check_cours():
 @app.route('/dossier_vacataire/',)
 @login_required
 def edit_dossier():
+    vacataire = get_vacataire(current_user.id_vacataire)
+    print(vacataire.id_vacataire)
     etat_dossier_user = db.session.query(GererDossier.etat_dossier).filter(current_user.id_vacataire==GererDossier.id_vacataire).join(Vacataire,Vacataire.id_vacataire==GererDossier.id_vacataire).first()
     date_fr_modif = db.session.query(GererDossier.date_modif,GererDossier.heure_modif).filter(current_user.id_vacataire==GererDossier.id_vacataire).join(Vacataire,Vacataire.id_vacataire==GererDossier.id_vacataire).first()
     return render_template('dossier_vacataire.html',etat_doc=etat_dossier_user,date_modif=date_fr_modif)
