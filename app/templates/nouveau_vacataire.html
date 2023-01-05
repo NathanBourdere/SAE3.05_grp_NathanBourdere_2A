@@ -54,7 +54,7 @@
 <script>
   $("body").on("change", function () {
     verif = true;
-    let lst = $("article input");
+    let lst = $("article ol li input");
     console.log(lst)
     for (i = 0; i < lst.length; i++) {
       if (lst.get(i).type != "submit") {
