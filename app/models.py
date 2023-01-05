@@ -220,7 +220,7 @@ class Disponibilites(db.Model):
 
     def __str__(self):
         res = "Vacataire "+self.id_vacataire+" dispo. id : "+self.id_dispo+" : "+self.jour_dispo
-        res += " semaine "+self.semaine_dispo+" de la période "+self.periode_dispo
+        res += " semaine "+self.semestre_dispo+" de la période "+self.periode_dispo
         res += " disponible de "+self.heure_dispo_debut +" jusqu'à "+self.heure_dispo_fin
         res += "derniere modification le :"+self.date_modif_dispo+" à "+self.heure_modif_dispo+"\n"
         return res
