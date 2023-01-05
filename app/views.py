@@ -34,11 +34,25 @@ def matiere():
                     print(e)
                     print("Erreur d'insertion, le vacataire est déjà affectable a la matiere " + mat)
         return render_template('menu_vacataire.html')
-    lstMatiereDispo = db.session.query(Cours.nom_cours).all()
-    setMatiere = set()
-    for item in lstMatiereDispo:
-        setMatiere.add(item[0])
-    return render_template('matiere.html', listeMatiere = setMatiere)
+    lstAllMatiere = db.session.query(Cours.nom_cours).all()
+    lstMatiereDispo = db.session.query(Cours.nom_cours, Affectable.id_vacataire, Cours.id_cours).filter(Affectable.id_vacataire == current_user.id_vacataire, Affectable.id_cours == Cours.id_cours).all()
+    Affectable.query.filter_by(id_vacataire=current_user.id_vacataire).delete()
+    db.session.commit()
+    liste_final = []
+    liste_intermediaire = []
+
+    for matiere_attitrees in lstMatiereDispo:
+        liste_intermediaire.append(matiere_attitrees)
+        for matieres_restantes in lstAllMatiere:
+            liste_intermediaire.append(matieres_restantes)
+        liste_final.append(anti_doublons(liste_intermediaire))
+        liste_intermediaire = []
+    if liste_final == []:
+        for matiere in lstAllMatiere:
+            liste_intermediaire.append(matiere)
+        liste_final.append(anti_doublons(liste_intermediaire))
+    print(liste_final)
+    return render_template('matiere.html', listeMatiere = liste_final)
 
 @app.route('/disponibilites/', methods=['GET','POST'])
 @login_required
@@ -370,6 +384,11 @@ def encode_mdp(mdp:str)->str:
     m = sha256()
     m.update(mdp.encode())
     return m.hexdigest()
+
+def anti_doublons(liste):
+    res = []
+    [res.append(x) for x in liste if x not in res]
+    return res
 
 def test_connection():
     """
