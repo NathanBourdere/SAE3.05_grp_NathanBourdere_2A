@@ -78,8 +78,12 @@ def new_vaca():
     if request.method == "POST":
         id = max_id_actuel()
         if form.validate_on_submit():
-            vac = Vacataire('V' + id,'Spontanée','0',form.entreprise.data, form.nom_v.data ,form.prenom_v.data ,form.num_tel_v.data,form.ddn_v.data,form.mail_v.data,encode_mdp(form.mdp_v.data))
+            vac = Vacataire('V' + id,'Spontanée','0',form.entreprise.data, form.nom_v.data ,form.prenom_v.data ,form.num_tel_v.data,form.ddn_v.data,form.mail_v.data,encode_mdp(form.mdp_v.data),"","","","","")
+            dateActuelle = date.today()
+            heureActuelle = datetime.now().strftime("%H:%M:%S")
+            dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",dateActuelle,heureActuelle)
             db.session.add(vac)
+            db.session.add(dossier)
             db.session.commit()
             return url_for('menu_admin')
         else:
