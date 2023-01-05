@@ -81,12 +81,40 @@
   <section>
     <article>
       <ol>
-        {% for item in form %}
+        
         <li>
-          {{ item.label }}
-          {{ item }}
+          {{ form.nom.label }}
+          {{ form.nom }}
         </li>
-        {% endfor %}
+        <li>
+          {{ form.prenom.label }}
+          {{ form.prenom }}
+        </li>
+        <li>
+          {{ form.email.label }}
+          {{ form.email }}
+        </li>
+        <li>
+          {{ form.tel.label }}
+          {{ form.tel }}
+        </li>
+        <li>
+          {{ form.ddn.label }}
+          {{ form.ddn }}
+        </li>
+        <li>
+          {{ form.password.label }}
+          {{ form.password }}
+        </li>
+        <li>
+          {{ form.confirmation.label }}
+          {{ form.confirmation }}
+        </li>
+        <li>
+          {{ form.entreprise.label }}
+          {{ form.entreprise }}
+        </li>
+        
       </ol>
     </article>
     <input type="submit" id="submit">

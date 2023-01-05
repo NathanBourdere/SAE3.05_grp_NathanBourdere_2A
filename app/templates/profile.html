@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block styles %}
 {{ super() }}
+<link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
 {% endblock %}
 {% block scripts %}
 {{ super() }}
 {% endblock %}
 {% block contents %}
-        <form>
             <section id="flexAvatar">
                 <article>
                     <ol>
@@ -27,5 +27,4 @@
             <a href="/logout/">
                 <input type="button" value="Changer mon mot de passe">
             </a>
-        </form>
 {% endblock %}

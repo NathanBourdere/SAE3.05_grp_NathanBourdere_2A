@@ -1,10 +1,9 @@
 from datetime import date, datetime
 import time
-from app.formulaires import InscriptionVacataire, NewAccount
+from app.formulaires import *
 from .app import db,app
 from flask import render_template,url_for,redirect,request,send_from_directory
 from .models import *
-from hashlib import sha256
 import csv
 from flask_login import login_user, current_user, logout_user,login_required
 import os
@@ -297,25 +296,24 @@ def logout():
     return redirect(url_for('home'))
     
 @app.route('/login/', methods= ['GET', 'POST'])
-def log():
-    if request.method == "POST":
-        if est_vacataire(request.form['idUser']):
+def login():
+    acc = NewAccount()
+    if not acc.is_submitted():
+            acc.next.data = request.args.get("next")
+    elif acc.validate_on_submit():
+            user = get_authenticated_user(acc)
             try:
-                log = Vacataire.query.filter_by(id_vacataire=request.form['idUser']).first()
-                if request.form['password'] == log.mdp_v:
-                    login_user(log)
-                    return redirect(url_for('menu_vacataire'))
+                if user and est_vacataire(user):
+                    login_user(user)
+                    next = acc.next.data or url_for('menu_vacataire')
+                    return redirect(next)
+                elif user and not est_vacataire(user):
+                    login_user(user)
+                    next = acc.next.data or url_for('menu_admin')
+                    return redirect(next)
             except:
-                return render_template('login.html')
-        else:
-            try:
-                adm = PersonnelAdministratif.query.filter_by(id_pers_admin=request.form['idUser']).first()
-                if request.form['password'] == adm.mdp_pa:
-                    login_user(adm)
-                    return redirect(url_for('menu_admin'))
-            except:
-                return render_template('login.html')
-    return render_template('login.html')
+                return render_template('login.html',form = acc)
+    return render_template('login.html',form = acc)
 
 @app.route('/EDT/')
 @login_required
@@ -390,4 +388,4 @@ def test_connection():
 test_connection()
 
 if __name__=="__main__":
-    app.run()
+    app.run(4095)
