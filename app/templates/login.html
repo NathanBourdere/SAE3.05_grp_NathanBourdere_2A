@@ -3,18 +3,24 @@
 {{ super() }}
 {% endblock %}
 {% block contents %}
-    <form method="POST">
+    <form method="POST" action="{{url_for('login')}}">
         <section>
             <article>
                 <h3>Accéder a mon espace personnel</h3>
+                {{ form.hidden_tag()}}
                     <ol>
-                        <li><label for="identifiant">Identifiant: </label><input type="text" name="idUser" id="identifiant"></li>
-                        <li><label for="mdp">Mot de passe: </label><input type="password" name="password" id="mdp"></li>
+                        <li>
+                          {{ form.login.label }}
+                          {{ form.login }}
+                        </li>
+                        <li>
+                            {{ form.password.label }}
+                            {{ form.password }}
+                          </li>
                     </ol>
             </article>
             <input type="submit" value="Se connecter">
-            <a href="/menu_admin/">J'ai oublié mon mot de passe</a>
-            <!-- C'est evidement temporaire -->
+            <a>J'ai oublié mon mot de passe</a>
         </section>
     </form>
 {% endblock %}

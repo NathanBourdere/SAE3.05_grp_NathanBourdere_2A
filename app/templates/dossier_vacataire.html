@@ -5,6 +5,8 @@
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='JS/verifAge.js')}}"></script>
+<script>
+</script>
 {% endblock %}
 {% block contents %}
 <section id="flexAvatar">
@@ -12,31 +14,36 @@
   <label>Etat du dossier : {{ etat_doc }}</label>
   <br>
   <form name=”formulaireTD1” method=”POST”>
-    <label>Votre nom</label>
-    <input class="doc" type="Text" name="nomDoc" required placeholder="Dupont Moretti" value="{{ nom_v }}">
-    <label>Votre prénom</label>
-    <input class="doc" type="Text" name="prenomDoc" required placeholder="Jean Paul" value="{{ prenom_v }}">
-    <label>Votre Date de Naissance</label>
-    <input class="doc" type="date" name="ddnDoc" pattern="[0-9]{2})-([0-9]{2})-([0-9]{4})" value="{{ ddn_v }}" required
-      onchange="check_ddn(value,this)">
-    <label>Votre Mail</label>
-    <input class="doc" type="email" name="mailDoc" required placeholder="example@gmail.com" value="{{ mail_v }}">
-    <label>Votre Numéro de Telephone</label>
-    <input class="doc" type="tel" name="telDoc" pattern=[\d]{10,12} required placeholder="0612345678" value="{{ num_tel_v }}">
-    <label>Votre Entreprise</label>
-    <input class="doc" type="Text" name="Entreprise" placeholder="Behaviour Interactive" value="{{ entreprise }}">
-    <label>Votre Nationnalité</label>
-    <input class="doc" type="text" name="nationnalite", placeholder="Français" value="{{ nationnalite }}">
-    <label>Votre Profession Actuelle</label>
-    <input class="doc" type="text" name="profession" placeholder="Chef de projet" value="{{ profession }}">
-    <label>Votre Meilleur Diplome</label>
-    <input class="doc" type="text" name="diplome" placeholder="BUT Informatique", value="{{ meilleur_diplome }}">
-    <label>Année d'obtention de ce diplome</label>
-    <input class="doc" type="date" name="anneeObtention" value="{{ annee_obtiention }}">
-    <label>Votre Adresse Postale</label>
-    <input class="doc" type="text" name="adresse" placeholder="145, rue des Charettes, 45000, Orléans, France" value="{{ adresse_postale }}">
-    <a href="/disponibilites/"><input class="doc" type="Button" value="Renseignez vos disponibilités"></a>
-    <a href="/matieres/"><input class="doc" type="button" value="Renseignez vos matières"></a>
+  <ol>
+    <li>
+      {{ form.nom.label }}
+      {{ form.nom }}
+    </li>
+    <li>
+      {{ form.prenom.label }}
+      {{ form.prenom }}
+    </li>
+    <li>
+      {{ form.email.label }}
+      {{ form.email }}
+    </li>
+    <li>
+      {{ form.tel.label }}
+      {{ form.tel }}
+    </li>
+    <li>
+      {{ form.ddn.label }}
+      {{ form.ddn }}
+    </li>
+    <li>
+      {{ form.entreprise.label }}
+      {{ form.entreprise }}
+    </li>
+    <li>
+      {{ form.legal.label }}
+      {{ form.legal }}
+    </li>
+    <li>En cochant cette case, vous consentez au traitement
     <br>
     <p><input type="checkbox" id="dossier_blabla_legal" required />En cochant cette case, vous consentez au traitement
       des données à caractère personnel fournies dans le
@@ -63,8 +70,8 @@
       professionnelle.
       Je déclare sur l’honneur que tous les renseignements fournis sont exacts et m’engage à informer
       l’Université d’Orléans de toute modification de ma situation professionnelle (changement d’employeur,
-      perte d’emploi au cours de l’année universitaire)
-    </p>
+      perte d’emploi au cours de l’année universitaire)</li>
+  </ol>
     <br>
     <input type="submit" value="Enregistrer" method="POST" id="submitter">
   </form>

@@ -1,6 +1,7 @@
 import ast
 from datetime import date, datetime
-from app.formulaires import InscriptionVacataire
+import time
+from .formulaires import *
 from .app import db,app
 from flask import render_template,url_for,redirect,request
 from .models import *
@@ -301,11 +302,12 @@ def check_cours():
 @login_required
 def edit_dossier():
     vacataire = get_vacataire(current_user.id_vacataire)
+    acc = InscriptionVacataire(vacataire)
     dossier = get_dossier(current_user.id_vacataire)
-    if not vacataire is None:
+     if not vacataire is None:
         return render_template("dossier_vacataire.html", etat_doc=dossier.etat_dossier, date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, nom_v=vacataire.nom_v, prenom_v=vacataire.prenom_v, ddn_v=vacataire.ddn_v, mail_v=vacataire.mail_v, num_tel_v=vacataire.num_tel_v, entreprise=vacataire.entreprise, nationnalite=vacataire.nationnalite, profession=vacataire.profession, meilleur_diplome=vacataire.meilleur_diplome, annee_obtiention=vacataire.annee_obtiention, adresse_postale=vacataire.adresse_postale)
     else:
-        return render_template('dossier_vacataire.html',etat_doc=dossier.etat_dossier,date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, nom_v="", prenom_v="", ddn_v="", mail_v="", num_tel_v="", entreprise="", nationnalite="", profession="", meilleur_diplome="", annee_obtiention="", adresse_postale="")
+        return render_template('dossier_vacataire.html',etat_doc=dossier.etat_dossier,date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, nom_v="", prenom_v="", ddn_v="", mail_
 
 @app.route('/menu_vacataire/')
 @login_required
@@ -322,25 +324,24 @@ def logout():
     return redirect(url_for('home'))
     
 @app.route('/login/', methods= ['GET', 'POST'])
-def log():
-    if request.method == "POST":
-        if est_vacataire(request.form['idUser']):
+def login():
+    acc = NewAccount()
+    if not acc.is_submitted():
+            acc.next.data = request.args.get("next")
+    elif acc.validate_on_submit():
+            user = get_authenticated_user(acc)
             try:
-                log = Vacataire.query.filter_by(id_vacataire=request.form['idUser']).first()
-                if encode_mdp(request.form['password']) == log.mdp_v:
-                    login_user(log)
-                    return redirect(url_for('menu_vacataire'))
+                if user and est_vacataire(user):
+                    login_user(user)
+                    next = acc.next.data or url_for('menu_vacataire')
+                    return redirect(next)
+                elif user and not est_vacataire(user):
+                    login_user(user)
+                    next = acc.next.data or url_for('menu_admin')
+                    return redirect(next)
             except:
-                return render_template('login.html')
-        else:
-            try:
-                adm = PersonnelAdministratif.query.filter_by(id_pers_admin=request.form['idUser']).first()
-                if encode_mdp(request.form['password']) == adm.mdp_pa:
-                    login_user(adm)
-                    return redirect(url_for('menu_admin'))
-            except:
-                return render_template('login.html')
-    return render_template('login.html')
+                return render_template('login.html',form = acc)
+    return render_template('login.html',form = acc)
 
 @app.route('/disponibilites/edit/', methods=["GET", "POST"])
 @login_required
@@ -376,7 +377,6 @@ def est_vacataire(user):
         
     return False
 
-
 def max_id_actu():
     id_max = 0
     vacataires = db.session.query(Vacataire.id_vacataire).all()
@@ -398,7 +398,6 @@ def max_id_dispo():
         if val>max:
             max = val
     return max
-
 
 def encode_mdp(mdp:str)->str:
     """Permet d'encoder un mot de passe donné avec sha256.
@@ -451,4 +450,4 @@ def test_connection():
 test_connection()
 
 if __name__=="__main__":
-    app.run()
+    app.run(4095)
