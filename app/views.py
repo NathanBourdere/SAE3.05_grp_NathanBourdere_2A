@@ -121,123 +121,41 @@ def profile():
 
 @app.route('/recherche-dossiers/',methods=['GET', 'POST'])
 @login_required
-def check_doss(lstTri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Status'],filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]):
+def check_doss():
+    def listeFiltre(firstVariable):
+        print(firstVariable)
+        if firstVariable == "Filtrer les dossiers ↓":
+            return ["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
+        elif firstVariable == 'Distribué':
+            return ["Distribué","Complet","Incomplet","Validé","Filtrer les dossiers ↓"]
+        elif firstVariable == 'Complet':
+            return ["Complet","Distribué","Incomplet","Validé","Filtrer les dossiers ↓"]
+        elif firstVariable == 'Incomplet':
+            return ["Incomplet","Complet","Distribué","Validé","Filtrer les dossiers ↓"]
+        else:
+            return ["Validé","Incomplet","Complet","Distribué","Filtrer les dossiers ↓"]
+    
+    def listeTri(firstVariable):
+        if firstVariable == "Trier les dossiers ↓":
+            return ['Trier les dossiers ↓','Nom','Prenom','Telephone','Status']
+        elif firstVariable == 'Nom':
+            return ['Nom','Prenom','Telephone','Status','Trier les dossiers ↓']
+        elif firstVariable == 'Prenom':
+            return ['Prenom','Nom','Telephone','Status','Trier les dossiers ↓']
+        elif firstVariable == 'Telephone':
+            return ['Telephone','Nom','Prenom','Status','Trier les dossiers ↓']
+        else:
+            return ['Status','Nom','Prenom','Telephone','Trier les dossiers ↓']
+            
     liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
     text_place = "Veuillez sélectionner une méthode de tri..."
     if request.method == "POST":
-        liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-        if request.form['tri'] != "Trier les dossiers ↓" or request.form['filtre'] != "Filtrer les dossiers ↓":
-            match(request.form['tri']):
-                case 'Nom':
-                    print("1")
-                    text_place = "Chercher un nom..."
-                    if request.form['filtre'] != "Filtrer les dossiers ↓":
-                        if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.nom_v.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                        else:
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                    else:
-                        if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.nom_v.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                        else:
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.nom_v).all()
-                    lstTri=['Nom','Prenom','Telephone','Status','Ne pas trier']
-                    if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
-                        filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
-                    elif request.form['filtre'] == 'Distribué':
-                        filtre=["Distribué","Complet","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Complet':
-                        filtre=["Complet","Distribué","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Incomplet':
-                        filtre=["Incomplet","Complet","Distribué","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Validé':
-                        filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
-                case 'Prenom':
-                    print("2")
-                    text_place="Chercher un prenom..."
-                    if request.form['filtre'] != "Filtrer les dossiers ↓":
-                        if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.prenom_v.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                        else:
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                    else:
-                        if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.prenom_v.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                        else:
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.prenom_v).all()
-                    lstTri=['Prenom','Nom','Telephone','Status','Ne pas trier']
-                    if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
-                        filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
-                    elif request.form['filtre'] == 'Distribué':
-                        filtre=["Distribué","Complet","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Complet':
-                        filtre=["Complet","Distribué","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Incomplet':
-                        filtre=["Incomplet","Complet","Distribué","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Validé':
-                        filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
-                case 'Telephone':
-                    print("3")
-                    text_place = "Chercher un numéro de téléphone..."
-                    if request.form['filtre'] != "Filtrer les dossiers ↓":
-                        if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                        else:
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                    else:
-                        if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                        else:
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.num_tel_v).all()
-                    lstTri=['Telephone','Prenom','Nom','Status','Ne pas trier']
-                    if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
-                        filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
-                    elif request.form['filtre'] == 'Distribué':
-                        filtre=["Distribué","Complet","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Complet':
-                        filtre=["Complet","Distribué","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Incomplet':
-                        filtre=["Incomplet","Complet","Distribué","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Validé':
-                        filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
-                case 'Status':
-                    print("4")
-                    text_place="Chercher un status de dossier..."
-                    if request.form['filtre'] != "Filtrer les dossiers ↓":
-                        if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+request.form['search']+"%"),GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                        else:
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                    else:
-                        if request.form['search']!="":
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+request.form['search']+"%")).join(GererDossier,GererDossier.IDVacataire==Vacataire.IDVacataire).all()
-                        else:
-                            liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(GererDossier.etat_dossier).all()
-                    lstTri=['Status','Telephone','Prenom','Nom','Ne pas trier']
-                    if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
-                        filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
-                    elif request.form['filtre'] == 'Distribué':
-                        filtre=["Distribué","Complet","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Complet':
-                        filtre=["Complet","Distribué","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Incomplet':
-                        filtre=["Incomplet","Complet","Distribué","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Validé':
-                        filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
-                case 'Trier les dossiers ↓':
-                    print("5")
-                    liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier==request.form['filtre']).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
-                    if request.form['filtre'] == "Ne pas trier" or request.form['filtre'] == "Ne pas filtrer":
-                        filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
-                    elif request.form['filtre'] == 'Distribué':
-                        filtre=["Distribué","Complet","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Complet':
-                        filtre=["Complet","Distribué","Incomplet","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Incomplet':
-                        filtre=["Incomplet","Complet","Distribué","Validé","Ne pas trier"]
-                    elif request.form['filtre'] == 'Validé':
-                        filtre=["Validé","Incomplet","Complet","Distribué","Ne pas trier"]
-    return render_template('recherche-dossiers.html',vaca=liste_vaca,tri=lstTri,filtre=filtre,placeHold=text_place)                    
+        liste_de_tri = listeTri(request.form['tri'])
+        liste_de_filtre = listeFiltre(request.form['filtre'])
+        liste_vaca = searchDossier(request.form['tri'],request.form['filtre'],request.form['search'])
+        return render_template('recherche-dossiers.html',vaca=liste_vaca,tri=liste_de_tri,filtre=liste_de_filtre,placeHold=text_place)
+    return render_template('recherche-dossiers.html',vaca=liste_vaca,tri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Status'],filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"],placeHold=text_place)  
+                      
 
 @app.route('/recherche-cours/', methods=['GET','POST'])
 @login_required
