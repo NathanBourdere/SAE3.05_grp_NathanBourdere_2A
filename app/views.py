@@ -1,6 +1,6 @@
 from datetime import date, datetime
 import time
-from app.formulaires import *
+from .formulaires import *
 from .app import db,app
 from flask import render_template,url_for,redirect,request,send_from_directory
 from .models import *
@@ -277,6 +277,7 @@ def check_cours():
 @app.route('/dossier_vacataire/',)
 @login_required
 def edit_dossier():
+    acc = InscriptionVacataire(Vacataire.query.filter(id_vacataire=current_user.id_vacataire).first())
     etat_dossier_user = db.session.query(GererDossier.etat_dossier).filter(current_user.id_vacataire==GererDossier.id_vacataire).join(Vacataire,Vacataire.id_vacataire==GererDossier.id_vacataire).first()
     date_fr_modif = db.session.query(GererDossier.date_modif,GererDossier.heure_modif).filter(current_user.id_vacataire==GererDossier.id_vacataire).join(Vacataire,Vacataire.id_vacataire==GererDossier.id_vacataire).first()
     return render_template('dossier_vacataire.html',etat_doc=etat_dossier_user,date_modif=date_fr_modif)

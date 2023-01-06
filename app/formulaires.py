@@ -4,7 +4,7 @@ from .models import Vacataire,PersonnelAdministratif,max_id_actuel
 from hashlib import sha256
 
 class InscriptionVacataire(FlaskForm):
-    login = HiddenField('Login')
+    login = StringField('Login')
     nom = StringField('Nom')
     prenom = StringField('Prenom')
     email = StringField('E-mail', [validators.Length(min=6, max=35)])
@@ -14,8 +14,15 @@ class InscriptionVacataire(FlaskForm):
     confirmation = PasswordField('Répétez le mot de passe')
     entreprise = StringField('Entreprise')
     legal = BooleanField('Mention Légale')
-    login.data = 'V'+max_id_actuel()
-    print(login.data)
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.login.data = 'V'+max_id_actuel()
+
+    def __init__(self,vacataire) -> None:
+        super().__init__()
+        self.remplir_champ(vacataire)
+
 
 class NewAccount(FlaskForm):
     login = StringField('Identifiant', [validators.Length(min=1)])
