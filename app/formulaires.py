@@ -1,28 +1,32 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, PasswordField, IntegerField, DateField ,validators, HiddenField
-from .models import Vacataire,PersonnelAdministratif,max_id_actuel
+from .models import Vacataire,PersonnelAdministratif, get_vacataire,max_id_actuel
 from hashlib import sha256
 
 class InscriptionVacataire(FlaskForm):
 
     login = StringField('Login')
-    nom = StringField('Nom')
-    prenom = StringField('Prenom')
-    email = StringField('E-mail', [validators.Length(min=6, max=35)])
-    tel = StringField('Telephone', [validators.Length(min=6, max=35)])
-    ddn = DateField('DateDeNaissance')
-    password = PasswordField('Password')
-    confirmation = PasswordField('Répétez le mot de passe')
-    entreprise = StringField('Entreprise')
+    nom = StringField('Nom', [validators.DataRequired(), validators.Length(min=1, max=35)])
+    prenom = StringField('Prenom', [validators.DataRequired(), validators.Length(min=1, max=35)])
+    email = StringField('E-mail', [validators.DataRequired(), validators.Length(min=6, max=35)])
+    tel = StringField('Téléphone', [validators.DataRequired(), validators.Length(min=6, max=35)])
+    ddn = DateField('Date De Naissance',[validators.DataRequired()])
+    password = PasswordField('Password',[validators.DataRequired(), validators.Length(min=1, max=35),validators.EqualTo('confirm', message='Passwords must match')])
+    confirmation = PasswordField('Répétez le mot de passe', [validators.DataRequired()])
+    entreprise = StringField('Entreprise', [validators.DataRequired(), validators.Length(min=1, max=35)])
     legal = BooleanField('Mention Légale')
+    nationalite = StringField("Nationalité")
+    profession = StringField("Profession")
+    meilleur_diplome = StringField("Diplôme")
+    annee_obtiention = StringField("Année d'obtiention de votre diplôme")
+    adresse = StringField("Adresse")
 
-    def __init__(self) -> None:
-        super().__init__()
-        self.login.data = 'V'+max_id_actuel()
-
-    def __init__(self,vacataire) -> None:
-        super().__init__()
-        self.remplir_champ(vacataire)
+    def init(self,vacataire=None) -> None:
+        super().init()
+        if vacataire is None:
+            self.login.data = 'V'+max_id_actuel()
+        else:
+            self.remplir_champs(vacataire)
 
 
 class NewAccount(FlaskForm):

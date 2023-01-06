@@ -93,17 +93,14 @@ def new_vaca():
     form = InscriptionVacataire()
     if request.method == "POST":
         id = max_id_actuel()
-        if form.validate_on_submit():
-            vac = Vacataire('V' + id,'Spontanée','0',form.entreprise.data, form.nom_v.data ,form.prenom_v.data ,form.num_tel_v.data,form.ddn_v.data,form.mail_v.data,encode_mdp(form.mdp_v.data),"","","","","")
-            date_actuelle = date.today()
-            heure_actuelle = datetime.now().strftime("%H:%M")
-            dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
-            db.session.add(vac)
-            db.session.add(dossier)
-            db.session.commit()
-            return url_for('menu_admin')
-        else:
-            return render_template('nouveau_vacataire.html', form = form)
+        vac = Vacataire('V' + id,'Spontanée','0',form.entreprise.data, form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
+        date_actuelle = date.today()
+        heure_actuelle = datetime.now().strftime("%H:%M")
+        dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
+        db.session.add(vac)
+        db.session.add(dossier)
+        db.session.commit()
+        return redirect(url_for('menu_admin'))
     return render_template('nouveau_vacataire.html', form = form)
 
 
@@ -314,6 +311,19 @@ def edit_dossier():
 def menu_vacataire():
     return render_template('menu_vacataire.html',nom_prenom=current_user.prenom_v + " " + current_user.nom_v)
 
+@app.route('/dossier/<id>/', methods=['GET', 'POST'])
+@login_required
+def voir_dossier_vacataire(id):
+    if request.method == 'POST':
+        dossier = get_dossier(id)
+        dossier.etat_dossier = "Validé"
+        db.session.commit()
+        return redirect(url_for('voir_dossier_vacataire', id=id))
+
+    vacataire = Vacataire.query.filter_by(id_vacataire=id).first()
+    dossier = get_dossier(vacataire.id_vacataire)
+    return render_template('voir_dossier.html', info_vacataire=vacataire, date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, etat=dossier.etat_dossier)
+    
 @app.route("/logout/")
 def logout():
     logout_user()
