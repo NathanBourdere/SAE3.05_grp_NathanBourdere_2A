@@ -7,10 +7,13 @@
         display: flex;
         justify-content: center;
     }
+
     li {
         margin: 2%;
     }
-    article, ul {
+
+    article,
+    ul {
         border: solid 1px;
     }
 </style>
@@ -20,27 +23,29 @@
 <script src="{{ url_for('static', filename='JS/matieres.js')}}"></script>
 {% endblock %}
 {% block contents %}
-  <h1>Vos matières</h1>
-        <section>
-            <form method="POST">
-            <article>
-                <div id="matieres">
-                    <ul>
-                        <li>
-                            <select name="listes_matieres0">
-                                {% for item in listeMatiere %}
-                                <option value={{item}}>{{item}}</option>
-                                {% endfor %}
-                            </select>
-                        </li>
-                        <li>
-                            <button id="BP0" onclick="supprimerMatiere('BP0')">Supprimer</button>
-                        </li>
-                    </ul>
-                </div>
-                <input type="button" value="Ajouter" onclick="ajouterMatiere()">
-            </article>
-            <input type="submit" value="Enregistrer">
-            </form>
-        </section>
+<h1>Vos matières</h1>
+<section>
+    <form method="POST">
+        <article>
+            <div id="matieres">
+                {% for i in range(0, listeMatiere|length) %}
+                <ul>
+                    <li>
+                        <select name="listes_matieres{{i}}">
+                            {% for matiere in listeMatiere[i] %}
+                            <option value={{matiere[0]}}>{{matiere[0]}}</option>
+                            {% endfor %}
+                        </select>
+                    </li>
+                    <li>
+                        <button id="BP0" onclick="supprimerMatiere('BP0')">Supprimer</button>
+                    </li>
+                </ul>
+                {% endfor %}
+            </div>
+            <input type="button" value="Ajouter" onclick="ajouterMatiere()">
+        </article>
+        <input type="submit" value="Enregistrer">
+    </form>
+</section>
 {% endblock %}
