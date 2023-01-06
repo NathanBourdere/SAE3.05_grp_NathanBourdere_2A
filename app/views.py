@@ -8,6 +8,8 @@ from .models import *
 import csv
 from flask_login import login_user, current_user, logout_user,login_required
 
+from .models import searchDossier
+
 
 # Initialisation des routes
 @app.route('/')
@@ -93,7 +95,7 @@ def new_vaca():
     form = InscriptionVacataire()
     if request.method == "POST":
         id = max_id_actuel()
-        vac = Vacataire('V' + id,'Spontanée','0',form.entreprise.data, form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
+        vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
         date_actuelle = date.today()
         heure_actuelle = datetime.now().strftime("%H:%M")
         dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
@@ -144,7 +146,7 @@ def check_doss():
         else:
             return ['Status','Nom','Prenom','Telephone','Trier les dossiers ↓']
             
-    liste_vaca = db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
+    liste_vaca = db.session.query(Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
     text_place = "Veuillez sélectionner une méthode de tri..."
     if request.method == "POST":
         liste_de_tri = listeTri(request.form['tri'])
@@ -152,7 +154,6 @@ def check_doss():
         liste_vaca = searchDossier(request.form['tri'],request.form['filtre'],request.form['search'])
         return render_template('recherche-dossiers.html',vaca=liste_vaca,tri=liste_de_tri,filtre=liste_de_filtre,placeHold=text_place)
     return render_template('recherche-dossiers.html',vaca=liste_vaca,tri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Status'],filtre=["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"],placeHold=text_place)  
-                      
 
 @app.route('/recherche-cours/', methods=['GET','POST'])
 @login_required
@@ -240,7 +241,10 @@ def voir_dossier_vacataire(id):
 
     vacataire = Vacataire.query.filter_by(id_vacataire=id).first()
     dossier = get_dossier(vacataire.id_vacataire)
-    return render_template('voir_dossier.html', info_vacataire=vacataire, date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, etat=dossier.etat_dossier)
+    droit_changement_dossier = False
+    if current_user.id_pers_admin == dossier.id_pers_admin:
+        droit_changement_dossier = True
+    return render_template('voir_dossier.html', info_vacataire=vacataire, date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, etat=dossier.etat_dossier, admin_du_dossier=droit_changement_dossier)
     
 @app.route("/logout/")
 def logout():
