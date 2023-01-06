@@ -217,13 +217,49 @@ def check_cours():
 @app.route('/dossier_vacataire/',)
 @login_required
 def edit_dossier():
+    def ameliorer_format_date(date:str)->str:
+        """Permet de mettre une date sous une meilleure forme.
+
+        Args:
+            date (str): Une date sous la forme AAAA-MM-JJ
+
+        Returns:
+            str: Une date sous la forme JJ/MM/AAAA
+        """        
+        res = ""
+        annee = ""
+        mois = ""
+        jour = ""
+
+        # Enlever les "-"
+        for char in date:
+            if char!="-":
+                res+=char
+        
+        # Isoler l'année dans une variable
+        for i in range(0,4):
+            annee+=res[i]
+
+        # Isoler le mois dans une variable
+        for i in range(4,6):
+            mois+=res[i]
+
+        #Isoler le jour dans une variable
+        for  i in range(6,8):
+            jour+=res[i]
+
+        # Reconstruire la date dans res
+        res = jour + "/" + mois + "/" + annee
+
+        return res
+    
     vacataire = get_vacataire(current_user.id_vacataire)
     acc = InscriptionVacataire(vacataire)
     dossier = get_dossier(current_user.id_vacataire)
-    if not vacataire is None:
-        return render_template("dossier_vacataire.html", etat_doc=dossier.etat_dossier, date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, nom_v=vacataire.nom_v, prenom_v=vacataire.prenom_v, ddn_v=vacataire.ddn_v, mail_v=vacataire.mail_v, num_tel_v=vacataire.num_tel_v, entreprise=vacataire.entreprise, nationnalite=vacataire.nationnalite, profession=vacataire.profession, meilleur_diplome=vacataire.meilleur_diplome, annee_obtiention=vacataire.annee_obtiention, adresse_postale=vacataire.adresse_postale)
-    else:
-        return render_template('dossier_vacataire.html',etat_doc=dossier.etat_dossier,date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, nom_v="", prenom_v="", ddn_v="", mail_v="",num_tel_v="", entreprise="", nationnalite="", profession="", meilleur_diplome="", annee_obtiention="", adresse_postale="")
+    date_modif_dossier = ameliorer_format_date(dossier.date_modif)
+    return render_template("dossier_vacataire.html", form=acc, dossier=dossier, date_modif_dossier=date_modif_dossier)
+
+    
 
 @app.route('/menu_vacataire/')
 @login_required

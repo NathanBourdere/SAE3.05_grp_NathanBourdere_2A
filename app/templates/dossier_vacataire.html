@@ -11,41 +11,60 @@
 {% block contents %}
 <section id="flexAvatar">
   <h2>Votre Dossier</h2>
-  <label>Etat du dossier : {{ etat_doc }}</label>
+  <label>Etat du dossier : {{ dossier.etat_dossier }}</label>
   <br>
   <form name=”formulaireTD1” method=”POST”>
   <ol>
-    <li>
+    <li class="doc">
       {{ form.nom.label }}
-      {{ form.nom }}
+      {{ form.nom(class_="doc") }}
     </li>
-    <li>
+    <li class="doc">
       {{ form.prenom.label }}
-      {{ form.prenom }}
+      {{ form.prenom(class_="doc") }}
     </li>
-    <li>
+    <li class="doc">
       {{ form.email.label }}
-      {{ form.email }}
+      {{ form.email(class_="doc") }}
     </li>
-    <li>
+    <li class="doc">
       {{ form.tel.label }}
-      {{ form.tel }}
+      {{ form.tel(class_="doc") }}
     </li>
-    <li>
+    <li class="doc">
       {{ form.ddn.label }}
-      {{ form.ddn }}
+      {{ form.ddn(class_="doc") }}
     </li>
-    <li>
+    <li class="doc">
       {{ form.entreprise.label }}
-      {{ form.entreprise }}
+      {{ form.entreprise(class_="doc") }}
     </li>
-    <li>
+    <li class="doc">
+      {{ form.nationalite.label }}
+      {{ form.nationalite(class_="doc") }}
+    </li>
+    <li class="doc">
+      {{ form.profession.label }}
+      {{ form.profession(class_="doc") }}
+    </li>
+    <li class="doc">
+      {{ form.meilleur_diplome.label }}
+      {{ form.meilleur_diplome(class_="doc") }}
+    </li>
+    <li class="doc">
+      {{ form.annee_obtiention.label }}
+      {{ form.annee_obtiention(class_="doc") }}
+    </li>
+    <li class="doc">
+      {{ form.adresse.label }}
+      {{ form.adresse(class_="doc") }}
+    </li>
+    <li class="doc">
       {{ form.legal.label }}
-      {{ form.legal }}
+      {{ form.legal(class_="doc") }}
     </li>
-    <li>En cochant cette case, vous consentez au traitement
     <br>
-    <p><input type="checkbox" id="dossier_blabla_legal" required />En cochant cette case, vous consentez au traitement
+    <p>En cochant cette case, vous consentez au traitement
       des données à caractère personnel fournies dans le
       présent formulaire afin d’être recruté comme vacataire enseignant par l’Université d’Orléans.
       Seuls les services en charge du personnel au sein de l'Université d’Orléans seront destinataires des présents
@@ -75,6 +94,6 @@
     <br>
     <input type="submit" value="Enregistrer" method="POST" id="submitter">
   </form>
-  <p>Dernière modification: le {{ date_modif }} à {{ heure_modif }}</p>
+  <p>Dernière modification: le {{ date_modif_dossier }} à {{ dossier.heure_modif }}</p>
 </section>
 {% endblock %}

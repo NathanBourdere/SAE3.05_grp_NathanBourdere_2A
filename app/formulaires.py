@@ -14,7 +14,7 @@ class InscriptionVacataire(FlaskForm):
     password = PasswordField('Password',[validators.DataRequired(), validators.Length(min=1, max=35),validators.EqualTo('confirm', message='Passwords must match')])
     confirmation = PasswordField('Répétez le mot de passe', [validators.DataRequired()])
     entreprise = StringField('Entreprise', [validators.DataRequired(), validators.Length(min=1, max=35)])
-    legal = BooleanField('Mention Légale')
+    legal = BooleanField('')
     nationalite = StringField("Nationalité")
     profession = StringField("Profession")
     meilleur_diplome = StringField("Diplôme")
@@ -27,7 +27,27 @@ class InscriptionVacataire(FlaskForm):
             self.login.data = 'V'+max_id_actuel()
         else:
             self.remplir_champs(vacataire)
+    
+    def remplir_champs(self, vacataire:Vacataire) -> None:
+        """Permet de préremplir les champs du formulaire.
 
+        Args:
+            vacataire (Vacataire): Le vacataire dans lequel récupérer les informations.
+        """        
+        from datetime import datetime
+
+        ddn_vacataire = datetime.strptime(vacataire.ddn_v, "%Y-%m-%d")
+        self.nom.data = vacataire.nom_v
+        self.prenom.data = vacataire.prenom_v
+        self.email.data = vacataire.mail_v
+        self.tel.data = vacataire.num_tel_v
+        self.ddn.data = ddn_vacataire
+        self.entreprise.data = vacataire.entreprise
+        self.nationalite.data = vacataire.nationnalite
+        self.profession.data = vacataire.profession
+        self.meilleur_diplome.data = vacataire.meilleur_diplome
+        self.annee_obtiention.data = vacataire.annee_obtiention
+        self.adresse.data = vacataire.adresse
 
 class NewAccount(FlaskForm):
     login = StringField('Identifiant', [validators.Length(min=1)])
