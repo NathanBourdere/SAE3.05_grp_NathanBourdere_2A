@@ -4,6 +4,7 @@ from .models import Vacataire,PersonnelAdministratif,max_id_actuel
 from hashlib import sha256
 
 class InscriptionVacataire(FlaskForm):
+
     login = StringField('Login')
     nom = StringField('Nom')
     prenom = StringField('Prenom')

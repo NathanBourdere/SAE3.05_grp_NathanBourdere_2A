@@ -11,7 +11,7 @@
 {% block contents %}
 <section id="flexAvatar">
   <h2>Votre Dossier</h2>
-  <label>Etat du dossier : {{etat_doc.etat_dossier}}</label>
+  <label>Etat du dossier : {{ etat_doc }}</label>
   <br>
   <form name=”formulaireTD1” method=”POST”>
   <ol>
@@ -44,6 +44,8 @@
       {{ form.legal }}
     </li>
     <li>En cochant cette case, vous consentez au traitement
+    <br>
+    <p><input type="checkbox" id="dossier_blabla_legal" required />En cochant cette case, vous consentez au traitement
       des données à caractère personnel fournies dans le
       présent formulaire afin d’être recruté comme vacataire enseignant par l’Université d’Orléans.
       Seuls les services en charge du personnel au sein de l'Université d’Orléans seront destinataires des présents
@@ -73,6 +75,6 @@
     <br>
     <input type="submit" value="Enregistrer" method="POST" id="submitter">
   </form>
-  <p>Dernière modification: {{date_modif.dateModif}} à {{date_modif.heureModif}}</p>
+  <p>Dernière modification: le {{ date_modif }} à {{ heure_modif }}</p>
 </section>
 {% endblock %}

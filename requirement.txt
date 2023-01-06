@@ -3,4 +3,5 @@ Flask-Login
 Flask-SQLAlchemy
 SQLAlchemy
 mysql-connector-python
-
+flask_wtf
+pyyaml

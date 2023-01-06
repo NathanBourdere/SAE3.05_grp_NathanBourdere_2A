@@ -127,18 +127,18 @@ class Vacataire(UserMixin,db.Model):
     id_vacataire = db.Column(db.String(100),primary_key=True)
     candidature = db.Column(db.String(100),nullable=False) 
     ancien = db.Column(db.Integer) #0 ou 1
-    entreprise = db.Column(db.String(100))
+    entreprise = db.Column(db.String(100),nullable=True)
     nom_v = db.Column(db.String(100))
     prenom_v = db.Column(db.String(100))
     num_tel_v = db.Column(db.String(100),unique=True)
-    ddn_v = db.Column(db.String(100))
+    ddn_v = db.Column(db.String(100),nullable=True)
     mail_v = db.Column(db.String(100),unique=True)
-    mdp_v = db.Column(db.String(100))
-    nationnalite = db.Column(db.String(100))
-    profession = db.Column(db.String(100))
-    meilleur_diplome = db.Column(db.String(100))
-    annee_obtiention = db.Column(db.String(100))
-    adresse_postale = db.Column(db.String(100))
+    mdp_v = db.Column(db.String(100),nullable=True)
+    nationnalite = db.Column(db.String(100),nullable=True)
+    profession = db.Column(db.String(100),nullable=True)
+    meilleur_diplome = db.Column(db.String(100),nullable=True)
+    annee_obtiention = db.Column(db.String(100),nullable=True)
+    adresse_postale = db.Column(db.String(100),nullable=True)
 
     vacat_affectable = db.relationship("Affectable",back_populates="cours_affecter_vacataire",foreign_keys=[Affectable.id_vacataire])
     selfdossier = db.relationship("GererDossier", back_populates = "dossier_vacataire")
@@ -199,19 +199,19 @@ class Disponibilites(db.Model):
 
     id_dispo = db.Column(db.String(100),primary_key=True)
     jour_dispo = db.Column(db.String(100))# lundi,mardi ... PAS DIMANCHE
-    semaine_dispo = db.Column(db.Integer) # 1,2 jusqu'à 52
+    semestre_dispo = db.Column(db.Integer) # 1,2 jusqu'à 52
     periode_dispo = db.Column(db.Integer) # 1 ou 2 ou 3 ou 4, il y a 2 périodes par semestre
     heure_dispo_debut = db.Column(db.String(100)) # "14:30"
     heure_dispo_fin = db.Column(db.String(100)) # idem
     date_modif_dispo = db.Column(db.String(100))
     heure_modif_dispo = db.Column(db.String(100))
-    id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),nullable=False,unique=True)
+    id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),nullable=False)
 
-    def __init__(self,idd,j,s,p,hd,hf,idv,dmd,hmd):
+    def __init__(self,idd,idv,j,pA,pS,hd,hf,dmd,hmd):
         self.id_dispo = idd
         self.jour_dispo = j
-        self.semaine_dispo = s
-        self.periode_dispo = p
+        self.semestre_dispo = pS
+        self.periode_dispo = pA
         self.heure_dispo_debut = hd
         self.heure_dispo_fin = hf
         self.id_vacataire = idv
@@ -220,7 +220,7 @@ class Disponibilites(db.Model):
 
     def __str__(self):
         res = "Vacataire "+self.id_vacataire+" dispo. id : "+self.id_dispo+" : "+self.jour_dispo
-        res += " semaine "+self.semaine_dispo+" de la période "+self.periode_dispo
+        res += " semaine "+self.semestre_dispo+" de la période "+self.periode_dispo
         res += " disponible de "+self.heure_dispo_debut +" jusqu'à "+self.heure_dispo_fin
         res += "derniere modification le :"+self.date_modif_dispo+" à "+self.heure_modif_dispo+"\n"
         return res
@@ -249,3 +249,48 @@ def est_vacataire(user):
             return True
         
     return False
+
+def get_vacataire(id_vaca:int)->Vacataire:
+    """Retourne les informations d'un vacataire grâce à un identifiant donné.
+
+    Args:
+        id_vaca (int): L'identifiant du vacataire recherché.
+
+    Returns:
+        Vacataire: Le vacataire recherché.
+    """    
+    vacataires = Vacataire.query.all()
+    for vacataire in vacataires:
+        if vacataire.id_vacataire == id_vaca:
+            return vacataire
+    return None
+
+def actualiser_date_dossier(dossier:GererDossier):
+    """Actualise l'heure et la date de dernière modification du dossier du vacataire donné avec la date et l'heure actuelle.
+
+    Args:
+        dossier (GererDossier): Le dossier à mettre à jour.
+    """    
+    from datetime import date, datetime
+
+    date_actuelle = date.today()
+    heure_actuelle = datetime.now().strftime("%H:%M")
+    dossier.date_modif = date_actuelle
+    dossier.heure_modif = heure_actuelle
+
+    db.session.commit()
+
+def get_dossier(id_vaca:int)->GererDossier:
+    """Récupère les informations relatives à u
+
+    Args:
+        id_vaca (int): _description_
+
+    Returns:
+        GererDossier: _description_
+    """   
+    dossiers = GererDossier.query.all()
+    for dossier in dossiers:
+        if dossier.id_vacataire == id_vaca:
+            return dossier
+    return None

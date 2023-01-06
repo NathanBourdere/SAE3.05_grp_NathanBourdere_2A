@@ -3,229 +3,46 @@
 {{ super() }}
 <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
 <style>
-    #SQL {
-        background-color: #e47105;
+    li {
+        display: flex;
+        justify-content: center;
     }
 
-    #WEB {
-        background-color: blueviolet;
-    }
-
-    #Anglais {
-        background-color: brown;
-    }
-
-    #Python {
-        background-color: aqua;
+    h4 {
+        margin-right: 2em;
     }
 </style>
 {% endblock %}
 {% block scripts %}
-<script>
-    function detailHeure() {
-        let msg = 'SQL I22 8H-9H30 \nWEB I28 9H30-11H'
-        alert(msg)
-    }
-</script>
 {% endblock %}
 {% block contents %}
-<section id="table">
-    <h1>Mon emploi du temps</h1>
+<section id="dispos">
+    <h1>Choisir les disponibilites a supprimer</h1>
     <article>
-        <select nom="classe">
-            <option value="all">Tout afficher</option>
-            <option value="c1">11B</option>
-            <option value="c2">13A</option>
-            <option value="c3">22A</option>
-            <option value="c4">31A</option>
-        </select>
-        <table>
-            <tr>
-                <th>Jours/Heures</th>
-                <th>Lundi</th>
-                <th>Mardi</th>
-                <th>Mercredi</th>
-                <th>Jeudi</th>
-                <th>Vendredi</th>
-                <th>Samedi</th>
-            </tr>
-            <tr>
-                <td>8h</td>
-                <td id="SQL">
-                    <p>SQL I22</p>
-                </td>
-                <td></td>
-                <td></td>
-                <td id="Python">
-                    <p>Python I003</p>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>9h</td>
-                <td id="SQL">
-                    <a onclick="detailHeure()">
-                        <p>SQL I22</p>
-                        <p>WEB I28</p>
-                    </a>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>10h</td>
-                <td id="WEB">
-                    <p>WEB I28</p>
-                </td>
-                <td></td>
-                <td id="WEB">
-                    <p>WEB M002</p>
-                </td>
-                <td></td>
-                <td id="Anglais">
-                    <p>Anglais I003</p>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>11h</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td id="WEB">
-                    <p>WEB M002</p>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>12h</td>
-                <td></td>
-                <td id="Python">
-                    <p>Python I22</p>
-                </td>
-                <td id="Python">
-                    <p>Python I22</p>
-                </td>
-                <td id="SQL">
-                    <p>SQL I11</p>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>13h</td>
-                <td></td>
-                <td id="SQL">
-                    <p>SQL I003</p>
-                </td>
-                <td></td>
-                <td id="Anglais">
-                    <p>Anglais M002</p>
-                </td>
-                <td id="Anglais">
-                    <p>Anglais M002</p>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>14h</td>
-                <td></td>
-                <td></td>
-                <td id="SQL">
-                    <p>SQL I22</p>
-                </td>
-                <td></td>
-                <td id="WEB">
-                    <p>WEB I11</p>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>15h</td>
-                <td></td>
-                <td></td>
-                <td id="Python">
-                    <p>Python I003</p>
-                </td>
-                <td id="Python">
-                    <p>Python I003</p>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>16h</td>
-                <td></td>
-                <td></td>
-                <td id="SQL">
-                    <p>SQL I22</p>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>17h</td>
-                <td id="Anglais">
-                    <p>Anglais M002</p>
-                </td>
-                <td></td>
-                <td id="WEB">
-                    <p>WEB I11</p>
-                </td>
-                <td id="WEB">
-                    <p>WEB I11</p>
-                </td>
-                <td></td>
-                <td id="SQL">
-                    <p>SQL I22</p>
-                </td>
-            </tr>
-            <tr>
-                <td>18h</td>
-                <td></td>
-                <td></td>
-                <td id="Python">
-                    <p>Python I003</p>
-                </td>
-                <td></td>
-                <td id="Anglais">
-                    <p>Anglais I11</p>
-                </td>
-                <td id="Anglais">
-                    <p>Anglais I22</p>
-                </td>
-            </tr>
-            <tr>
-                <td>19h</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>20h</td>
-                <td></td>
-                <td></td>
-                <td id="WEB">
-                    <p>WEB M002</p>
-                </td>
-                <td></td>
-                <td id="Anglais">
-                    <p>Anglais I003</p>
-                </td>
-                <td id="Python">
-                    <p>Python I22</p>
-                </td>
-            </tr>
-        </table>
+        <form method="POST">
+            <section>
+                <h2>Mes périodes</h2>
+                {% for periode in liste_periodes %}
+                <ul>
+                    <li>
+                        <h4>Période {{periode[0]}} de l'année {{periode[1]}} le {{periode[2]}} de {{periode[3]}} à
+                            {{periode[4]}}</h4>
+                        <input type="checkbox" name="perio" value="{{periode}}">
+                    </li>
+                </ul>
+                {% endfor %}
+                <h2>Mes dates spécifiques</h2>
+                {% for date in liste_dates %}
+                <ul>
+                    <li>
+                        <h4>Le {{date[0]}} de {{date[1]}}h à {{date[2]}}h</h4>
+                        <input type="checkbox" name="dat" value="{{date}}">
+                    </li>
+                </ul>
+                {% endfor %}
+            </section>
+            <input type="submit" value="Enregistrer">
+        </form>
     </article>
 </section>
 {% endblock %}
