@@ -42,7 +42,8 @@
               <td>{{item.prenom_v}}</td>
               <td>{{item.mail_v}}</td>
               <td>{{item.num_tel_v}}</td>
-              <td>{{item.etat_dossier}}</td>
+              <td><a href="{{url_for('voir_dossier_vacataire', id=item.id_vacataire)}}">{{item.etat_dossier}}</a></td>
+              
             </tr>
             {% endfor %}
           </table>

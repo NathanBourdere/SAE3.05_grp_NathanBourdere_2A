@@ -37,7 +37,7 @@
         <input class="doc" type="text" name="adresse" placeholder="Vide" value="{{ info_vacataire.adresse_postale }}" disabled>
     </form>
     <p>Dernière modification: le {{ date_modif }} à {{ heure_modif }}</p>
-    {% if etat == "Complet" %}
+    {% if etat == "Complet" and admin_du_dossier == True %}
     <form method="POST">
         <input type="submit" value="Passer le dossier en VALIDE">
     {% endif %}
