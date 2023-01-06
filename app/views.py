@@ -285,9 +285,12 @@ def check_cours():
 @app.route('/dossier_vacataire/',)
 @login_required
 def edit_dossier():
-    etat_dossier_user = db.session.query(GererDossier.etat_dossier).filter(current_user.id_vacataire==GererDossier.id_vacataire).join(Vacataire,Vacataire.id_vacataire==GererDossier.id_vacataire).first()
-    date_fr_modif = db.session.query(GererDossier.date_modif,GererDossier.heure_modif).filter(current_user.id_vacataire==GererDossier.id_vacataire).join(Vacataire,Vacataire.id_vacataire==GererDossier.id_vacataire).first()
-    return render_template('dossier_vacataire.html',etat_doc=etat_dossier_user,date_modif=date_fr_modif)
+    vacataire = get_vacataire(current_user.id_vacataire)
+    dossier = get_dossier(current_user.id_vacataire)
+    if not vacataire is None:
+        return render_template("dossier_vacataire.html", etat_doc=dossier.etat_dossier, date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, nom_v=vacataire.nom_v, prenom_v=vacataire.prenom_v, ddn_v=vacataire.ddn_v, mail_v=vacataire.mail_v, num_tel_v=vacataire.num_tel_v, entreprise=vacataire.entreprise, nationnalite=vacataire.nationnalite, profession=vacataire.profession, meilleur_diplome=vacataire.meilleur_diplome, annee_obtiention=vacataire.annee_obtiention, adresse_postale=vacataire.adresse_postale)
+    else:
+        return render_template('dossier_vacataire.html',etat_doc=dossier.etat_dossier,date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, nom_v="", prenom_v="", ddn_v="", mail_v="", num_tel_v="", entreprise="", nationnalite="", profession="", meilleur_diplome="", annee_obtiention="", adresse_postale="")
 
 @app.route('/menu_vacataire/')
 @login_required
