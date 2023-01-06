@@ -1,19 +1,19 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, PasswordField, IntegerField, DateField ,validators, HiddenField
-from .models import Vacataire,PersonnelAdministratif,max_id_actuel
+from .models import Vacataire,PersonnelAdministratif, get_vacataire,max_id_actuel
 from hashlib import sha256
 
 class InscriptionVacataire(FlaskForm):
 
     login = StringField('Login')
-    nom = StringField('Nom')
-    prenom = StringField('Prenom')
-    email = StringField('E-mail', [validators.Length(min=6, max=35)])
-    tel = StringField('Téléphone', [validators.Length(min=6, max=35)])
-    ddn = DateField('Date De Naissance')
-    password = PasswordField('Password')
-    confirmation = PasswordField('Répétez le mot de passe')
-    entreprise = StringField('Entreprise')
+    nom = StringField('Nom', [validators.DataRequired(), validators.Length(min=1, max=35)])
+    prenom = StringField('Prenom', [validators.DataRequired(), validators.Length(min=1, max=35)])
+    email = StringField('E-mail', [validators.DataRequired(), validators.Length(min=6, max=35)])
+    tel = StringField('Téléphone', [validators.DataRequired(), validators.Length(min=6, max=35)])
+    ddn = DateField('Date De Naissance',[validators.DataRequired()])
+    password = PasswordField('Password',[validators.DataRequired(), validators.Length(min=1, max=35),validators.EqualTo('confirm', message='Passwords must match')])
+    confirmation = PasswordField('Répétez le mot de passe', [validators.DataRequired()])
+    entreprise = StringField('Entreprise', [validators.DataRequired(), validators.Length(min=1, max=35)])
     legal = BooleanField('')
     nationalite = StringField("Nationalité")
     profession = StringField("Profession")
@@ -21,8 +21,8 @@ class InscriptionVacataire(FlaskForm):
     annee_obtiention = StringField("Année d'obtiention de votre diplôme")
     adresse = StringField("Adresse")
 
-    def __init__(self,vacataire) -> None:
-        super().__init__()
+    def init(self,vacataire=None) -> None:
+        super().init()
         if vacataire is None:
             self.login.data = 'V'+max_id_actuel()
         else:
@@ -37,7 +37,6 @@ class InscriptionVacataire(FlaskForm):
         from datetime import datetime
 
         ddn_vacataire = datetime.strptime(vacataire.ddn_v, "%Y-%m-%d")
-
         self.nom.data = vacataire.nom_v
         self.prenom.data = vacataire.prenom_v
         self.email.data = vacataire.mail_v
