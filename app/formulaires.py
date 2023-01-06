@@ -9,21 +9,46 @@ class InscriptionVacataire(FlaskForm):
     nom = StringField('Nom')
     prenom = StringField('Prenom')
     email = StringField('E-mail', [validators.Length(min=6, max=35)])
-    tel = StringField('Telephone', [validators.Length(min=6, max=35)])
-    ddn = DateField('DateDeNaissance')
+    tel = StringField('Téléphone', [validators.Length(min=6, max=35)])
+    ddn = DateField('Date De Naissance')
     password = PasswordField('Password')
     confirmation = PasswordField('Répétez le mot de passe')
     entreprise = StringField('Entreprise')
-    legal = BooleanField('Mention Légale')
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.login.data = 'V'+max_id_actuel()
+    legal = BooleanField('')
+    nationalite = StringField("Nationalité")
+    profession = StringField("Profession")
+    meilleur_diplome = StringField("Diplôme")
+    annee_obtiention = StringField("Année d'obtiention de votre diplôme")
+    adresse = StringField("Adresse")
 
     def __init__(self,vacataire) -> None:
         super().__init__()
-        self.remplir_champ(vacataire)
+        if vacataire is None:
+            self.login.data = 'V'+max_id_actuel()
+        else:
+            self.remplir_champs(vacataire)
+    
+    def remplir_champs(self, vacataire:Vacataire) -> None:
+        """Permet de préremplir les champs du formulaire.
 
+        Args:
+            vacataire (Vacataire): Le vacataire dans lequel récupérer les informations.
+        """        
+        from datetime import datetime
+
+        ddn_vacataire = datetime.strptime(vacataire.ddn_v, "%Y-%m-%d")
+
+        self.nom.data = vacataire.nom_v
+        self.prenom.data = vacataire.prenom_v
+        self.email.data = vacataire.mail_v
+        self.tel.data = vacataire.num_tel_v
+        self.ddn.data = ddn_vacataire
+        self.entreprise.data = vacataire.entreprise
+        self.nationalite.data = vacataire.nationnalite
+        self.profession.data = vacataire.profession
+        self.meilleur_diplome.data = vacataire.meilleur_diplome
+        self.annee_obtiention.data = vacataire.annee_obtiention
+        self.adresse.data = vacataire.adresse
 
 class NewAccount(FlaskForm):
     login = StringField('Identifiant', [validators.Length(min=1)])

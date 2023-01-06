@@ -138,7 +138,7 @@ class Vacataire(UserMixin,db.Model):
     profession = db.Column(db.String(100),nullable=True)
     meilleur_diplome = db.Column(db.String(100),nullable=True)
     annee_obtiention = db.Column(db.String(100),nullable=True)
-    adresse_postale = db.Column(db.String(100),nullable=True)
+    adresse = db.Column(db.String(100),nullable=True)
 
     vacat_affectable = db.relationship("Affectable",back_populates="cours_affecter_vacataire",foreign_keys=[Affectable.id_vacataire])
     selfdossier = db.relationship("GererDossier", back_populates = "dossier_vacataire")
@@ -160,7 +160,7 @@ class Vacataire(UserMixin,db.Model):
         self.profession = profession
         self.meilleur_diplome = meilleur_diplome
         self.annee_obtiention = annee_obtention
-        self.adresse_postale = adresse_postale
+        self.adresse = adresse_postale
     
     def get_id(self):
         return (self.id_vacataire)
