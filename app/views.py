@@ -33,7 +33,6 @@ def matiere():
             (lstMat)
             for typeMat in db.session.query(Cours.id_cours, Cours.type_cours, Cours.nom_cours).filter(Cours.nom_cours.ilike(mat+"%")).group_by(Cours.nom_cours, Cours.type_cours).all():
                 try:
-                    ('test')
                     db.session.add(Affectable(current_user.id_vacataire,typeMat[0],typeMat[1],date.today(),datetime.now().strftime("%H:%M:%S")))
                     db.session.commit()
                 except Exception:
@@ -62,9 +61,8 @@ def matiere():
             matiere_verif.append(item[0][0])
         else:
             liste_final.remove(item)
-    dossierquery = db.session.query(GererDossier).filter(GererDossier.id_vacataire == current_user.id_vacataire).first()
-    actualiser_date_dossier(GererDossier(dossierquery.id_vacataire,dossierquery.id_pers_admin,dossierquery.etat_dossier,dossierquery.date_modif, dossierquery.heure_modif))
-    print(dossierquery.date_modif)
+    dossierquery = get_dossier(current_user.id_vacataire)
+    actualiser_date_dossier(dossierquery)
     return render_template('matiere.html', listeMatiere = liste_final, dateModif = dossierquery.date_modif, heuremodif = dossierquery.heure_modif)
 
 @app.route('/disponibilites/', methods=['GET','POST'])
