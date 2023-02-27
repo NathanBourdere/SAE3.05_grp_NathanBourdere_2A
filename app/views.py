@@ -269,17 +269,18 @@ def menu_vacataire():
 @app.route('/dossier/<id>/', methods=['GET', 'POST'])
 @login_required
 def voir_dossier_vacataire(id):
-    if request.method == 'POST':
-        dossier = get_dossier(id)
-        dossier.etat_dossier = "Validé"
-        db.session.commit()
-        return redirect(url_for('voir_dossier_vacataire', id=id))
-
     vacataire = Vacataire.query.filter_by(id_vacataire=id).first()
-    dossier = get_dossier(vacataire.id_vacataire)
+    dossier = get_dossier(id)
     droit_changement_dossier = False
     if current_user.id_pers_admin == dossier.id_pers_admin:
         droit_changement_dossier = True
+        
+    if request.method == 'POST':
+        actualiser_date_dossier(dossier)
+        dossier.etat_dossier = "Validé"
+        db.session.commit()
+        return render_template('voir_dossier.html', info_vacataire=vacataire, date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, etat=dossier.etat_dossier, admin_du_dossier=droit_changement_dossier)
+
     return render_template('voir_dossier.html', info_vacataire=vacataire, date_modif=dossier.date_modif, heure_modif=dossier.heure_modif, etat=dossier.etat_dossier, admin_du_dossier=droit_changement_dossier)
     
 @app.route("/logout/")
@@ -327,9 +328,6 @@ def load_edt():
         liste_periode = db.session.query(Disponibilites.semestre_dispo, Disponibilites.periode_dispo, Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo != -1).all()
         liste_dates = db.session.query(Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo == -1).all()
     return render_template("EDT.html",liste_periodes = liste_periode, liste_dates = liste_dates)
-
-
-
 
 @login_manager.user_loader
 def load_user(utilisateur_id):
