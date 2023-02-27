@@ -34,5 +34,4 @@ function ajouterMatiere() {
   console.log(strin)
   ul.innerHTML = strin
   matieres.appendChild(ul);
-  
 }

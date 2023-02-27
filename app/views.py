@@ -30,13 +30,13 @@ def matiere():
             except Exception as e:
                 loop = False
         for mat in lstMat:
-            for typeMat in db.session.query(Cours.id_cours, Cours.type_cours, Cours.nom_cours).filter(Cours.nom_cours == mat).group_by(Cours.nom_cours, Cours.type_cours).all():
+            (lstMat)
+            for typeMat in db.session.query(Cours.id_cours, Cours.type_cours, Cours.nom_cours).filter(Cours.nom_cours.ilike(mat+"%")).group_by(Cours.nom_cours, Cours.type_cours).all():
                 try:
                     db.session.add(Affectable(current_user.id_vacataire,typeMat[0],typeMat[1],date.today(),datetime.now().strftime("%H:%M:%S")))
                     db.session.commit()
-                except Exception as e:
-                    print(e)
-                    print("Erreur d'insertion, le vacataire est déjà affectable a la matiere " + mat)
+                except Exception:
+                    ("Erreur d'insertion, le vacataire est déjà affectable a la matiere " + mat)
         return render_template('menu_vacataire.html')
     lstAllMatiere = db.session.query(Cours.nom_cours).all()
     lstMatiereDispo = db.session.query(Cours.nom_cours, Affectable.id_vacataire, Cours.id_cours).filter(Affectable.id_vacataire == current_user.id_vacataire, Affectable.id_cours == Cours.id_cours).all()
@@ -55,8 +55,15 @@ def matiere():
         for matiere in lstAllMatiere:
             liste_intermediaire.append(matiere)
         liste_final.append(anti_doublons(liste_intermediaire))
-    print(liste_final)
-    return render_template('matiere.html', listeMatiere = liste_final)
+    matiere_verif = []
+    for item in liste_final:
+        if item[0][0] not in matiere_verif:
+            matiere_verif.append(item[0][0])
+        else:
+            liste_final.remove(item)
+    dossierquery = get_dossier(current_user.id_vacataire)
+    actualiser_date_dossier(dossierquery)
+    return render_template('matiere.html', listeMatiere = liste_final, dateModif = dossierquery.date_modif, heuremodif = dossierquery.heure_modif)
 
 @app.route('/disponibilites/', methods=['GET','POST'])
 @login_required
@@ -122,7 +129,6 @@ def profile():
 @login_required
 def check_doss():
     def listeFiltre(firstVariable):
-        print(firstVariable)
         if firstVariable == "Filtrer les dossiers ↓":
             return ["Filtrer les dossiers ↓","Distribué","Complet","Incomplet","Validé"]
         elif firstVariable == 'Distribué':
@@ -384,7 +390,12 @@ def encode_mdp(mdp:str)->str:
 
 def anti_doublons(liste):
     res = []
-    [res.append(x) for x in liste if x not in res]
+    liste_matieres = []
+    (liste)
+    for item in liste:
+        if item[0] not in liste_matieres:
+            res.append(item)
+            liste_matieres.append(item[0])
     return res
 
 def test_connection():
