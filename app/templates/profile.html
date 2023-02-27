@@ -6,6 +6,11 @@
 {% block scripts %}
 {{ super() }}
 {% endblock %}
+{% block logout %}
+<a href ="/logout/">
+    <img src="{{ url_for('static', filename='IMG/deconnexion.png')}}" alt="Icone de déconnexion" />
+</a>
+{% endblock %}
 {% block contents %}
             <section id="flexAvatar">
                 <article>

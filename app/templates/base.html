@@ -16,11 +16,10 @@
 {% endblock %}
   <body>
     <header>
-        {% if current_user.is_authenticated %}
-        <a href ="/logout/">
-            <img src="{{ url_for('static', filename='IMG/deconnexion.png')}}" alt="Icone de déconnexion" />
-        </a>
-        {% endif %}
+      {% block logout %}
+      {% endblock %}
+      {% block backwards %}
+      {% endblock %}
       <h1>Vacat'o</h1>
       {% if current_user.is_authenticated %}
       <a href="/profile/">
