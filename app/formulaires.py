@@ -21,14 +21,14 @@ class InscriptionVacataire(FlaskForm):
     annee_obtiention = StringField("Année d'obtiention de votre diplôme")
     adresse = StringField("Adresse")
 
-    def init(self,vacataire=None) -> None:
-        super().init()
+    def __init__(self,vacataire=None) -> None:
+        super().__init__()
         if vacataire is None:
             self.login.data = 'V'+max_id_actuel()
         else:
             self.remplir_champs(vacataire)
     
-    def remplir_champs(self, vacataire:Vacataire) -> None:
+    def remplir_champs(self, vacataire) -> None:
         """Permet de préremplir les champs du formulaire.
 
         Args:

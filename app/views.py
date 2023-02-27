@@ -214,7 +214,7 @@ def check_cours():
                         listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.salle).all()
     return render_template('recherche-cours.html',cours=listeCours,filtre=filtre,placeHolder=plh)           
 
-@app.route('/dossier_vacataire/',)
+@app.route('/dossier_vacataire/', methods=['GET', 'POST'])
 @login_required
 def edit_dossier():
     def ameliorer_format_date(date:str)->str:
@@ -328,6 +328,9 @@ def load_edt():
         liste_dates = db.session.query(Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo == -1).all()
     return render_template("EDT.html",liste_periodes = liste_periode, liste_dates = liste_dates)
 
+
+
+
 @login_manager.user_loader
 def load_user(utilisateur_id):
     if utilisateur_id[0] == 'V':
@@ -358,13 +361,13 @@ def max_id_actu():
     return str(id_max+1)
 
 def max_id_dispo():
+    x = db.session.query(Disponibilites.id_dispo).all()
     if x == None:
         return 0
-    x = db.session.query(Disponibilites.id_dispo).all()
     max = 0
-    for val in x.id_dispo:
-        if val>max:
-            max = val
+    for val in x:
+        if int(val[0])>max:
+            max = int(val[0])
     return max
 
 def encode_mdp(mdp:str)->str:
