@@ -4,10 +4,6 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, cur
 import os
 import csv
 
-# Suppression de l'ancienne BD
-if os.path.exists("../db.sqlite3"):
-  os.remove("../db.sqlite3")
-
 def mkpath(p):
     return os.path.normpath(os.path.join(os.path.dirname(__file__),p))
 

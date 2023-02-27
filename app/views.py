@@ -387,36 +387,5 @@ def anti_doublons(liste):
     [res.append(x) for x in liste if x not in res]
     return res
 
-def test_connection():
-    """
-        Insère les valeurs des CSV courants dans /data dans la base de données
-    """
-    listeCsv = ['admin.csv','vacataire.csv','dossier.csv','cours.csv','affectable.csv','assigner.csv']
-    for i in range(len(listeCsv)):
-        with open("static/data/"+listeCsv[i]) as data:
-            file_reader = csv.reader(data)
-            match(i):
-                case 0:
-                    for ligne in file_reader:
-                        db.session.add(PersonnelAdministratif(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
-                case 1:
-                    for ligne in file_reader:
-                        db.session.add(Vacataire(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7],ligne[8],ligne[9],ligne[10],ligne[11],ligne[12],ligne[13],ligne[14]))
-                case 2:
-                    for ligne in file_reader:
-                        db.session.add(GererDossier(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4]))
-                case 3:
-                    for ligne in file_reader:
-                        db.session.add(Cours(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5]))
-                case 4:
-                    for ligne in file_reader:
-                        db.session.add(Affectable(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4]))
-                case 5:
-                    for ligne in file_reader:
-                        db.session.add(Assigner(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
-            db.session.commit()
-
-test_connection()
-
 if __name__=="__main__":
     app.run(4095)
