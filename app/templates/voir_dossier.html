@@ -32,14 +32,19 @@
         <label>Votre Meilleur Diplome</label>
         <input class="doc" type="text" name="diplome" placeholder="Vide", value="{{ info_vacataire.meilleur_diplome }}" disabled>
         <label>Année d'obtention de ce diplome</label>
-        <input class="doc" type="date" name="anneeObtention" value="{{ info_vacataire.annee_obtiention }}" disabled>
+        <input class="doc" type="text" name="anneeObtention" value="{{ info_vacataire.annee_obtiention }}" disabled>
         <label>Votre Adresse Postale</label>
-        <input class="doc" type="text" name="adresse" placeholder="Vide" value="{{ info_vacataire.adresse_postale }}" disabled>
+        <input class="doc" type="text" name="adresse" placeholder="Vide" value="{{ info_vacataire.adresse }}" disabled>
     </form>
     <p>Dernière modification: le {{ date_modif }} à {{ heure_modif }}</p>
-    {% if etat == "Complet" and admin_du_dossier == True %}
+    {% if admin_du_dossier == True %}
     <form method="POST">
-        <input type="submit" value="Passer le dossier en VALIDE">
+        {%if etat == "Complet" %}
+                <input type="submit" value="Passer le dossier en VALIDE">
+        {% else %}
+                <input type="submit" value="Passer le dossier en VALIDE" disabled>
+        {% endif %}
+    </form>
     {% endif %}
 </section>
 {% endblock %}
