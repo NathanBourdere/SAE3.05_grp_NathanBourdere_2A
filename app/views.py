@@ -36,8 +36,7 @@ def matiere():
                     ('test')
                     db.session.add(Affectable(current_user.id_vacataire,typeMat[0],typeMat[1],date.today(),datetime.now().strftime("%H:%M:%S")))
                     db.session.commit()
-                except Exception as e:
-                    (e)
+                except Exception:
                     ("Erreur d'insertion, le vacataire est déjà affectable a la matiere " + mat)
         return render_template('menu_vacataire.html')
     lstAllMatiere = db.session.query(Cours.nom_cours).all()
@@ -63,7 +62,10 @@ def matiere():
             matiere_verif.append(item[0][0])
         else:
             liste_final.remove(item)
-    return render_template('matiere.html', listeMatiere = liste_final)
+    dossierquery = db.session.query(GererDossier).filter(GererDossier.id_vacataire == current_user.id_vacataire).first()
+    actualiser_date_dossier(GererDossier(dossierquery.id_vacataire,dossierquery.id_pers_admin,dossierquery.etat_dossier,dossierquery.date_modif, dossierquery.heure_modif))
+    print(dossierquery.date_modif)
+    return render_template('matiere.html', listeMatiere = liste_final, dateModif = dossierquery.date_modif, heuremodif = dossierquery.heure_modif)
 
 @app.route('/disponibilites/', methods=['GET','POST'])
 @login_required
