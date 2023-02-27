@@ -83,7 +83,7 @@ class PersonnelAdministratif(UserMixin,db.Model):
 
 
 class Affectable(db.Model):
-    tablename__ = "Affectable"
+    __tablename__ = "Affectable"
 
     id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),primary_key=True)
     id_cours = db.Column(db.String(100),db.ForeignKey("Cours.id_cours"),primary_key=True)

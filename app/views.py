@@ -252,10 +252,30 @@ def edit_dossier():
         res = jour + "/" + mois + "/" + annee
 
         return res
-    
+
     vacataire = get_vacataire(current_user.id_vacataire)
-    acc = InscriptionVacataire(vacataire)
     dossier = get_dossier(current_user.id_vacataire)
+
+    if request.method == 'POST':
+        vacataire.entreprise = request.form["entreprise"]
+        vacataire.nom_v = request.form["nom"]
+        vacataire.prenom_v = request.form["prenom"]
+        vacataire.num_tel_v = request.form["tel"]
+        vacataire.ddn_v = request.form["ddn"]
+        vacataire.mail_v = request.form["email"]
+        vacataire.mdp_v = encode_mdp(request.form["password"])
+        vacataire.nationnalite = request.form["nationnalite"]
+        vacataire.profession = request.form["profession"]
+        vacataire.meilleur_diplome = request.form["meilleur_diplome"]
+        vacataire.annee_obtiention = request.form["annee_obtention"]
+        vacataire.adresse = request.form["adresse"]
+
+        db.session.commit()
+
+        actualiser_date_dossier(dossier)
+        
+        return redirect(url_for("/menu_vacataire/"))
+    acc = InscriptionVacataire(vacataire)
     date_modif_dossier = ameliorer_format_date(dossier.date_modif)
     return render_template("dossier_vacataire.html", form=acc, dossier=dossier, date_modif_dossier=date_modif_dossier)
 
