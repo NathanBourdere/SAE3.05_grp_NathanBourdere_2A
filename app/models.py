@@ -166,6 +166,11 @@ class Vacataire(UserMixin,db.Model):
     
     def get_id(self):
         return (self.id_vacataire)
+    
+    def is_filled(self):
+        if self.entreprise == None or self.nom_v == None or self.prenom_v == None or self.num_tel_v == None or self.mail_v == None or self.nationnalite == None or self.adresse == None or self.annee_obtiention == None or self.ddn_v == None or self.legal == 0 or self.profession == None or self.meilleur_diplome == None:
+            return False
+        return True
 
     def __str__(self):
         return "Vacataire : "+" "+self.id_vacataire+" "+self.nom_v+" "+self.prenom_v+" né(e) le "+self.ddn_v+" mail : "+self.mail_v+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)+" de l'entreprise "+self.entreprise
@@ -329,9 +334,16 @@ def searchCours(tri, filtre, search=""):
     else:
           return db.session.query(Vacataire.nom_v, Vacataire.prenom_v, Cours.nom_cours, Cours.type_cours, Cours.duree_cours, Assigner.date_cours, Assigner.heure_cours, Assigner.classe, Assigner.salle).filter(Vacataire.prenom_v.ilike("%"+search+"%"),Cours.nom_cours == tri).join(Assigner, Assigner.id_vacataire == Vacataire.id_vacataire).join(Cours, Cours.id_cours == Assigner.id_cours).order_by(Cours.nom_cours).all()
 
+def editeur_auto_doc(dossier,vacataire):
+    if vacataire.is_filled():
+        if dossier.etat_dossier == "Incomplet" or dossier.etat_dossier == "Distribué":
+            dossier.etat_dossier = "Complet"
+    else:
+        if dossier.etat_dossier != "Validé":
+            dossier.etat_dossier = "Incomplet"
+    db.session.commit()
 
 def update_dossier_vac(vac,nom=None,prenom=None,tel=None,ddn=None,mail=None,entreprise=None,nationalite=None,profession=None,diplome=None,annee_obtiention=None,adr=None,legal=None):
-    print("jsp")
     if nom != None:
         vac.nom_v = nom
     if prenom != None:
@@ -345,7 +357,7 @@ def update_dossier_vac(vac,nom=None,prenom=None,tel=None,ddn=None,mail=None,entr
     if entreprise != None:
         vac.entreprise = entreprise
     if nationalite != None:
-        vac.nationalite = nationalite
+        vac.nationnalite = nationalite
     if profession != None:
         vac.profession = profession
     if diplome != None:
