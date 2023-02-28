@@ -328,8 +328,13 @@ def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓"
             case "Trier les dossiers ↓":
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
 
+def searchCours(tri, filtre, search=""):
+    if filtre == 'Nom':
+        return db.session.query(Vacataire.nom_v, Vacataire.prenom_v, Cours.nom_cours, Cours.type_cours, Cours.duree_cours, Assigner.date_cours, Assigner.heure_cours, Assigner.classe, Assigner.salle).filter(Vacataire.nom_v.ilike("%"+search+"%"),Cours.nom_cours == tri).join(Assigner, Assigner.id_vacataire == Vacataire.id_vacataire).join(Cours, Cours.id_cours == Assigner.id_cours).order_by(Cours.nom_cours).all()
+    else:
+          return db.session.query(Vacataire.nom_v, Vacataire.prenom_v, Cours.nom_cours, Cours.type_cours, Cours.duree_cours, Assigner.date_cours, Assigner.heure_cours, Assigner.classe, Assigner.salle).filter(Vacataire.prenom_v.ilike("%"+search+"%"),Cours.nom_cours == tri).join(Assigner, Assigner.id_vacataire == Vacataire.id_vacataire).join(Cours, Cours.id_cours == Assigner.id_cours).order_by(Cours.nom_cours).all()
+
 def editeur_auto_doc(dossier,vacataire):
-    print(vacataire.is_filled())
     if vacataire.is_filled():
         if dossier.etat_dossier == "Incomplet" or dossier.etat_dossier == "Distribué":
             dossier.etat_dossier = "Complet"
