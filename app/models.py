@@ -348,34 +348,10 @@ def editeur_auto_doc(dossier,vacataire):
             dossier.etat_dossier = "Incomplet"
     db.session.commit()
 
-def update_dossier_vac(vac,nom=None,prenom=None,tel=None,ddn=None,mail=None,entreprise=None,nationalite=None,profession=None,diplome=None,annee_obtiention=None,adr=None,legal=None):
-    if nom != None:
-        vac.nom_v = nom
-    if prenom != None:
-        vac.prenom_v = prenom
-    if tel != None:
-        vac.num_tel_v = tel
-    if ddn != None:
-        vac.ddn_v = ddn
-    if mail != None:
-        vac.mail_v = mail
-    if entreprise != None:
-        vac.entreprise = entreprise
-    if nationalite != None:
-        vac.nationnalite = nationalite
-    if profession != None:
-        vac.profession = profession
-    if diplome != None:
-        vac.meilleur_diplome = diplome
-    if annee_obtiention != None:
-        vac.annee_obtiention = annee_obtiention
-    if adr != None:
-        vac.adresse = adr
-    if legal != None:
-        vac.legal = 1
-    else :
-        vac.legal = 0
-    
+def update_dossier_vac(vac, **kwargs):
+    for key, value in kwargs.items():
+        if hasattr(vac, key) and value is not None:
+            setattr(vac, key, value)
     db.session.commit()
 
 def saler_mot_de_passe(mot_de_passe, sel=None):
@@ -388,10 +364,9 @@ def saler_mot_de_passe(mot_de_passe, sel=None):
         sel = os.urandom(16) # Générer un sel aléatoire de 16 octets
 
     mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
-    sel_encode = sel.encode('utf-8') # Convertir le sel en bytes
 
     # Concaténer le sel et le mot de passe
-    mot_de_passe_sel = mot_de_passe_encode + sel_encode
+    mot_de_passe_sel = mot_de_passe_encode + sel
 
     # Calculer le haché du mot de passe salé
     hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
@@ -405,10 +380,9 @@ def verifier_mot_de_passe(mot_de_passe, sel, hache_stocke):
     et renvoie True si le mot de passe fourni correspond à celui stocké, False sinon.
     """
     mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
-    sel_encode = sel.encode('utf-8') # Convertir le sel en bytes
 
     # Concaténer le sel et le mot de passe
-    mot_de_passe_sel = mot_de_passe_encode + sel_encode
+    mot_de_passe_sel = mot_de_passe_encode + sel
 
     # Calculer le haché du mot de passe salé
     hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
