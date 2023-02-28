@@ -168,9 +168,8 @@ class Vacataire(UserMixin,db.Model):
         return (self.id_vacataire)
     
     def is_filled(self):
-        if self.entreprise == "" or self.nom_v == "" or self.prenom_v == "" or self.num_tel_v == "" or self.mail_v == "" or self.nationnalite == "" or self.adresse == "" or self.annee_obtiention == "" or self.ddn_v == "" or self.legal == 0 or self.profession == "" or self.meilleur_diplome == "":
-            return False
-        return True
+        return all([getattr(self, attr) != "" for attr in ['entreprise', 'nom_v', 'prenom_v', 'num_tel_v', 'mail_v', 'nationnalite', 'adresse', 
+                                            'annee_obtiention', 'ddn_v', 'profession', 'meilleur_diplome']]) and self.legal == 1
 
     def __str__(self):
         return "Vacataire : "+" "+self.id_vacataire+" "+self.nom_v+" "+self.prenom_v+" né(e) le "+self.ddn_v+" mail : "+self.mail_v+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)+" de l'entreprise "+self.entreprise
