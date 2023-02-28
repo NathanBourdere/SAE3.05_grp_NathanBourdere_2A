@@ -17,6 +17,10 @@
       <article>
         <form method="POST">
           <input type="text" name="search" placeholder="{{placeHolder}}" />
+          <select name="nick">
+            <option value="nom">Nom</option>
+            <option value="prenom">Prenom</option>
+          </select>
           <select name="infos">
             {% for f in filtre %}
             <option value="{{f}}">{{f}}</option>
@@ -40,13 +44,13 @@
             </tr>
             {% for item in cours %}
             <tr>
-              <td>{{item[3]}}</td>
+              <td>{{item[0]}}</td>
+              <td>{{item[1]}}</td>
               <td>{{item[2]}}</td>
-              <td>{{item[4]}}</td>
-              <td>{{item[5]}}</td>
-              <td>{{item[6]}}min</td>
-              <td>{{item[0]}}-{{item[7]}}h</td>
-              <td>{{item[8]}}/{{item[9]}}</td>
+              <td>{{item[3]}}</td>
+              <td>{{item[4]}}min</td>
+              <td>{{item[5]}}-{{item[6]}}h</td>
+              <td>{{item[7]}}/{{item[8]}}</td>
             </tr>
             {% endfor %}
           </table>
