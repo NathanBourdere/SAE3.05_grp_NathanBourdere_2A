@@ -36,6 +36,7 @@ class InscriptionVacataire(FlaskForm):
         """        
         from datetime import datetime
 
+        print(vacataire.ddn_v)
         ddn_vacataire = datetime.strptime(vacataire.ddn_v, "%Y-%m-%d")
         self.nom.data = vacataire.nom_v
         self.prenom.data = vacataire.prenom_v
@@ -48,6 +49,10 @@ class InscriptionVacataire(FlaskForm):
         self.meilleur_diplome.data = vacataire.meilleur_diplome
         self.annee_obtiention.data = vacataire.annee_obtiention
         self.adresse.data = vacataire.adresse
+        if vacataire.legal == 0:
+            self.legal.data = False
+        else :
+            self.legal.data = True
 
 class NewAccount(FlaskForm):
     login = StringField('Identifiant', [validators.Length(min=1)])

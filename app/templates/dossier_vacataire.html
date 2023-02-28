@@ -5,15 +5,13 @@
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='JS/verifAge.js')}}"></script>
-<script>
-</script>
 {% endblock %}
 {% block contents %}
 <section id="flexAvatar">
   <h2>Votre Dossier</h2>
   <label>Etat du dossier : {{ dossier.etat_dossier }}</label>
   <br>
-  <form name=”formulaireTD1” method=”POST”>
+  <form method="POST" action="{{url_for('edit_dossier')}}">
   <ol>
     <li class="doc">
       {{ form.nom.label }}
@@ -92,7 +90,7 @@
       perte d’emploi au cours de l’année universitaire)</li>
   </ol>
     <br>
-    <input type="submit" value="Enregistrer" method="POST" id="submitter">
+    <input type="submit" value="Enregistrer">
   </form>
   <p>Dernière modification: le {{ date_modif_dossier }} à {{ dossier.heure_modif }}</p>
 </section>
