@@ -139,6 +139,7 @@ class Vacataire(UserMixin,db.Model):
     meilleur_diplome = db.Column(db.String(100),nullable=True)
     annee_obtiention = db.Column(db.String(100),nullable=True)
     adresse = db.Column(db.String(100),nullable=True)
+    legal = db.Column(db.Integer,nullable=True)
 
     vacat_affectable = db.relationship("Affectable",back_populates="cours_affecter_vacataire",foreign_keys=[Affectable.id_vacataire])
     selfdossier = db.relationship("GererDossier", back_populates = "dossier_vacataire")
@@ -161,6 +162,7 @@ class Vacataire(UserMixin,db.Model):
         self.meilleur_diplome = meilleur_diplome
         self.annee_obtiention = annee_obtention
         self.adresse = adresse_postale
+        self.legal = 0
     
     def get_id(self):
         return (self.id_vacataire)
@@ -320,3 +322,35 @@ def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓"
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.etat_dossier).all()
             case "Trier les dossiers ↓":
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
+
+
+def update_dossier_vac(vac,nom=None,prenom=None,tel=None,ddn=None,mail=None,entreprise=None,nationalite=None,profession=None,diplome=None,annee_obtiention=None,adr=None,legal=None):
+    print("jsp")
+    if nom != None:
+        vac.nom_v = nom
+    if prenom != None:
+        vac.prenom_v = prenom
+    if tel != None:
+        vac.num_tel_v = tel
+    if ddn != None:
+        vac.ddn_v = ddn
+    if mail != None:
+        vac.mail_v = mail
+    if entreprise != None:
+        vac.entreprise = entreprise
+    if nationalite != None:
+        vac.nationalite = nationalite
+    if profession != None:
+        vac.profession = profession
+    if diplome != None:
+        vac.meilleur_diplome = diplome
+    if annee_obtiention != None:
+        vac.annee_obtiention = annee_obtiention
+    if adr != None:
+        vac.adresse = adr
+    if legal != None:
+        vac.legal = 1
+    else :
+        vac.legal = 0
+    
+    db.session.commit()

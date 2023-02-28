@@ -220,52 +220,25 @@ def check_cours():
                         listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.salle).all()
     return render_template('recherche-cours.html',cours=listeCours,filtre=filtre,placeHolder=plh)           
 
-@app.route('/dossier_vacataire/', methods=['GET', 'POST'])
+@app.route('/dossier_vacataire/', methods=['GET','POST',])
+@login_required
+def dossier_vacataire():
+    vacataire = get_vacataire(current_user.id_vacataire)
+    dossier = get_dossier(current_user.id_vacataire)
+    acc = InscriptionVacataire(vacataire)
+    return render_template("dossier_vacataire.html", form=acc, dossier=dossier, date_modif_dossier=dossier.date_modif)
+
+@app.route('/edit_dossier_vacataire/', methods=['GET','POST',])
 @login_required
 def edit_dossier():
-    def ameliorer_format_date(date:str)->str:
-        """Permet de mettre une date sous une meilleure forme.
-
-        Args:
-            date (str): Une date sous la forme AAAA-MM-JJ
-
-        Returns:
-            str: Une date sous la forme JJ/MM/AAAA
-        """        
-        res = ""
-        annee = ""
-        mois = ""
-        jour = ""
-
-        # Enlever les "-"
-        for char in date:
-            if char!="-":
-                res+=char
-        
-        # Isoler l'année dans une variable
-        for i in range(0,4):
-            annee+=res[i]
-
-        # Isoler le mois dans une variable
-        for i in range(4,6):
-            mois+=res[i]
-
-        #Isoler le jour dans une variable
-        for  i in range(6,8):
-            jour+=res[i]
-
-        # Reconstruire la date dans res
-        res = jour + "/" + mois + "/" + annee
-
-        return res
-    
     vacataire = get_vacataire(current_user.id_vacataire)
-    acc = InscriptionVacataire(vacataire)
     dossier = get_dossier(current_user.id_vacataire)
-    date_modif_dossier = ameliorer_format_date(dossier.date_modif)
-    return render_template("dossier_vacataire.html", form=acc, dossier=dossier, date_modif_dossier=date_modif_dossier)
-
-    
+    form = InscriptionVacataire(vacataire)    
+    if request.method=="POST":
+        update_dossier_vac(vacataire,request.form["nom"],request.form["prenom"],request.form["tel"],request.form["ddn"],request.form["email"],request.form["entreprise"],request.form["nationalite"],request.form["profession"],request.form["meilleur_diplome"],request.form["annee_obtiention"],request.form["adresse"],request.form.get("legal"))
+        actualiser_date_dossier(dossier)   
+        return redirect(url_for("menu_vacataire"))
+    return render_template("dossier_vacataire.html", form=form, dossier=dossier, date_modif_dossier=dossier.date_modif)
 
 @app.route('/menu_vacataire/')
 @login_required
