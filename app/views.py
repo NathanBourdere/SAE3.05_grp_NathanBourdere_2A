@@ -3,7 +3,7 @@ from datetime import date, datetime
 import time
 from .formulaires import *
 from .app import db,app
-from flask import render_template,url_for,redirect,request
+from flask import flash, render_template,url_for,redirect,request
 from .models import *
 import csv
 from flask_login import login_user, current_user, logout_user,login_required
@@ -100,7 +100,7 @@ def disponibilites():
 @app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
 def new_vaca():
     form = InscriptionVacataire()
-    if request.method == "POST":
+    if request.method == "POST" and form.validate():
         id = max_id_actuel()
         vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
         date_actuelle = date.today()
