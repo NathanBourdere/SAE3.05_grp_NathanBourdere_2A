@@ -36,7 +36,6 @@ class InscriptionVacataire(FlaskForm):
         """        
         from datetime import datetime
 
-        print(vacataire.ddn_v)
         ddn_vacataire = datetime.strptime(vacataire.ddn_v, "%Y-%m-%d")
         self.nom.data = vacataire.nom_v
         self.prenom.data = vacataire.prenom_v
