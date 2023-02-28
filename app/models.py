@@ -168,7 +168,7 @@ class Vacataire(UserMixin,db.Model):
         return (self.id_vacataire)
     
     def is_filled(self):
-        if self.entreprise == None or self.nom_v == None or self.prenom_v == None or self.num_tel_v == None or self.mail_v == None or self.nationnalite == None or self.adresse == None or self.annee_obtiention == None or self.ddn_v == None or self.legal == 0 or self.profession == None or self.meilleur_diplome == None:
+        if self.entreprise == "" or self.nom_v == "" or self.prenom_v == "" or self.num_tel_v == "" or self.mail_v == "" or self.nationnalite == "" or self.adresse == "" or self.annee_obtiention == "" or self.ddn_v == "" or self.legal == 0 or self.profession == "" or self.meilleur_diplome == "":
             return False
         return True
 
