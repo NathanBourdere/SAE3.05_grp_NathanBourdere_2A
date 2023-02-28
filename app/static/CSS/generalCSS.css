@@ -192,3 +192,31 @@ select {
     text-align: center;
     margin-bottom: 1em;
 }
+
+ul {
+    display: flex;
+}
+
+li {
+    margin: 2%;
+}
+
+#head_periodes {
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    margin-left: 41%;
+    margin-right: 41%;
+    align-items: center;
+}
+
+.dispo {
+    background-color: #CAD2D2;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    margin: 3%;
+    margin-left: 20%;
+    margin-right: 20%;
+    padding-left: 1%;
+    padding-right: 1%;
+}

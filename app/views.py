@@ -14,6 +14,13 @@ from .models import searchDossier
 # Initialisation des routes
 @app.route('/')
 def home():
+    if current_user.is_authenticated:
+        # si c'est un admin
+        if current_user.id_pers_admin:
+            return redirect(url_for('menu_admin'))
+        # si c'est un vacataire
+        else:
+            return redirect(url_for('menu_vacataire'))
     return render_template('main.html')
 
 @app.route('/matieres/', methods=['GET','POST'])
