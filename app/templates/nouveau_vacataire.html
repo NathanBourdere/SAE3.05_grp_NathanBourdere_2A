@@ -2,7 +2,7 @@
 {% block styles %}
 {{ super() }}
 <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
-    <style>
+    <!-- <style>
       input[type="submit"] {
         display: none;
       }
@@ -47,11 +47,11 @@
           opacity: 0;
         }
       }
-    </style>
+    </style> -->
 {% endblock %}
 {% block scripts %}
 {{ super() }}
-<script>
+<!-- <script>
   $("body").on("change", function () {
     verif = true;
     let lst = $("article ol li input");
@@ -73,7 +73,7 @@
       $("#submit").css("display", "none");
     }
   });
-</script>
+</script> -->
 {% endblock %}
 {% block contents %}
 <h1>Inscrire un nouveau vacataire</h1>
