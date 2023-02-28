@@ -236,7 +236,8 @@ def edit_dossier():
     form = InscriptionVacataire(vacataire)    
     if request.method=="POST":
         update_dossier_vac(vacataire,request.form["nom"],request.form["prenom"],request.form["tel"],request.form["ddn"],request.form["email"],request.form["entreprise"],request.form["nationalite"],request.form["profession"],request.form["meilleur_diplome"],request.form["annee_obtiention"],request.form["adresse"],request.form.get("legal"))
-        actualiser_date_dossier(dossier)   
+        actualiser_date_dossier(dossier)
+        editeur_auto_doc(dossier,vacataire)   
         return redirect(url_for("menu_vacataire"))
     return render_template("dossier_vacataire.html", form=form, dossier=dossier, date_modif_dossier=dossier.date_modif)
 
