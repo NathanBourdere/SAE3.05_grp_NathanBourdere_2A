@@ -22,6 +22,11 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='JS/matieres.js')}}"></script>
 {% endblock %}
+{% block backwards %}
+<a href="/menu_vacataire/">
+    <img src="../static/IMG/back.png" alt="retour arriere">
+</a>
+{% endblock %}
 {% block contents %}
 <h1>Vos matières</h1>
 <section>

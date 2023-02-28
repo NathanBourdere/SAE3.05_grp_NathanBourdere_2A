@@ -122,8 +122,8 @@ def menu_admin():
 @login_required
 def profile():
     if est_vacataire(current_user):
-        return render_template('profile.html',profile_nom=current_user.nom_v, profile_prenom=current_user.prenom_v, profile_email=current_user.mail_v, profile_tel=current_user.num_tel_v)
-    return render_template('profile.html',profile_nom=current_user.nom_pa, profile_prenom=current_user.prenom_pa, profile_email=current_user.mail_pa, profile_tel=current_user.num_tel_pa)
+        return render_template('profile.html',profile_nom=current_user.nom_v, profile_prenom=current_user.prenom_v, profile_email=current_user.mail_v, profile_tel=current_user.num_tel_v, idUser = current_user.id_vacataire)
+    return render_template('profile.html',profile_nom=current_user.nom_pa, profile_prenom=current_user.prenom_pa, profile_email=current_user.mail_pa, profile_tel=current_user.num_tel_pa, idUser = current_user.id_pers_admin)
 
 @app.route('/recherche-dossiers/',methods=['GET', 'POST'])
 @login_required

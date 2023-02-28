@@ -32,6 +32,11 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='JS/disponibilites.js')}}"></script>
 {% endblock %}
+{% block backwards %}
+<a href="/menu_vacataire/">
+    <img src="../static/IMG/back.png" alt="retour arriere">
+</a>
+{% endblock %}
 {% block contents %}
 <h1>Vos Disponibilités</h1>
         <section>
