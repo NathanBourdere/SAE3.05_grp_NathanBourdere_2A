@@ -11,6 +11,17 @@
     <img src="{{ url_for('static', filename='IMG/deconnexion.png')}}" alt="Icone de déconnexion" />
 </a>
 {% endblock %}
+{% block backwards_profile %}
+{% if idUser[0] == 'V' %}
+<a href="/menu_vacataire/">
+    <img src="../static/IMG/back.png" alt="retour arriere">
+</a>
+{% else %}
+<a href="/menu_admin/">
+    <img src="../static/IMG/back.png" alt="retour arriere">
+</a>
+{% endif %}
+{% endblock %}
 {% block contents %}
             <section id="flexAvatar">
                 <article>
@@ -20,15 +31,6 @@
                         <li><label for="mdp">Email: {{ profile_email }}</label></li>
                         <li><label for="mdp">Telephone:{{ profile_tel }}</label></li>
                     </ol>
-                    <a href="/matieres/">
-                        <input type="button" value="Modifier les matières renseignées">
-                    </a>
-                    <a href="/disponibilites/">
-                        <input type="button" value="Modifier les disponibilités">
-                    </a>
                 </article>
             </section>
-            <a href="/logout/">
-                <input type="button" value="Changer mon mot de passe">
-            </a>
 {% endblock %}
