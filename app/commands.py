@@ -2,8 +2,23 @@ import click
 from .app import app,db
 import os
 from .models import *
+from .views import max_id_actu
 import csv
 
+@app.cli.command()
+@click.argument('family_name')
+@click.argument('name')
+@click.argument('tel')
+@click.argument('ddn')
+@click.argument('mail')
+@click.argument('mdp')
+def new_pers_admin(family_name,name,tel,ddn,mail,mdp):
+    """Créer un nouveau compte de personnel administratif"""
+    vrai_sel,hache = saler_mot_de_passe(mdp)
+    admin = PersonnelAdministratif('A'+max_id_actu(),family_name,name,tel,ddn,mail,hache,vrai_sel)
+    db.session.add(admin)
+    db.session.commit()
+    
 @app.cli.command()
 def init_db():
     """Initialiser la base de données avec des tables vides."""
