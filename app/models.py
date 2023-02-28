@@ -1,6 +1,8 @@
 from yaml import *
-from .app import db, login_manager
+from .app import db,login_manager
 from flask_login import UserMixin
+import hashlib
+import os 
 
 # Initialisation des tables ORM
 
@@ -57,16 +59,17 @@ class PersonnelAdministratif(UserMixin,db.Model):
     __tablename__ = 'PersonnelAdministratif'
 
     id_pers_admin = db.Column(db.String(100),primary_key=True,nullable=False)
+    cds_pa = db.Column(db.Binary(16), nullable=False) #cds = couche de sécurité, le sel
     nom_pa = db.Column(db.String(100))
     prenom_pa = db.Column(db.String(100))
     num_tel_pa = db.Column(db.String(100),unique=True)
     ddn_pa = db.Column(db.String(100))
     mail_pa = db.Column(db.String(100),unique=True)
-    mdp_pa = db.Column(db.String(100))
+    mdp_pa = db.Column(db.String(200))
 
     gerant_dossier = db.relationship("GererDossier", back_populates = "personnel_admin")
 
-    def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp):
+    def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp,cds):
         self.id_pers_admin = idpa
         self.nom_pa = nom
         self.prenom_pa = pnom
@@ -74,6 +77,7 @@ class PersonnelAdministratif(UserMixin,db.Model):
         self.ddn_pa = ddn
         self.mail_pa = mail
         self.mdp_pa = mdp
+        self.cds_pa = cds
 
     def get_id(self):
            return (self.id_pers_admin)
@@ -125,6 +129,7 @@ class Vacataire(UserMixin,db.Model):
     __tablename__ = "Vacataire"
 
     id_vacataire = db.Column(db.String(100),primary_key=True)
+    cds_v = db.Column(db.Binary(16), nullable=False) #cds = couche de sécurité, le sel
     candidature = db.Column(db.String(100),nullable=False) 
     ancien = db.Column(db.Integer) #0 ou 1
     entreprise = db.Column(db.String(100),nullable=True)
@@ -133,7 +138,7 @@ class Vacataire(UserMixin,db.Model):
     num_tel_v = db.Column(db.String(100),unique=True)
     ddn_v = db.Column(db.String(100),nullable=True)
     mail_v = db.Column(db.String(100),unique=True)
-    mdp_v = db.Column(db.String(100),nullable=True)
+    mdp_v = db.Column(db.String(200),nullable=True)
     nationnalite = db.Column(db.String(100),nullable=True)
     profession = db.Column(db.String(100),nullable=True)
     meilleur_diplome = db.Column(db.String(100),nullable=True)
@@ -146,7 +151,7 @@ class Vacataire(UserMixin,db.Model):
     vacataire_assignee = db.relationship("Assigner", back_populates ="cours_a_vacataire")
     dispo = db.relationship("Disponibilites", backref = "vacataire")
 
-    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp,nationnalite,profession,meilleur_diplome,annee_obtention,adresse_postale):
+    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp,nationnalite,profession,meilleur_diplome,annee_obtention,adresse_postale,cds):
         self.id_vacataire = idv
         self.candidature = candidature
         self.entreprise = ent
@@ -163,13 +168,14 @@ class Vacataire(UserMixin,db.Model):
         self.annee_obtiention = annee_obtention
         self.adresse = adresse_postale
         self.legal = 0
+        self.cds_v = cds
     
     def get_id(self):
         return (self.id_vacataire)
     
     def is_filled(self):
-        return all([getattr(self, attr) != "" for attr in ['entreprise', 'nom_v', 'prenom_v', 'num_tel_v', 'mail_v', 'nationnalite', 'adresse', 
-                                            'annee_obtiention', 'ddn_v', 'profession', 'meilleur_diplome']]) and self.legal == 1
+        return all([getattr(self, attr) != "" for attr in ['entreprise', 'nom_v', 'prenom_v', 'num_tel_v', 'mail_v', 
+        'nationnalite', 'adresse','annee_obtiention', 'ddn_v', 'profession', 'meilleur_diplome']]) and self.legal == 1
 
     def __str__(self):
         return "Vacataire : "+" "+self.id_vacataire+" "+self.nom_v+" "+self.prenom_v+" né(e) le "+self.ddn_v+" mail : "+self.mail_v+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)+" de l'entreprise "+self.entreprise
@@ -371,3 +377,41 @@ def update_dossier_vac(vac,nom=None,prenom=None,tel=None,ddn=None,mail=None,entr
         vac.legal = 0
     
     db.session.commit()
+
+def saler_mot_de_passe(mot_de_passe, sel=None):
+    """
+    Cette fonction prend en entrée un mot de passe et un sel (facultatif), 
+    et renvoie le mot de passe salé en utilisant la fonction de hachage SHA-256.
+    Si aucun sel n'est fourni, un sel aléatoire est généré.
+    """
+    if sel is None:
+        sel = os.urandom(16) # Générer un sel aléatoire de 16 octets
+
+    mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
+    sel_encode = sel.encode('utf-8') # Convertir le sel en bytes
+
+    # Concaténer le sel et le mot de passe
+    mot_de_passe_sel = mot_de_passe_encode + sel_encode
+
+    # Calculer le haché du mot de passe salé
+    hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
+
+    # Retourner le sel et le haché du mot de passe salé
+    return (sel, hache)
+
+def verifier_mot_de_passe(mot_de_passe, sel, hache_stocke):
+    """
+    Cette fonction prend en entrée un mot de passe, un sel et le haché stocké dans la base de données,
+    et renvoie True si le mot de passe fourni correspond à celui stocké, False sinon.
+    """
+    mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
+    sel_encode = sel.encode('utf-8') # Convertir le sel en bytes
+
+    # Concaténer le sel et le mot de passe
+    mot_de_passe_sel = mot_de_passe_encode + sel_encode
+
+    # Calculer le haché du mot de passe salé
+    hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
+
+    # Vérifier si le haché calculé correspond à celui stocké dans la base de données
+    return hache == hache_stocke
