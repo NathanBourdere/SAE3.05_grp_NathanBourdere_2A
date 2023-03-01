@@ -127,6 +127,10 @@ def new_vaca():
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenom_pa + " " + current_user.nom_pa)
 
+@app.route('/assigner_matieres/<int:id>')
+@login_required
+def assigner_matieres(id_v):
+    return render_template('assigner_matieres.html',id=id_v)
 @app.route('/profile/')
 @login_required
 def profile():

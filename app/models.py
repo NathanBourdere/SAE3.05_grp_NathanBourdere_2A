@@ -57,6 +57,27 @@ class Assigner(db.Model):
     def __str__(self):
         return "Le vacataire "+self.id_vacataire+" est assigné au cours "+self.type_cours+" "+self.id_cours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",str(self.date_cours)+" à "+str(self.heure_cours)
 
+class Domaine(db.Model):
+    __tablename__ = "Domaine"
+
+    id_domaine = db.Column(db.String(100),primary_key=True)
+    domaine = db.Column(db.String(100),nullable=False)
+    description = db.Column(db.String(3500),nullable=False)
+    responsable = db.Column(db.String(100),db.ForeignKey("PersonnelAdministratif.id_pers_admin"),nullable=False)
+    
+    le_cours = db.relationship("Cours", backref = "cours")
+    pers_admin = db.relationship("PersonnelAdministratif",back_populates="responsable_dom")
+
+    def __init__(self,id,nomdom,description,resp):
+        self.id_domaine = id
+        self.domaine = nomdom
+        self.description = description
+        self.responsable = resp
+
+    
+    def __str__(self):
+        return "Le domaine "+self.domaine+" est sous la responsabilité de "+self.responsable
+
 class PersonnelAdministratif(UserMixin,db.Model):
     __tablename__ = 'PersonnelAdministratif'
 
@@ -69,6 +90,7 @@ class PersonnelAdministratif(UserMixin,db.Model):
     mail_pa = db.Column(db.String(100),unique=True)
     mdp_pa = db.Column(db.String(200))
 
+    responsable_dom = db.relationship("Domaine", back_populates = "pers_admin",foreign_keys=[Domaine.responsable])
     gerant_dossier = db.relationship("GererDossier", back_populates = "personnel_admin")
 
     def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp,cds):
@@ -111,21 +133,6 @@ class Affectable(db.Model):
     def __str__(self):
         return "Le vacataire "+self.id_vacataire+" est assigné au cours "+self.type_cours+" "+self.id_cours+" dernière modif : "+self.date_modif_matiere+" "+self.heure_modif_matiere
 
-class Domaine(db.Model):
-    __tablename__ = "Domaine"
-
-    domaine = db.Column(db.String(100),primary_key=True)
-    responsable = db.Column(db.String(100),nullable=False)
-
-    le_cours = db.relationship("Cours", backref = "cours")
-
-    def __init__(self,nomdom,resp):
-        self.domaine = nomdom
-        self.responsable = resp
-
-    
-    def __str__(self):
-        return "Le domaine "+self.domaine+" est sous la responsabilité de "+self.responsable
 
 class Vacataire(UserMixin,db.Model):
     __tablename__ = "Vacataire"
