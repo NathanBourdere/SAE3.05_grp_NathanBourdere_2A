@@ -24,6 +24,10 @@ def home():
             return redirect(url_for('menu_vacataire'))
     return render_template('main.html')
 
+@app.route('/credits/')
+def credits():
+    return render_template('credits.html')
+    
 @app.route('/matieres/', methods=['GET','POST'])
 @login_required
 def matiere():

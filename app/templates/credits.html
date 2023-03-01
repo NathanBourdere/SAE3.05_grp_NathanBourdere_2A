@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+<style>
+    main {
+        align-items: center;
+    }
+</style>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+{% block contents %}
+        <h2>Créateurs du site Vacat'O</h1>
+        <section class ="credits">
+            <img  src="{{ url_for('static', filename='IMG/Nathan_Bourdere.png') }}" alt="Image de Nathan Bourdere">
+            <div class="infosPers">
+                <h2>Nathan Bourdere - Chef d'équipe</h2>
+                <p>Développeur Back-End/Responsable BD</p>
+            </div>
+        </section>
+        <section class ="credits">
+            <img  src="{{ url_for('static', filename='IMG/Theo_Viard.png') }}" alt="Image de Théo Viard">
+            <div class="infosPers">
+                <h2>Théo Viard</h2>
+                <p>Développeur Front-End/Back-End</p>
+            </div>
+        </section>
+        <section class ="credits">
+            <img  src="{{ url_for('static', filename='IMG/Constantin_Loszach.png') }}" alt="Image de Constantin Loszach">
+            <div class="infosPers">
+                <h2>Constantin Loszach</h2>
+                <p>Développeur Back-End/Agenceur des données</p>
+            </div>
+        </section>
+        <section class ="credits">
+            <img  src="{{ url_for('static', filename='IMG/Bryan_Blin.png') }}" alt="Image de Bryan Blin--Dorard">
+            <div class="infosPers">
+                <h2>Bryan Blin--Dorard</h2>
+                <p>Développeur Front-End/Templates Designer</p>
+            </div>
+        </section>
+        <h3>Les logiciels et les cathédrales, c'est un peu la même chose - d'abord on les construit, ensuite on prie.</h3>
+{% endblock %}
