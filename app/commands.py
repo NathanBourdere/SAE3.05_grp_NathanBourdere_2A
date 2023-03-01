@@ -43,7 +43,7 @@ def feed_db():
     if not os.path.exists("../db.sqlite3"):
         db.create_all()
 
-    listeCsv = ['admin.csv','vacataire.csv','dossier.csv','cours.csv','affectable.csv','assigner.csv']
+    listeCsv = ['admin.csv','vacataire.csv','dossier.csv','cours.csv','affectable.csv','assigner.csv','matieres.csv']
     for i in range(len(listeCsv)):
         with open("static/data/"+listeCsv[i]) as data:
             file_reader = csv.reader(data)
@@ -66,4 +66,7 @@ def feed_db():
                 case 5:
                     for ligne in file_reader:
                         db.session.add(Assigner(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
+                case 6:
+                    for ligne in file_reader:
+                        db.session.add(Domaine(ligne[0],ligne[1],ligne[2],ligne[3]))
             db.session.commit()

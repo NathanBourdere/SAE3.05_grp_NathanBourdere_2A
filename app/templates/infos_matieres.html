@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='JS/verifAge.js')}}"></script>
+{% endblock %}
+{% block backwards %}
+<a href="/menu_vacataire/">
+    <img src="../static/IMG/back.png" alt="retour arriere">
+</a>
+{% endblock %}
+{% block contents %}
+<section id="flexAvatar">
+</section>
+<h1>{{domaine.domaine}}</h1>
+<h2>{{domaine.id_domaine}}</h2>
+<p>{{domaine.description}}</p>
+{% endblock %}

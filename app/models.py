@@ -57,6 +57,27 @@ class Assigner(db.Model):
     def __str__(self):
         return "Le vacataire "+self.id_vacataire+" est assigné au cours "+self.type_cours+" "+self.id_cours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",str(self.date_cours)+" à "+str(self.heure_cours)
 
+class Domaine(db.Model):
+    __tablename__ = "Domaine"
+
+    id_domaine = db.Column(db.String(100),primary_key=True)
+    domaine = db.Column(db.String(100),nullable=False)
+    description = db.Column(db.String(3500),nullable=False)
+    responsable = db.Column(db.String(100),db.ForeignKey("PersonnelAdministratif.id_pers_admin"),nullable=False)
+    
+    le_cours = db.relationship("Cours", backref = "cours")
+    pers_admin = db.relationship("PersonnelAdministratif",back_populates="responsable_dom")
+
+    def __init__(self,id,nomdom,description,resp):
+        self.id_domaine = id
+        self.domaine = nomdom
+        self.description = description
+        self.responsable = resp
+
+    
+    def __str__(self):
+        return "Le domaine "+self.domaine+" est sous la responsabilité de "+self.responsable
+
 class PersonnelAdministratif(UserMixin,db.Model):
     __tablename__ = 'PersonnelAdministratif'
 
@@ -69,6 +90,7 @@ class PersonnelAdministratif(UserMixin,db.Model):
     mail_pa = db.Column(db.String(100),unique=True)
     mdp_pa = db.Column(db.String(200))
 
+    responsable_dom = db.relationship("Domaine", back_populates = "pers_admin",foreign_keys=[Domaine.responsable])
     gerant_dossier = db.relationship("GererDossier", back_populates = "personnel_admin")
 
     def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp,cds):
@@ -111,21 +133,6 @@ class Affectable(db.Model):
     def __str__(self):
         return "Le vacataire "+self.id_vacataire+" est assigné au cours "+self.type_cours+" "+self.id_cours+" dernière modif : "+self.date_modif_matiere+" "+self.heure_modif_matiere
 
-class Domaine(db.Model):
-    __tablename__ = "Domaine"
-
-    domaine = db.Column(db.String(100),primary_key=True)
-    responsable = db.Column(db.String(100),nullable=False)
-
-    le_cours = db.relationship("Cours", backref = "cours")
-
-    def __init__(self,nomdom,resp):
-        self.domaine = nomdom
-        self.responsable = resp
-
-    
-    def __str__(self):
-        return "Le domaine "+self.domaine+" est sous la responsabilité de "+self.responsable
 
 class Vacataire(UserMixin,db.Model):
     __tablename__ = "Vacataire"
@@ -309,19 +316,33 @@ def get_dossier(id_vaca:int)->GererDossier:
             return dossier
     return None
 
+def searchDomaine(tri="ne pas trier",search=""):
+    filtre = Domaine.id_domaine
+    match(tri):
+        case "Identifiant":
+            filtre = Domaine.id_domaine
+        case "Domaine":
+            filtre = Domaine.domaine
+        case "Responsable":
+            filtre = Domaine.responsable
+        case "Ne pas trier":
+            return db.session.query(Domaine.id_domaine,Domaine.domaine,Domaine.responsable, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).all()
+    return db.session.query(Domaine.id_domaine,Domaine.domaine, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).filter(filtre.ilike("%"+search+"%")).order_by(filtre).all()
+
 def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓",search=""):
     if filtre == "Filtrer les dossiers ↓":
         match(tri):
             case "Nom":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.nom_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.nom_v).all()
+                orderR = Vacataire.nom_v
             case "Prenom":
-                  return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.prenom_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.prenom_v).all()
+                orderR = Vacataire.prenom_v
             case "Telephone":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.num_tel_v).all()
+                orderR = Vacataire.num_tel_v
             case "Status":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(GererDossier.etat_dossier).all()
+                orderR = GererDossier.etat_dossier
             case "Trier les dossiers ↓":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
+                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all() 
+        return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(orderR.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(orderR).all()    
     else:
         match(tri):
             case "Nom":
@@ -331,7 +352,7 @@ def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓"
             case "Telephone":
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.num_tel_v).all()
             case "Status":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.etat_dossier).all()
+                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(GererDossier.etat_dossier).all()
             case "Trier les dossiers ↓":
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
 
@@ -369,7 +390,7 @@ def saler_mot_de_passe(mot_de_passe, sel=None):
     hex_str = sel.hex()
 
     # Réencode les bytes en UTF-8
-    sel_utf = hex_str.encode('utf-8') # Générer un sel aléatoire de 16 octets
+    sel_utf = hex_str.encode('utf-8')
 
     mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
     # Concaténer le sel et le mot de passe
@@ -394,7 +415,15 @@ def verifier_mot_de_passe(mot_de_passe, sel, hache_stocke):
 
     # Calculer le haché du mot de passe salé
     hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
-    print(hache)
-    print(hache_stocke)
+
     # Vérifier si le haché calculé correspond à celui stocké dans la base de données
     return hache == hache_stocke
+
+def get_domaines():
+    return Domaine.query.all()
+
+def get_domaine(id):
+    return Domaine.query.get(id)
+
+def get_dispos(vaca):
+    return Disponibilites.query.get(Disponibilites.id_vacataire==vaca.id_vacataire).all()
