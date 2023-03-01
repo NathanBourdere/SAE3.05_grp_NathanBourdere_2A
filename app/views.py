@@ -350,6 +350,15 @@ def load_edt():
         liste_dates = db.session.query(Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo == -1).all()
     return render_template("EDT.html",liste_periodes = liste_periode, liste_dates = liste_dates)
 
+@app.route('/changer_mdp/', methods=["GET", "POST"])
+@login_required
+def changer_mdp():
+    form = NouveauMDP()
+    if request.method == "POST":
+        nouveau_mot_de_passe = form.nouveau_mdp.data
+        print(current_user)
+    return render_template("changer_mdp.html", form=form)
+
 @login_manager.user_loader
 def load_user(utilisateur_id):
     if utilisateur_id[0] == 'V':

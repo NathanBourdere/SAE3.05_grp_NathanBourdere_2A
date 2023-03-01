@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    function verifierChamps() {
+
+    }
+</script>
+{% endblock %}
+{% block backwards %}
+<a href="/profile/">
+    <img src="{{ url_for('static', filename='IMG/back.png') }}" alt="retour arriere">
+</a>
+{% endblock %}
+{% block contents %}
+    <form method="POST">
+        <section>
+            <article>
+                <h3>Changer mon mot de passe</h3>
+                {{ form.hidden_tag()}}
+                <ol>
+                    <li>
+                        {{ form.mdp_actuel.label }}
+                        {{ form.mdp_actuel }}
+                    </li>
+                    <li>
+                        {{ form.nouveau_mdp.label }}
+                        {{ form.nouveau_mdp }}
+                    </li>
+                    <li>
+                        {{ form.confirmation.label }}
+                        {{ form.confirmation }}
+                    </li>
+                </ol>
+            </article>
+            <input type="submit" value="Changer mon mot de passe" onclick="verifierChamps()">
+        </section>
+    </form>
+{% endblock %}
