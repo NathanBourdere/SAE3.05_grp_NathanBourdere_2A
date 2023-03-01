@@ -7,7 +7,7 @@ Vous trouverez ci-dessous tous les liens utiles en rapport avec le projet.
 Le manuel utilisateur donne la description et le guidage nécessaires pour prendre en main le site Vacat'O quel que soit le type de personne l'utilisant (administrateur ou vacataire).
 
 ### [Dossier partagé Google Drive](https://drive.google.com/drive/folders/1n3ntdANdTEU4EXUBkdOFUPeqhCDqvSGY?usp=sharing)
-Le dossier partagé Google Drive regroupe toutes les ressources du projet. Il contient les rapports, les exports et les sauvegardes du digramme de Gantt, les diagrammes conçus lors de l'analyse comme le diagramme des cas d'utilisation ou le modèle conceptuel des données, le cahier des charges, le sujet de ce projet ou encore les rapports écris demandé par le corps professeur. Pour avoir accès au dossier partagé il n'y a pas forcément besoin de se connecter à Google. N'importe qui peut le consulter mais ne peut en rien modifier quoi que ce soit.
+Le dossier partagé Google Drive regroupe toutes les ressources du projet. Il contient les rapports, les exports et les sauvegardes du diagramme de Gantt, les diagrammes conçus lors de l'analyse comme le diagramme des cas d'utilisation ou le modèle conceptuel des données, le cahier des charges, le sujet de ce projet ou encore les rapports écris demandé par le corps professeur. Pour avoir accès au dossier partagé il n'y a pas forcément besoin de se connecter à Google. N'importe qui peut le consulter mais ne peut en rien modifier quoi que ce soit.
 
 ### [Maquettes sur Figma](https://www.figma.com/file/6Ac3W80ETHOQVFtlyHYx3N/Vacataire?node-id=0%3A1)
 Figma est un site que nous avons utilisé pour faire les maquettes du site Vacat'O et nous donner une idée de l'orientation front-end lors de l'implémentation des templates HTML.
