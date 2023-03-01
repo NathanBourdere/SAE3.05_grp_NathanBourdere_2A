@@ -110,7 +110,8 @@ def new_vaca():
     form = InscriptionVacataire()
     if request.method == "POST":
         id = max_id_actuel()
-        vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
+        cds,mdp = saler_mot_de_passe(form.password.data)
+        vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,mdp,"","","","","",cds)
         date_actuelle = date.today()
         heure_actuelle = datetime.now().strftime("%H:%M")
         dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
@@ -200,7 +201,19 @@ def edit_dossier():
     dossier = get_dossier(current_user.id_vacataire)
     form = InscriptionVacataire(vacataire)    
     if request.method=="POST":
-        update_dossier_vac(vacataire,request.form["nom"],request.form["prenom"],request.form["tel"],request.form["ddn"],request.form["email"],request.form["entreprise"],request.form["nationalite"],request.form["profession"],request.form["meilleur_diplome"],request.form["annee_obtiention"],request.form["adresse"],request.form.get("legal"))
+        update_dossier_vac(vacataire,
+                   nom=request.form.get("nom"),
+                   prenom=request.form.get("prenom"),
+                   tel=request.form.get("tel"),
+                   ddn=request.form.get("ddn"),
+                   mail=request.form.get("email"),
+                   entreprise=request.form.get("entreprise"),
+                   nationalite=request.form.get("nationalite"),
+                   profession=request.form.get("profession"),
+                   diplome=request.form.get("meilleur_diplome"),
+                   annee_obtiention=request.form.get("annee_obtiention"),
+                   adr=request.form.get("adresse"),
+                   legal=request.form.get("legal"))
         actualiser_date_dossier(dossier)
         editeur_auto_doc(dossier,vacataire)   
         return redirect(url_for("menu_vacataire"))
@@ -231,10 +244,6 @@ def voir_dossier_vacataire(id):
 @app.route("/logout/")
 def logout():
     logout_user()
-    #on attends d'abord que l'utilisateur soit bien déconnecté avant de redirect
-    while True:
-        if not current_user.is_authenticated:
-            break
     return redirect(url_for('home'))
     
 @app.route('/login/', methods= ['GET', 'POST'])
@@ -312,20 +321,6 @@ def max_id_dispo():
         if int(val[0])>max:
             max = int(val[0])
     return max
-
-def encode_mdp(mdp:str)->str:
-    """Permet d'encoder un mot de passe donné avec sha256.
-
-    Args:
-        mdp (str): Une chaine de caractères représentant un mot de passe.
-
-    Returns:
-        str: Une chaine de caractères représentant un mot de passe chiffré.
-    """ 
-    from hashlib import sha256
-    m = sha256()
-    m.update(mdp.encode())
-    return m.hexdigest()
 
 def anti_doublons(liste):
     res = []
