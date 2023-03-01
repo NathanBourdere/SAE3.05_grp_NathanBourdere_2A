@@ -64,7 +64,6 @@ class Domaine(db.Model):
     domaine = db.Column(db.String(100),nullable=False)
     description = db.Column(db.String(3500),nullable=False)
     responsable = db.Column(db.String(100),db.ForeignKey("PersonnelAdministratif.id_pers_admin"),nullable=False)
-    
     le_cours = db.relationship("Cours", backref = "cours")
     pers_admin = db.relationship("PersonnelAdministratif",back_populates="responsable_dom")
 
@@ -192,12 +191,11 @@ class Vacataire(UserMixin,db.Model):
 class Cours(db.Model):
     __tablename__= "Cours"
 
-    id_cours = db.Column(db.String(100),primary_key=True)
+    id_cours = db.Column(db.String(100),db.ForeignKey("Domaine.id_domaine"),primary_key=True)
     type_cours = db.Column(db.String(100),primary_key=True)
     nom_cours = db.Column(db.String(100),nullable=False)
     heures_totales = db.Column(db.Integer)
     duree_cours = db.Column(db.Integer)
-    domaine = db.Column(db.String(100),db.ForeignKey("Domaine.domaine"),nullable=False)
 
     cours_assignee_id = db.relationship("Assigner",back_populates="assigner_cours_id", foreign_keys=[Assigner.id_cours])
     cours_assignee_type = db.relationship("Assigner",back_populates="assigner_cours_type", foreign_keys=[Assigner.type_cours])
@@ -427,3 +425,6 @@ def get_domaine(id):
 
 def get_dispos(vaca):
     return Disponibilites.query.get(Disponibilites.id_vacataire==vaca.id_vacataire).all()
+
+def get_affectables(vaca):
+    return Affectable.query.get(Affectable.id_vacataire==vaca.id_vacataire).all()
