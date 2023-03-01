@@ -7,15 +7,6 @@
         display: flex;
         justify-content: center;
     }
-
-    li {
-        margin: 2%;
-    }
-
-    article,
-    ul {
-        border: solid 1px;
-    }
 </style>
 {% endblock %}
 {% block scripts %}
@@ -31,19 +22,19 @@
 <h1>Vos matières</h1>
 <section>
     <form method="POST">
-        <article>
+        <article id="containerMatiere">
             <div id="matieres">
                 {% for i in range(0, listeMatiere|length) %}
                 <ul>
                     <li>
-                        <select name="listes_matieres{{i}}">
+                        <select id="pimpSelect" name="listes_matieres{{i}}">
                             {% for matiere in listeMatiere[i] %}
                             <option value={{matiere[0]}}>{{matiere[0]}}</option>
                             {% endfor %}
                         </select>
                     </li>
                     <li>
-                        <button id="BP{{i}}" onclick="supprimerMatiere('BP{{i}}')">Supprimer</button>
+                        <button class="deleteButton" id="BP{{i}}" onclick="supprimerMatiere('BP{{i}}')">❌</button>
                     </li>
                 </ul>
                 {% endfor %}

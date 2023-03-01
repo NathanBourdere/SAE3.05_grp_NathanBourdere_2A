@@ -124,6 +124,7 @@ input[type="date"] {
     border-top: none;
     border-left: none;
     border-right: none;
+    margin-top: 10%;
 }
 
 input[type="text"]:focus,
@@ -182,15 +183,14 @@ input[type="submit"]:hover {
     transition-duration: .1s;
 }
 
-select {
-    padding: 0.3rem 0rem 0.3rem 0.3rem;
-    font-weight: 500;
-    border-radius: 6px;
-}
 
 .doc {
     text-align: center;
     margin-bottom: 1em;
+}
+
+.doc > input {
+    margin-top: -5%;
 }
 
 ul {
@@ -220,3 +220,48 @@ li {
     padding-left: 1%;
     padding-right: 1%;
 }
+
+
+
+#pimpSelect {
+    background-color: #0563af;
+    color: white;
+    padding: 12px;
+    width: 250px;
+    border: none;
+    font-size: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: button;
+    appearance: button;
+    outline: none;
+}
+
+#pimpSelectDispo {
+    background-color: #0563af;
+    color: white;
+    padding: 12px;
+    width: 100px;
+    border: none;
+    font-size: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: button;
+    appearance: button;
+    outline: none;
+}
+
+.deleteButton {
+    background-color: transparent;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    border: none;
+}
+
+#periodes > ul > li:nth-child(2n) {
+    margin-top: 4%;
+}
+
+#dates_spe > ul > li:nth-child(2n) {
+    margin-top: 4%;
+}
+
+

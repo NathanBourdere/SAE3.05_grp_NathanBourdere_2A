@@ -3,7 +3,7 @@ from datetime import date, datetime
 import time
 from .formulaires import *
 from .app import db,app
-from flask import render_template,url_for,redirect,request
+from flask import flash, render_template,url_for,redirect,request
 from .models import *
 import csv
 from flask_login import login_user, current_user, logout_user,login_required
@@ -77,6 +77,30 @@ def matiere():
     actualiser_date_dossier(dossierquery)
     return render_template('matiere.html', listeMatiere = liste_final, dateModif = dossierquery.date_modif, heuremodif = dossierquery.heure_modif)
 
+@app.route('/assigner_vacataire/', methods=['GET','POST'])
+@login_required
+def select_vacataire():
+    def listeTri(firstVariable):
+        if firstVariable == "Trier les dossiers ↓":
+            return ['Trier les dossiers ↓','Nom','Prenom','Telephone','Status']
+        elif firstVariable == 'Nom':
+            return ['Nom','Prenom','Telephone','Status','Trier les dossiers ↓']
+        elif firstVariable == 'Prenom':
+            return ['Prenom','Nom','Telephone','Status','Trier les dossiers ↓']
+        elif firstVariable == 'Telephone':
+            return ['Telephone','Nom','Prenom','Status','Trier les dossiers ↓']
+        else:
+            return ['Status','Nom','Prenom','Telephone','Trier les dossiers ↓']
+            
+    liste_vaca = db.session.query(Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).filter(GererDossier.etat_dossier.ilike("%Valid%")).all()
+    text_place = "Veuillez sélectionner une méthode de tri..."
+    if request.method == "POST":
+        liste_de_tri = listeTri(request.form['tri'])
+        liste_vaca = searchDossier(request.form['tri'],"Filtrer les dossiers ↓",request.form['search'])
+        return render_template('recherche-vacataire.html',vaca=liste_vaca,tri=liste_de_tri,placeHold=text_place)
+    return render_template('recherche-vacataire.html',vaca=liste_vaca,tri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Status'],placeHold=text_place)  
+
+
 @app.route('/disponibilites/', methods=['GET','POST'])
 @login_required
 def disponibilites():
@@ -114,22 +138,59 @@ def new_vaca():
     form = InscriptionVacataire()
     if request.method == "POST":
         id = max_id_actuel()
-        vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
-        date_actuelle = date.today()
-        heure_actuelle = datetime.now().strftime("%H:%M")
-        dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
-        db.session.add(vac)
-        db.session.add(dossier)
-        db.session.commit()
-        return redirect(url_for('menu_admin'))
+        try:
+            vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","",cds)
+            date_actuelle = date.today()
+            heure_actuelle = datetime.now().strftime("%H:%M")
+            dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
+            db.session.add(vac)
+            db.session.add(dossier)
+            db.session.commit()
+            return redirect(url_for('menu_admin'))
+        except:
+            flash("Le numéro de téléphone ou l'adresse email est déjà utilisée, veuillez vérifier vos infromations")
     return render_template('nouveau_vacataire.html', form = form)
 
 
-@app.route('/menu_admin/')
+@app.route('/menu_admin/') 
 @login_required
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenom_pa + " " + current_user.nom_pa)
 
+@app.route('/assigner_matieres/<id_v>', methods= ['GET', 'POST'])
+@login_required
+def assigner_matieres(id_v):
+    def listeTri(firstVariable):
+        if firstVariable == 'Identifiant':
+            return ["Identifiant","Domaine","Responsable","Ne pas trier"]
+        elif firstVariable == 'Domaine':
+            return ["Domaine","Identifiant","Responsable","Ne pas trier"]
+        elif firstVariable == 'Responsable':
+            return ["Responsable","Identifiant","Domaine","Ne pas trier"]
+        else:
+            return ["Ne pas trier","Identifiant","Domaine","Responsable"]        
+    text_place = "Veuillez sélectionner une méthode de tri..."
+    liste_de_tri = ["Ne pas trier","Identifiant","Domaine","Responsable"] 
+    if request.method == "POST":
+        liste_de_tri = listeTri(request.form['tri'])
+        matieres = searchDomaine(request.form['tri'],request.form['search'])
+    elif request.method == "GET":
+        matieres = searchDomaine()
+    return render_template('assigner_matieres.html',id_vacataire=id_v,domaine=matieres,text_place = text_place,liste_de_tri = liste_de_tri)
+
+@app.route('/info_domaine/<idM>', methods= ['GET'])
+@login_required
+def voir_infos(idM,idV=""):
+    domaine = get_domaine(idM)
+    return render_template('infos_matieres.html',domaine=domaine,idv=idV)
+
+@app.route('/edit_assignement/<id_v>/<id_m>',methods= ['GET', 'POST'])
+@login_required
+def edit_assignement(id_v,id_m):
+    vaca = get_vacataire(id_v)
+    dispos = get_dispos(vaca)
+    
+    return render_template("edit_assignement.html",v=vaca,m=get_domaine(id_m),dispos=dispos)
 @app.route('/profile/')
 @login_required
 def profile():
@@ -204,7 +265,19 @@ def edit_dossier():
     dossier = get_dossier(current_user.id_vacataire)
     form = InscriptionVacataire(vacataire)    
     if request.method=="POST":
-        update_dossier_vac(vacataire,request.form["nom"],request.form["prenom"],request.form["tel"],request.form["ddn"],request.form["email"],request.form["entreprise"],request.form["nationalite"],request.form["profession"],request.form["meilleur_diplome"],request.form["annee_obtiention"],request.form["adresse"],request.form.get("legal"))
+        update_dossier_vac(vacataire,
+                   nom=request.form.get("nom"),
+                   prenom=request.form.get("prenom"),
+                   tel=request.form.get("tel"),
+                   ddn=request.form.get("ddn"),
+                   mail=request.form.get("email"),
+                   entreprise=request.form.get("entreprise"),
+                   nationalite=request.form.get("nationalite"),
+                   profession=request.form.get("profession"),
+                   diplome=request.form.get("meilleur_diplome"),
+                   annee_obtiention=request.form.get("annee_obtiention"),
+                   adr=request.form.get("adresse"),
+                   legal=request.form.get("legal"))
         actualiser_date_dossier(dossier)
         editeur_auto_doc(dossier,vacataire)   
         return redirect(url_for("menu_vacataire"))
@@ -235,10 +308,6 @@ def voir_dossier_vacataire(id):
 @app.route("/logout/")
 def logout():
     logout_user()
-    #on attends d'abord que l'utilisateur soit bien déconnecté avant de redirect
-    while True:
-        if not current_user.is_authenticated:
-            break
     return redirect(url_for('home'))
     
 @app.route('/login/', methods= ['GET', 'POST'])
@@ -272,7 +341,7 @@ def load_edt():
             Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.semestre_dispo == periode[0], Disponibilites.periode_dispo == periode[1], Disponibilites.jour_dispo == periode[2], Disponibilites.heure_dispo_debut == periode[3], Disponibilites.heure_dispo_fin == periode[4]).delete()
         for date in request.form.getlist('dat'):
             date = ast.literal_eval(date)
-            Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.periode_dispo == -1, Disponibilites.jour_dispo == date[0], Disponibilites.heure_dispo_debut == date[1], Disponibilites.heure_dispo_fin == date[2])
+            Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.periode_dispo == -1, Disponibilites.jour_dispo == date[0], Disponibilites.heure_dispo_debut == date[1], Disponibilites.heure_dispo_fin == date[2]).delete()
         db.session.commit()
         liste_periode = db.session.query(Disponibilites.semestre_dispo, Disponibilites.periode_dispo, Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo != -1).all()
         liste_dates = db.session.query(Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo == -1).all()
@@ -316,20 +385,6 @@ def max_id_dispo():
         if int(val[0])>max:
             max = int(val[0])
     return max
-
-def encode_mdp(mdp:str)->str:
-    """Permet d'encoder un mot de passe donné avec sha256.
-
-    Args:
-        mdp (str): Une chaine de caractères représentant un mot de passe.
-
-    Returns:
-        str: Une chaine de caractères représentant un mot de passe chiffré.
-    """ 
-    from hashlib import sha256
-    m = sha256()
-    m.update(mdp.encode())
-    return m.hexdigest()
 
 def anti_doublons(liste):
     res = []

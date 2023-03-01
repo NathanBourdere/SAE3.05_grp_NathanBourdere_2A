@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='JS/verifAge.js')}}"></script>
+{% endblock %}
+{% block backwards %}
+<a href="/menu_vacataire/">
+    <img src="../static/IMG/back.png" alt="retour arriere">
+</a>
+{% endblock %}
+{% block contents %}
+<article>
+    <form method="POST">
+        <input type="text" name="search" placeholder="{{placeHold}}" />
+        <select name="tri">
+            {% for t in liste_de_tri %}
+            <option value="{{t}}">{{t}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit">
+    </form>
+</article>
+<article id="table">
+    <table>
+        <table id="table">
+            <tr>
+                <td>ID</td>
+                <td>Nom</td>
+                <td>Responsable Module</td>
+                <td>Affectable</td>
+            </tr>
+            {% for item in domaine %}
+            <tr>
+                <td><a href="{{url_for('voir_infos', idM=item.id_domaine)}}">{{item.id_domaine}}</a></td>
+                <td>{{item.domaine}}</td>
+                <td>{{item.nom_pa}} {{item.prenom_pa}}</td>
+                <td><a href="{{url_for('edit_assignement', id_v=id_vacataire, id_m=item.id_domaine)}}">Assigner</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </table>
+</article>
+{% endblock %}

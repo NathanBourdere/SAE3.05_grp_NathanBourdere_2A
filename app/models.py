@@ -1,6 +1,10 @@
 from yaml import *
-from .app import db, login_manager
+from .app import db,login_manager
 from flask_login import UserMixin
+import hashlib
+import binascii
+import os
+from sqlalchemy import * 
 
 # Initialisation des tables ORM
 
@@ -53,20 +57,43 @@ class Assigner(db.Model):
     def __str__(self):
         return "Le vacataire "+self.id_vacataire+" est assigné au cours "+self.type_cours+" "+self.id_cours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",str(self.date_cours)+" à "+str(self.heure_cours)
 
+class Domaine(db.Model):
+    __tablename__ = "Domaine"
+
+    id_domaine = db.Column(db.String(100),primary_key=True)
+    domaine = db.Column(db.String(100),nullable=False)
+    description = db.Column(db.String(3500),nullable=False)
+    responsable = db.Column(db.String(100),db.ForeignKey("PersonnelAdministratif.id_pers_admin"),nullable=False)
+    
+    le_cours = db.relationship("Cours", backref = "cours")
+    pers_admin = db.relationship("PersonnelAdministratif",back_populates="responsable_dom")
+
+    def __init__(self,id,nomdom,description,resp):
+        self.id_domaine = id
+        self.domaine = nomdom
+        self.description = description
+        self.responsable = resp
+
+    
+    def __str__(self):
+        return "Le domaine "+self.domaine+" est sous la responsabilité de "+self.responsable
+
 class PersonnelAdministratif(UserMixin,db.Model):
     __tablename__ = 'PersonnelAdministratif'
 
     id_pers_admin = db.Column(db.String(100),primary_key=True,nullable=False)
+    cds_pa = db.Column(db.String(100), nullable=False) #cds = couche de sécurité, le sel
     nom_pa = db.Column(db.String(100))
     prenom_pa = db.Column(db.String(100))
     num_tel_pa = db.Column(db.String(100),unique=True)
     ddn_pa = db.Column(db.String(100))
     mail_pa = db.Column(db.String(100),unique=True)
-    mdp_pa = db.Column(db.String(100))
+    mdp_pa = db.Column(db.String(200))
 
+    responsable_dom = db.relationship("Domaine", back_populates = "pers_admin",foreign_keys=[Domaine.responsable])
     gerant_dossier = db.relationship("GererDossier", back_populates = "personnel_admin")
 
-    def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp):
+    def __init__(self,idpa,nom,pnom,tel,ddn,mail,mdp,cds):
         self.id_pers_admin = idpa
         self.nom_pa = nom
         self.prenom_pa = pnom
@@ -74,6 +101,7 @@ class PersonnelAdministratif(UserMixin,db.Model):
         self.ddn_pa = ddn
         self.mail_pa = mail
         self.mdp_pa = mdp
+        self.cds_pa = cds
 
     def get_id(self):
            return (self.id_pers_admin)
@@ -105,26 +133,12 @@ class Affectable(db.Model):
     def __str__(self):
         return "Le vacataire "+self.id_vacataire+" est assigné au cours "+self.type_cours+" "+self.id_cours+" dernière modif : "+self.date_modif_matiere+" "+self.heure_modif_matiere
 
-class Domaine(db.Model):
-    __tablename__ = "Domaine"
-
-    domaine = db.Column(db.String(100),primary_key=True)
-    responsable = db.Column(db.String(100),nullable=False)
-
-    le_cours = db.relationship("Cours", backref = "cours")
-
-    def __init__(self,nomdom,resp):
-        self.domaine = nomdom
-        self.responsable = resp
-
-    
-    def __str__(self):
-        return "Le domaine "+self.domaine+" est sous la responsabilité de "+self.responsable
 
 class Vacataire(UserMixin,db.Model):
     __tablename__ = "Vacataire"
 
     id_vacataire = db.Column(db.String(100),primary_key=True)
+    cds_v = db.Column(db.String(100), nullable=False) #cds = couche de sécurité, le sel
     candidature = db.Column(db.String(100),nullable=False) 
     ancien = db.Column(db.Integer) #0 ou 1
     entreprise = db.Column(db.String(100),nullable=True)
@@ -133,7 +147,7 @@ class Vacataire(UserMixin,db.Model):
     num_tel_v = db.Column(db.String(100),unique=True)
     ddn_v = db.Column(db.String(100),nullable=True)
     mail_v = db.Column(db.String(100),unique=True)
-    mdp_v = db.Column(db.String(100),nullable=True)
+    mdp_v = db.Column(db.String(200),nullable=True)
     nationnalite = db.Column(db.String(100),nullable=True)
     profession = db.Column(db.String(100),nullable=True)
     meilleur_diplome = db.Column(db.String(100),nullable=True)
@@ -146,7 +160,7 @@ class Vacataire(UserMixin,db.Model):
     vacataire_assignee = db.relationship("Assigner", back_populates ="cours_a_vacataire")
     dispo = db.relationship("Disponibilites", backref = "vacataire")
 
-    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp,nationnalite,profession,meilleur_diplome,annee_obtention,adresse_postale):
+    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp,nationnalite,profession,meilleur_diplome,annee_obtention,adresse_postale,cds):
         self.id_vacataire = idv
         self.candidature = candidature
         self.entreprise = ent
@@ -163,14 +177,14 @@ class Vacataire(UserMixin,db.Model):
         self.annee_obtiention = annee_obtention
         self.adresse = adresse_postale
         self.legal = 0
+        self.cds_v = cds
     
     def get_id(self):
         return (self.id_vacataire)
     
     def is_filled(self):
-        if self.entreprise == "" or self.nom_v == "" or self.prenom_v == "" or self.num_tel_v == "" or self.mail_v == "" or self.nationnalite == "" or self.adresse == "" or self.annee_obtiention == "" or self.ddn_v == "" or self.legal == 0 or self.profession == "" or self.meilleur_diplome == "":
-            return False
-        return True
+        return all([getattr(self, attr) != "" for attr in ['entreprise', 'nom_v', 'prenom_v', 'num_tel_v', 'mail_v', 
+        'nationnalite', 'adresse','annee_obtiention', 'ddn_v', 'profession', 'meilleur_diplome']]) and self.legal == 1
 
     def __str__(self):
         return "Vacataire : "+" "+self.id_vacataire+" "+self.nom_v+" "+self.prenom_v+" né(e) le "+self.ddn_v+" mail : "+self.mail_v+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)+" de l'entreprise "+self.entreprise
@@ -302,19 +316,33 @@ def get_dossier(id_vaca:int)->GererDossier:
             return dossier
     return None
 
+def searchDomaine(tri="ne pas trier",search=""):
+    filtre = Domaine.id_domaine
+    match(tri):
+        case "Identifiant":
+            filtre = Domaine.id_domaine
+        case "Domaine":
+            filtre = Domaine.domaine
+        case "Responsable":
+            filtre = Domaine.responsable
+        case "Ne pas trier":
+            return db.session.query(Domaine.id_domaine,Domaine.domaine,Domaine.responsable, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).all()
+    return db.session.query(Domaine.id_domaine,Domaine.domaine, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).filter(filtre.ilike("%"+search+"%")).order_by(filtre).all()
+
 def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓",search=""):
     if filtre == "Filtrer les dossiers ↓":
         match(tri):
             case "Nom":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.nom_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.nom_v).all()
+                orderR = Vacataire.nom_v
             case "Prenom":
-                  return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.prenom_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.prenom_v).all()
+                orderR = Vacataire.prenom_v
             case "Telephone":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.num_tel_v).all()
+                orderR = Vacataire.num_tel_v
             case "Status":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(GererDossier.etat_dossier).all()
+                orderR = GererDossier.etat_dossier
             case "Trier les dossiers ↓":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
+                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all() 
+        return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(orderR.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(orderR).all()    
     else:
         match(tri):
             case "Nom":
@@ -324,7 +352,7 @@ def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓"
             case "Telephone":
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.num_tel_v).all()
             case "Status":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.etat_dossier).all()
+                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(GererDossier.etat_dossier).all()
             case "Trier les dossiers ↓":
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
 
@@ -343,32 +371,59 @@ def editeur_auto_doc(dossier,vacataire):
             dossier.etat_dossier = "Incomplet"
     db.session.commit()
 
-def update_dossier_vac(vac,nom=None,prenom=None,tel=None,ddn=None,mail=None,entreprise=None,nationalite=None,profession=None,diplome=None,annee_obtiention=None,adr=None,legal=None):
-    if nom != None:
-        vac.nom_v = nom
-    if prenom != None:
-        vac.prenom_v = prenom
-    if tel != None:
-        vac.num_tel_v = tel
-    if ddn != None:
-        vac.ddn_v = ddn
-    if mail != None:
-        vac.mail_v = mail
-    if entreprise != None:
-        vac.entreprise = entreprise
-    if nationalite != None:
-        vac.nationnalite = nationalite
-    if profession != None:
-        vac.profession = profession
-    if diplome != None:
-        vac.meilleur_diplome = diplome
-    if annee_obtiention != None:
-        vac.annee_obtiention = annee_obtiention
-    if adr != None:
-        vac.adresse = adr
-    if legal != None:
-        vac.legal = 1
-    else :
-        vac.legal = 0
-    
+def update_dossier_vac(vac, **kwargs):
+    for key, value in kwargs.items():
+        if hasattr(vac, key) and value is not None:
+            setattr(vac, key, value)
     db.session.commit()
+
+def saler_mot_de_passe(mot_de_passe, sel=None):
+    """
+    Cette fonction prend en entrée un mot de passe et un sel (facultatif), 
+    et renvoie le mot de passe salé en utilisant la fonction de hachage SHA-256.
+    Si aucun sel n'est fourni, un sel aléatoire est généré.
+    """
+    if sel is None:
+        sel =os.urandom(16)# Génère 16 bytes aléatoires
+
+    # Réencode les bytes en hexadécimal
+    hex_str = sel.hex()
+
+    # Réencode les bytes en UTF-8
+    sel_utf = hex_str.encode('utf-8')
+
+    mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
+    # Concaténer le sel et le mot de passe
+    mot_de_passe_sel = mot_de_passe_encode + sel_utf
+
+    # Calculer le haché du mot de passe salé
+    hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
+
+    # Retourner le sel et le haché du mot de passe salé
+    return (sel_utf.decode("utf-8"), hache)
+
+def verifier_mot_de_passe(mot_de_passe, sel, hache_stocke):
+    """
+    Cette fonction prend en entrée un mot de passe, un sel et le haché stocké dans la base de données,
+    et renvoie True si le mot de passe fourni correspond à celui stocké, False sinon.
+    """
+    
+    mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
+    sel = sel.encode('utf-8')
+    # Concaténer le sel et le mot de passe
+    mot_de_passe_sel = mot_de_passe_encode + sel
+
+    # Calculer le haché du mot de passe salé
+    hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
+
+    # Vérifier si le haché calculé correspond à celui stocké dans la base de données
+    return hache == hache_stocke
+
+def get_domaines():
+    return Domaine.query.all()
+
+def get_domaine(id):
+    return Domaine.query.get(id)
+
+def get_dispos(vaca):
+    return Disponibilites.query.get(Disponibilites.id_vacataire==vaca.id_vacataire).all()

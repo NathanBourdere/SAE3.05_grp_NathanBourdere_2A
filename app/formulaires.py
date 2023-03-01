@@ -1,25 +1,26 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, PasswordField, IntegerField, DateField ,validators, HiddenField
-from .models import Vacataire,PersonnelAdministratif, get_vacataire,max_id_actuel
+from .models import Vacataire,PersonnelAdministratif, get_vacataire,max_id_actuel,verifier_mot_de_passe
 from hashlib import sha256
 
 class InscriptionVacataire(FlaskForm):
 
-    login = StringField('Login')
-    nom = StringField('Nom', [validators.DataRequired(), validators.Length(min=1, max=35)])
-    prenom = StringField('Prenom', [validators.DataRequired(), validators.Length(min=1, max=35)])
-    email = StringField('E-mail', [validators.DataRequired(), validators.Length(min=6, max=35)])
-    tel = StringField('Téléphone', [validators.DataRequired(), validators.Length(min=6, max=35)])
-    ddn = DateField('Date De Naissance',[validators.DataRequired()])
-    password = PasswordField('Password',[validators.DataRequired(), validators.Length(min=1, max=35),validators.EqualTo('confirm', message='Passwords must match')])
-    confirmation = PasswordField('Répétez le mot de passe', [validators.DataRequired()])
-    entreprise = StringField('Entreprise', [validators.DataRequired(), validators.Length(min=1, max=35)])
+    login = StringField('Login', validators=[validators.Regexp('^[a-zA-Z0-9_-]{3,16}$')], render_kw={"pattern": "^[a-zA-Z0-9_-]{3,16}$"})
+    nom = StringField('Nom', validators=[validators.DataRequired(), validators.Length(min=1, max=35), validators.Regexp('^[a-zA-ZÀ-ÿ]{2,35}$')], render_kw={"pattern": "^[a-zA-ZÀ-ÿ]{2,35}$"})
+    prenom = StringField('Prenom', validators=[validators.DataRequired(), validators.Length(min=1, max=35), validators.Regexp('^[a-zA-ZÀ-ÿ]{2,35}$')], render_kw={"pattern": "^[a-zA-ZÀ-ÿ]{2,35}$"})
+    email = StringField('E-mail', validators=[validators.DataRequired(), validators.Length(min=6, max=35), validators.Regexp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')], render_kw={"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"})
+    tel = StringField('Téléphone', validators=[validators.DataRequired(), validators.Regexp('^(?:\+33|0)[1-9](?:[\.\-\s]?[0-9]{2}){4}$')], render_kw={"pattern": "^(?:\+33|0)[1-9](?:[\.\-\s]?[0-9]{2}){4}$"})
+    ddn = DateField('Date De Naissance', [validators.DataRequired()])
+    password = PasswordField('Password', validators=[validators.DataRequired(), validators.Length(min=1, max=35), validators.EqualTo('confirm_password', message='Passwords must match')])
+    confirm_password = PasswordField('Répétez le mot de passe', validators=[validators.DataRequired()])
+    entreprise = StringField('Entreprise', validators=[validators.DataRequired(), validators.Length(min=1, max=35)])
     legal = BooleanField('')
     nationalite = StringField("Nationalité")
     profession = StringField("Profession")
     meilleur_diplome = StringField("Diplôme")
-    annee_obtiention = StringField("Année d'obtiention de votre diplôme")
-    adresse = StringField("Adresse")
+    annee_obtiention = StringField("Année d'obtention de votre diplôme")
+    adresse = StringField("Adresse", validators=[validators.Regexp('^[a-zA-Z0-9\s,\'-]{3,}$')])
+
 
     def __init__(self,vacataire=None) -> None:
         super().__init__()
@@ -63,8 +64,8 @@ def is_mdp(formulaire,user_type,user):
     m.update(formulaire.password.data.encode())
     passwd = m.hexdigest()
     if user_type == "A":
-        return user if passwd == user.mdp_pa else None
-    return user if passwd == user.mdp_v else None
+        return user if verifier_mot_de_passe(formulaire.password.data,user.cds_pa,user.mdp_pa) else None
+    return user if verifier_mot_de_passe(formulaire.password.data,user.cds_v,user.mdp_v) else None
     
 def get_authenticated_user(formulaire):
     if formulaire.login.data[0] == "V":
