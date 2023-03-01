@@ -136,10 +136,11 @@ def disponibilites():
 @app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
 def new_vaca():
     form = InscriptionVacataire()
+    cds,mdp = saler_mot_de_passe(form.password.data)
     if request.method == "POST":
         id = max_id_actuel()
         try:
-            vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","",cds)
+            vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,mdp,"","","","","",cds)
             date_actuelle = date.today()
             heure_actuelle = datetime.now().strftime("%H:%M")
             dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
@@ -189,8 +190,10 @@ def voir_infos(idM,idV=""):
 def edit_assignement(id_v,id_m):
     vaca = get_vacataire(id_v)
     dispos = get_dispos(vaca)
-    
+    if request.method == "POST":
+        return render_template("edit_assignement.html",v=vaca,m=get_domaine(id_m),dispos=dispos)
     return render_template("edit_assignement.html",v=vaca,m=get_domaine(id_m),dispos=dispos)
+
 @app.route('/profile/')
 @login_required
 def profile():
