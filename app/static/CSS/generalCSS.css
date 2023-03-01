@@ -124,7 +124,6 @@ input[type="date"] {
     border-top: none;
     border-left: none;
     border-right: none;
-    margin-top: 10%;
 }
 
 input[type="text"]:focus,
@@ -189,9 +188,6 @@ input[type="submit"]:hover {
     margin-bottom: 1em;
 }
 
-.doc > input {
-    margin-top: -5%;
-}
 
 ul {
     display: flex;
