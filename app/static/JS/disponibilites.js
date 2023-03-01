@@ -34,7 +34,7 @@ function ajouterDispoPeriode() {
     }
     numberId = parseInt(idBoutonDernierUL.substring(2)) + 1;
     listeJours = document.getElementById("periodes").firstElementChild.children;
-    renduListeString = `<li><select name="jours_semaine` + numberId + `">` + listeJours[0].firstElementChild.innerHTML + `</select></li> <li>de</li> <li> <select name="heure_debut_periode` + numberId + `">` + listeJours[2].firstElementChild.innerHTML + `</select></li> <li>à</li> <li> <select name="heure_fin_periode` + numberId + `">` + listeJours[4].firstElementChild.innerHTML + `</select></li><li><button id="BP${parseInt(idBoutonDernierUL.slice(-1)) + 1}" onclick="supprimerDispo('BP${parseInt(idBoutonDernierUL.slice(-1)) + 1}')">Supprimer</button></li>`
+    renduListeString = `<li><select id="pimpSelectDispo" name="jours_semaine` + numberId + `">` + listeJours[0].firstElementChild.innerHTML + `</select></li> <li>de</li> <li> <select id="pimpSelectDispo" name="heure_debut_periode` + numberId + `">` + listeJours[2].firstElementChild.innerHTML + `</select></li> <li>à</li> <li> <select id="pimpSelectDispo" name="heure_fin_periode` + numberId + `">` + listeJours[4].firstElementChild.innerHTML + `</select></li><li><button class="deleteButton" id="BP${parseInt(idBoutonDernierUL.slice(-1)) + 1}" onclick="supprimerDispo('BP${parseInt(idBoutonDernierUL.slice(-1)) + 1}')">❌</button></li>`
     ul.innerHTML = renduListeString
     periodes.appendChild(ul);
 
@@ -54,7 +54,7 @@ function ajouterDispoDate() {
     }
     numberId = parseInt(idBoutonDernierUL.substring(2)) + 1;
     listeHeures = document.getElementById("dates_spe").firstElementChild.children[2].children[0];
-    renduStr = `<li><input type="date" name="date_spe` + numberId + `"></li><li>de</li><li><select name="heure_debut_date_spe` + numberId + `">` + listeHeures.innerHTML + `</select></li><li>de</li><li><select name="heure_fin_date_spe` + numberId + `">` + listeHeures.innerHTML + `</select></li><li><button id="BD${parseInt(idBoutonDernierUL.slice(-1)) + 1}" onclick="supprimerDispo('BD${parseInt(idBoutonDernierUL.slice(-1)) + 1}')">Supprimer</button></li>`
+    renduStr = `<li><input type="date" name="date_spe` + numberId + `"></li><li>de</li><li><select id="pimpSelectDispo" name="heure_debut_date_spe` + numberId + `">` + listeHeures.innerHTML + `</select></li><li>de</li><li><select id="pimpSelectDispo" name="heure_fin_date_spe` + numberId + `">` + listeHeures.innerHTML + `</select></li><li><button class="deleteButton" id="BD${parseInt(idBoutonDernierUL.slice(-1)) + 1}" onclick="supprimerDispo('BD${parseInt(idBoutonDernierUL.slice(-1)) + 1}')">❌</button></li>`
     ul.innerHTML = renduStr
     datesSpe.appendChild(ul);
 }
