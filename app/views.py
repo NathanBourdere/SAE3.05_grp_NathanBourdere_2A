@@ -3,7 +3,7 @@ from datetime import date, datetime
 import time
 from .formulaires import *
 from .app import db,app
-from flask import render_template,url_for,redirect,request
+from flask import flash, render_template,url_for,redirect,request
 from .models import *
 import csv
 from flask_login import login_user, current_user, logout_user,login_required
@@ -110,19 +110,21 @@ def new_vaca():
     form = InscriptionVacataire()
     if request.method == "POST":
         id = max_id_actuel()
-        cds,mdp = saler_mot_de_passe(form.password.data)
-        vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,mdp,"","","","","",cds)
-        date_actuelle = date.today()
-        heure_actuelle = datetime.now().strftime("%H:%M")
-        dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
-        db.session.add(vac)
-        db.session.add(dossier)
-        db.session.commit()
-        return redirect(url_for('menu_admin'))
+        try:
+            vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","",cds)
+            date_actuelle = date.today()
+            heure_actuelle = datetime.now().strftime("%H:%M")
+            dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
+            db.session.add(vac)
+            db.session.add(dossier)
+            db.session.commit()
+            return redirect(url_for('menu_admin'))
+        except:
+            flash("Le numéro de téléphone ou l'adresse email est déjà utilisée, veuillez vérifier vos infromations")
     return render_template('nouveau_vacataire.html', form = form)
 
 
-@app.route('/menu_admin/')
+@app.route('/menu_admin/') 
 @login_required
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenom_pa + " " + current_user.nom_pa)
@@ -277,7 +279,7 @@ def load_edt():
             Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.semestre_dispo == periode[0], Disponibilites.periode_dispo == periode[1], Disponibilites.jour_dispo == periode[2], Disponibilites.heure_dispo_debut == periode[3], Disponibilites.heure_dispo_fin == periode[4]).delete()
         for date in request.form.getlist('dat'):
             date = ast.literal_eval(date)
-            Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.periode_dispo == -1, Disponibilites.jour_dispo == date[0], Disponibilites.heure_dispo_debut == date[1], Disponibilites.heure_dispo_fin == date[2])
+            Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.periode_dispo == -1, Disponibilites.jour_dispo == date[0], Disponibilites.heure_dispo_debut == date[1], Disponibilites.heure_dispo_fin == date[2]).delete()
         db.session.commit()
         liste_periode = db.session.query(Disponibilites.semestre_dispo, Disponibilites.periode_dispo, Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo != -1).all()
         liste_dates = db.session.query(Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo == -1).all()
