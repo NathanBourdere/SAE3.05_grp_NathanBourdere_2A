@@ -17,7 +17,7 @@ Trello est un site qui nous a permis de nous organiser pour la répartition et l
 
 ## Installations, configuration et lancement côté serveur
 
-1. Pour faire tourner le site web il est conseillé d'utiliser un environnement virtuel. Pour le créer il suffi de se positionner dans le dossier contenant le projet et exécuter la commande qui suit. Si vous ne souhaitez pas utiliser d'environnement virtuel, rendez-vous à l'étape 3.
+1. Pour faire tourner le site web il est conseillé d'utiliser un environnement virtuel. Pour en créer un il suffi de se positionner dans le dossier contenant le projet et exécuter la commande qui suit. Si vous ne souhaitez pas utiliser d'environnement virtuel, rendez-vous à l'étape 3.
 ```sh
 virtualenv -p python3 venv
 ```
