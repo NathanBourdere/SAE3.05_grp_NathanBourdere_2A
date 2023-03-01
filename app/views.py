@@ -100,20 +100,23 @@ def disponibilites():
 @app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
 def new_vaca():
     form = InscriptionVacataire()
-    if request.method == "POST" and form.validate():
+    if request.method == "POST":
         id = max_id_actuel()
-        vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
-        date_actuelle = date.today()
-        heure_actuelle = datetime.now().strftime("%H:%M")
-        dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
-        db.session.add(vac)
-        db.session.add(dossier)
-        db.session.commit()
-        return redirect(url_for('menu_admin'))
+        try:
+            vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
+            date_actuelle = date.today()
+            heure_actuelle = datetime.now().strftime("%H:%M")
+            dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
+            db.session.add(vac)
+            db.session.add(dossier)
+            db.session.commit()
+            return redirect(url_for('menu_admin'))
+        except:
+            flash("Le numéro de téléphone ou l'adresse email est déjà utilisée, veuillez vérifier vos infromations")
     return render_template('nouveau_vacataire.html', form = form)
 
 
-@app.route('/menu_admin/')
+@app.route('/menu_admin/') 
 @login_required
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenom_pa + " " + current_user.nom_pa)
