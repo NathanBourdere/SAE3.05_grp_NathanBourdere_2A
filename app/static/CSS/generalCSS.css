@@ -224,7 +224,7 @@ li {
 
 .credits {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     background-color: rgb(45, 129, 255);
     border-radius: 30px;
     margin-left: 30%;
@@ -238,4 +238,12 @@ li {
     height: 100px;
     margin: 10px;
     border-radius: 20px;
+}
+
+.infosPers {
+    margin-right: 5%;
+}
+
+main>section:nth-child(3)>.infosPers {
+    margin-right: 13%;
 }
