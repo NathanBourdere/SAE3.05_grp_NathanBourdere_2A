@@ -124,6 +124,7 @@ input[type="date"] {
     border-top: none;
     border-left: none;
     border-right: none;
+    margin-top: 10%;
 }
 
 input[type="text"]:focus,
@@ -182,13 +183,85 @@ input[type="submit"]:hover {
     transition-duration: .1s;
 }
 
-select {
-    padding: 0.3rem 0rem 0.3rem 0.3rem;
-    font-weight: 500;
-    border-radius: 6px;
-}
 
 .doc {
     text-align: center;
     margin-bottom: 1em;
 }
+
+.doc > input {
+    margin-top: -5%;
+}
+
+ul {
+    display: flex;
+}
+
+li {
+    margin: 2%;
+}
+
+#head_periodes {
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    margin-left: 41%;
+    margin-right: 41%;
+    align-items: center;
+}
+
+.dispo {
+    background-color: #CAD2D2;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    margin: 3%;
+    margin-left: 20%;
+    margin-right: 20%;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+
+
+
+#pimpSelect {
+    background-color: #0563af;
+    color: white;
+    padding: 12px;
+    width: 250px;
+    border: none;
+    font-size: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: button;
+    appearance: button;
+    outline: none;
+}
+
+#pimpSelectDispo {
+    background-color: #0563af;
+    color: white;
+    padding: 12px;
+    width: 100px;
+    border: none;
+    font-size: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: button;
+    appearance: button;
+    outline: none;
+}
+
+.deleteButton {
+    background-color: transparent;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    border: none;
+}
+
+#periodes > ul > li:nth-child(2n) {
+    margin-top: 4%;
+}
+
+#dates_spe > ul > li:nth-child(2n) {
+    margin-top: 4%;
+}
+
+

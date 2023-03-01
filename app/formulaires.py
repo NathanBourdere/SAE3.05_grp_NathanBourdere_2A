@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, PasswordField, IntegerField, DateField ,validators, HiddenField
-from .models import Vacataire,PersonnelAdministratif, get_vacataire,max_id_actuel
+from .models import Vacataire,PersonnelAdministratif, get_vacataire,max_id_actuel,verifier_mot_de_passe
 from hashlib import sha256
 
 class InscriptionVacataire(FlaskForm):
@@ -37,7 +37,6 @@ class InscriptionVacataire(FlaskForm):
         """        
         from datetime import datetime
 
-        print(vacataire.ddn_v)
         ddn_vacataire = datetime.strptime(vacataire.ddn_v, "%Y-%m-%d")
         self.nom.data = vacataire.nom_v
         self.prenom.data = vacataire.prenom_v
@@ -65,8 +64,8 @@ def is_mdp(formulaire,user_type,user):
     m.update(formulaire.password.data.encode())
     passwd = m.hexdigest()
     if user_type == "A":
-        return user if passwd == user.mdp_pa else None
-    return user if passwd == user.mdp_v else None
+        return user if verifier_mot_de_passe(formulaire.password.data,user.cds_pa,user.mdp_pa) else None
+    return user if verifier_mot_de_passe(formulaire.password.data,user.cds_v,user.mdp_v) else None
     
 def get_authenticated_user(formulaire):
     if formulaire.login.data[0] == "V":

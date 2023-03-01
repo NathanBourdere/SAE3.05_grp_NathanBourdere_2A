@@ -14,6 +14,14 @@ from .models import searchDossier
 # Initialisation des routes
 @app.route('/')
 def home():
+    if current_user.is_authenticated:
+        # si c'est un admin
+        try:
+            if current_user.id_pers_admin:
+                return redirect(url_for('menu_admin'))
+        # si c'est un vacataire
+        except AttributeError:
+            return redirect(url_for('menu_vacataire'))
     return render_template('main.html')
 
 @app.route('/matieres/', methods=['GET','POST'])
@@ -103,7 +111,7 @@ def new_vaca():
     if request.method == "POST":
         id = max_id_actuel()
         try:
-            vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","")
+            vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,encode_mdp(form.password.data),"","","","","",cds)
             date_actuelle = date.today()
             heure_actuelle = datetime.now().strftime("%H:%M")
             dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
@@ -167,61 +175,18 @@ def check_doss():
 @app.route('/recherche-cours/', methods=['GET','POST'])
 @login_required
 def check_cours():
-    filtre=['Filtrer les infos ↓','Nom','Prenom','Cours','Domaine','Date','Classe','Salle']
+    filtre = []
+    for item in db.session.query(Cours.nom_cours).all():
+        filtre.append(item[0])
+    liste_matieres = []
+    for item in filtre:
+        if item not in liste_matieres:
+            liste_matieres.append(item)
     plh="Selectionnez un filtre..."
-    listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).all()
+    listeCours = db.session.query(Vacataire.nom_v, Vacataire.prenom_v, Cours.nom_cours, Cours.type_cours, Cours.duree_cours, Assigner.date_cours, Assigner.heure_cours, Assigner.classe, Assigner.salle).join(Assigner, Assigner.id_vacataire == Vacataire.id_vacataire).join(Cours, Cours.id_cours == Assigner.id_cours).order_by(Cours.nom_cours).all()
     if request.method == "POST":
-        if request.form['infos'] != "Filtrer les infos ↓":
-            match(request.form['infos']):
-                case "Nom":
-                    filtre=['Nom','Prenom','Cours','Domaine','Date','Classe','Salle','Ne pas filtrer']
-                    if request.form['search']!="":
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).filter(Vacataire.nom_v==request.form['search']).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Vacataire.nom_v).all()
-                    else:
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Vacataire.nom_v).all()
-                case "Prenom":
-                    plh="Entrez un prénom..."
-                    filtre=['Prenom','Nom','Cours','Domaine','Date','Classe','Salle','Ne pas filtrer']
-                    if request.form['search']!="":
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).filter(Vacataire.prenom_v==request.form['search']).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Vacataire.prenom_v).all()
-                    else:
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Vacataire.prenom_v).all()
-                case "Cours":
-                    plh="Entrez un nom..."
-                    filtre=['Cours','Domaine','Prenom','Nom','Date','Classe','Salle','Ne pas filtrer']
-                    if request.form['search']!="":
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).filter(Cours.nom_cours==request.form['search']).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Cours.nom_cours).all()
-                    else:
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Cours.nom_cours).all()
-                case "Domaine":
-                    plh="Entrez un domaine..."
-                    filtre=['Domaine','Cours','Prenom','Nom','Date','Classe','Salle','Ne pas filtrer']
-                    if request.form['search']!="":
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).filter(Cours.type_cours==request.form['search']).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Cours.type_cours).all()
-                    else:
-                        listeCours = db.session.query(Assigner.dateCours,Vacataire.IDVacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nomCours,Cours.TypeCours,Cours.dureeCours,Assigner.HeureCours,Assigner.classe,Assigner.salle).join(Cours, Assigner.IDcours == Cours.IDcours).join(Vacataire, Assigner.IDVacataire == Vacataire.IDVacataire).order_by(Cours.TypeCours).all()
-                case "Date":
-                    plh="Entrez une Date..."
-                    filtre=['Date','Domaine','Cours','Prenom','Nom','Classe','Salle','Ne pas filtrer']
-                    if request.form['search']!="":
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).filter(Assigner.date_cours==request.form['search']).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.date_cours).all()
-                    else:
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.date_cours).all()
-                case "Classe":
-                    plh="Entrez une classe..."
-                    filtre=['Classe','Domaine','Cours','Prenom','Nom','Date','Salle','Ne pas filtrer']
-                    if request.form['search']!="":
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).filter(Assigner.classe==request.form['search']).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.classe).all()
-                    else:
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.classe).all()
-                case "Salle":
-                    plh="Entrez une Salle..."
-                    filtre=['Salle','Classe','Domaine','Cours','Prenom','Nom','Date','Ne pas filtrer']
-                    if request.form['search']!="":
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).filter(Assigner.classe==request.form['search']).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.salle).all()
-                    else:
-                        listeCours = db.session.query(Assigner.date_cours,Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Cours.nom_cours,Cours.type_cours,Cours.duree_cours,Assigner.heure_cours,Assigner.classe,Assigner.salle).join(Cours, Assigner.id_cours == Cours.id_cours).join(Vacataire, Assigner.id_vacataire == Vacataire.id_vacataire).order_by(Assigner.salle).all()
-    return render_template('recherche-cours.html',cours=listeCours,filtre=filtre,placeHolder=plh)           
+         listeCours = searchCours(request.form['infos'],request.form['nick'],request.form['search'])
+    return render_template('recherche-cours.html',cours=listeCours,filtre=liste_matieres,placeHolder=plh)           
 
 @app.route('/dossier_vacataire/', methods=['GET','POST',])
 @login_required
@@ -238,8 +203,21 @@ def edit_dossier():
     dossier = get_dossier(current_user.id_vacataire)
     form = InscriptionVacataire(vacataire)    
     if request.method=="POST":
-        update_dossier_vac(vacataire,request.form["nom"],request.form["prenom"],request.form["tel"],request.form["ddn"],request.form["email"],request.form["entreprise"],request.form["nationalite"],request.form["profession"],request.form["meilleur_diplome"],request.form["annee_obtiention"],request.form["adresse"],request.form.get("legal"))
-        actualiser_date_dossier(dossier)   
+        update_dossier_vac(vacataire,
+                   nom=request.form.get("nom"),
+                   prenom=request.form.get("prenom"),
+                   tel=request.form.get("tel"),
+                   ddn=request.form.get("ddn"),
+                   mail=request.form.get("email"),
+                   entreprise=request.form.get("entreprise"),
+                   nationalite=request.form.get("nationalite"),
+                   profession=request.form.get("profession"),
+                   diplome=request.form.get("meilleur_diplome"),
+                   annee_obtiention=request.form.get("annee_obtiention"),
+                   adr=request.form.get("adresse"),
+                   legal=request.form.get("legal"))
+        actualiser_date_dossier(dossier)
+        editeur_auto_doc(dossier,vacataire)   
         return redirect(url_for("menu_vacataire"))
     return render_template("dossier_vacataire.html", form=form, dossier=dossier, date_modif_dossier=dossier.date_modif)
 
@@ -268,10 +246,6 @@ def voir_dossier_vacataire(id):
 @app.route("/logout/")
 def logout():
     logout_user()
-    #on attends d'abord que l'utilisateur soit bien déconnecté avant de redirect
-    while True:
-        if not current_user.is_authenticated:
-            break
     return redirect(url_for('home'))
     
 @app.route('/login/', methods= ['GET', 'POST'])
@@ -349,20 +323,6 @@ def max_id_dispo():
         if int(val[0])>max:
             max = int(val[0])
     return max
-
-def encode_mdp(mdp:str)->str:
-    """Permet d'encoder un mot de passe donné avec sha256.
-
-    Args:
-        mdp (str): Une chaine de caractères représentant un mot de passe.
-
-    Returns:
-        str: Une chaine de caractères représentant un mot de passe chiffré.
-    """ 
-    from hashlib import sha256
-    m = sha256()
-    m.update(mdp.encode())
-    return m.hexdigest()
 
 def anti_doublons(liste):
     res = []

@@ -2,32 +2,7 @@
 {% block styles %}
 {{ super() }}
 <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
-<style>
-    ul {
-        display: flex;
-        background: linear-gradient(#e1dae6, #50ccc2);
-    }
 
-    li {
-        margin: 2%;
-    }
-
-    #head_periodes {
-        display: flex;
-        text-align: center;
-        justify-content: space-between;
-        margin-left: 41%;
-        margin-right: 41%;
-        align-items: center;
-    }
-
-    section {
-        border: solid 1px #e1dae6;
-        margin: 3%;
-        padding-left: 1%;
-        padding-right: 1%;
-    }
-</style>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='JS/disponibilites.js')}}"></script>
@@ -39,17 +14,17 @@
 {% endblock %}
 {% block contents %}
 <h1>Vos Disponibilités</h1>
-        <section>
+        <section class="dispo">
             <form method="POST">
                 <div id="head_periodes">
                     <h2>Période</h2>
-                    <select name="periode">
+                    <select id="pimpSelectDispo" name="periode">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
                     </select>
-                    <select name="annee">
+                    <select id="pimpSelectDispo" name="annee">
                         <option value="2022">2022</option>
                         <option value="2023">2023</option>
                         <option value="2024">2024</option>
@@ -68,7 +43,7 @@
                     <div id="periodes">
                         <ul>
                             <li>
-                                <select name="jours_semaine0">
+                                <select id="pimpSelectDispo" name="jours_semaine0">
                                     <option value="lundi">Lundi</option>
                                     <option value="mardi" selected>Mardi</option>
                                     <option value="mercredi">Mercredi</option>
@@ -79,7 +54,7 @@
                             </li>
                             <li>de</li>
                             <li>
-                                <select name="heure_debut_periode0">
+                                <select id="pimpSelectDispo" name="heure_debut_periode0">
                                     <option value="8" selected>8h</option>
                                     <option value="9">9h</option>
                                     <option value="10">10h</option>
@@ -95,7 +70,7 @@
                             </li>
                             <li>à</li>
                             <li>
-                                <select name="heure_fin_periode0">
+                                <select id="pimpSelectDispo" name="heure_fin_periode0">
                                     <option value="8">8h</option>
                                     <option value="9">9h</option>
                                     <option value="10">10h</option>
@@ -110,14 +85,14 @@
                                 </select>
                             </li>
                             <li>
-                                <button id="BP0" onclick="supprimerDispo('BP0')">Supprimer</button>
+                                <button class="deleteButton" id="BP0" onclick="supprimerDispo('BP0')">❌</button>
                             </li>
                         </ul>
                     </div>
                     <input type="button" value="Ajouter" onclick="ajouterDispoPeriode()">
                 </article>
         </section>
-        <section>
+        <section class="dispo">
             <h2>Dates spécifiques</h2>
             <article>
                 <div id="dates_spe">
@@ -127,7 +102,7 @@
                         </li>
                         <li>de</li>
                         <li>
-                            <select name="heure_debut_date_spe0">
+                            <select id="pimpSelectDispo" name="heure_debut_date_spe0">
                                 <option value="8" selected>8h</option>
                                 <option value="9">9h</option>
                                 <option value="10">10h</option>
@@ -143,7 +118,7 @@
                         </li>
                         <li>à</li>
                         <li>
-                            <select name="heure_fin_date_spe0">
+                            <select id="pimpSelectDispo" name="heure_fin_date_spe0">
                                 <option value="8" selected>8h</option>
                                 <option value="9">9h</option>
                                 <option value="10">10h</option>
@@ -158,7 +133,7 @@
                             </select>
                         </li>
                         <li>
-                            <button id="BD0" onclick="supprimerDispo('BD0')">Supprimer</button>
+                            <button class="deleteButton" id="BD0" onclick="supprimerDispo('BD0')">❌</button>
                         </li>
                     </ul>
                 </div>
