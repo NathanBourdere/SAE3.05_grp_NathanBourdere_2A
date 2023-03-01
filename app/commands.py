@@ -50,10 +50,10 @@ def feed_db():
             match(i):
                 case 0:
                     for ligne in file_reader:
-                        db.session.add(PersonnelAdministratif(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
+                        db.session.add(PersonnelAdministratif(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7]))
                 case 1:
                     for ligne in file_reader:
-                        db.session.add(Vacataire(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7],ligne[8],ligne[9],ligne[10],ligne[11],ligne[12],ligne[13],ligne[14]))
+                        db.session.add(Vacataire(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7],ligne[8],ligne[9],ligne[10],ligne[11],ligne[12],ligne[13],ligne[14],ligne[15]))
                 case 2:
                     for ligne in file_reader:
                         db.session.add(GererDossier(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4]))

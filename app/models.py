@@ -2,7 +2,9 @@ from yaml import *
 from .app import db,login_manager
 from flask_login import UserMixin
 import hashlib
-import os 
+import binascii
+import os
+from sqlalchemy import * 
 
 # Initialisation des tables ORM
 
@@ -59,7 +61,7 @@ class PersonnelAdministratif(UserMixin,db.Model):
     __tablename__ = 'PersonnelAdministratif'
 
     id_pers_admin = db.Column(db.String(100),primary_key=True,nullable=False)
-    cds_pa = db.Column(db.Binary(16), nullable=False) #cds = couche de sécurité, le sel
+    cds_pa = db.Column(db.String(100), nullable=False) #cds = couche de sécurité, le sel
     nom_pa = db.Column(db.String(100))
     prenom_pa = db.Column(db.String(100))
     num_tel_pa = db.Column(db.String(100),unique=True)
@@ -129,7 +131,7 @@ class Vacataire(UserMixin,db.Model):
     __tablename__ = "Vacataire"
 
     id_vacataire = db.Column(db.String(100),primary_key=True)
-    cds_v = db.Column(db.Binary(16), nullable=False) #cds = couche de sécurité, le sel
+    cds_v = db.Column(db.String(100), nullable=False) #cds = couche de sécurité, le sel
     candidature = db.Column(db.String(100),nullable=False) 
     ancien = db.Column(db.Integer) #0 ou 1
     entreprise = db.Column(db.String(100),nullable=True)
@@ -361,31 +363,38 @@ def saler_mot_de_passe(mot_de_passe, sel=None):
     Si aucun sel n'est fourni, un sel aléatoire est généré.
     """
     if sel is None:
-        sel = os.urandom(16) # Générer un sel aléatoire de 16 octets
+        sel =os.urandom(16)# Génère 16 bytes aléatoires
+
+    # Réencode les bytes en hexadécimal
+    hex_str = sel.hex()
+
+    # Réencode les bytes en UTF-8
+    sel_utf = hex_str.encode('utf-8') # Générer un sel aléatoire de 16 octets
 
     mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
-
     # Concaténer le sel et le mot de passe
-    mot_de_passe_sel = mot_de_passe_encode + sel
+    mot_de_passe_sel = mot_de_passe_encode + sel_utf
 
     # Calculer le haché du mot de passe salé
     hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
 
     # Retourner le sel et le haché du mot de passe salé
-    return (sel, hache)
+    return (sel_utf.decode("utf-8"), hache)
 
 def verifier_mot_de_passe(mot_de_passe, sel, hache_stocke):
     """
     Cette fonction prend en entrée un mot de passe, un sel et le haché stocké dans la base de données,
     et renvoie True si le mot de passe fourni correspond à celui stocké, False sinon.
     """
+    
     mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
-
+    sel = sel.encode('utf-8')
     # Concaténer le sel et le mot de passe
     mot_de_passe_sel = mot_de_passe_encode + sel
 
     # Calculer le haché du mot de passe salé
     hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
-
+    print(hache)
+    print(hache_stocke)
     # Vérifier si le haché calculé correspond à celui stocké dans la base de données
     return hache == hache_stocke

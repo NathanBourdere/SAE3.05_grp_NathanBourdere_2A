@@ -63,8 +63,8 @@ def is_mdp(formulaire,user_type,user):
     m.update(formulaire.password.data.encode())
     passwd = m.hexdigest()
     if user_type == "A":
-        return user if verifier_mot_de_passe(formulaire.mdp.data,user.cds_pa,user.mdp_pa) else None
-    return user if verifier_mot_de_passe(formulaire.mdp.data,user.cds_v,user.mdp_v) else None
+        return user if verifier_mot_de_passe(formulaire.password.data,user.cds_pa,user.mdp_pa) else None
+    return user if verifier_mot_de_passe(formulaire.password.data,user.cds_v,user.mdp_v) else None
     
 def get_authenticated_user(formulaire):
     if formulaire.login.data[0] == "V":
