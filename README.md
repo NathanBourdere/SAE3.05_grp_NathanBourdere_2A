@@ -37,7 +37,7 @@ pip install -r requirement.txt
 flask run
 ```
 
-5. Au cours du développement nous avons ajouté des commandes en rapport avec la base de données. Elle sont utiles dans la mesure où l'on veut utiliser les jeux de données contenus dans les fichiers CSV, remettre la base de données à 0 (c'est à dire avoir une base de données uniquement avec toutes les tables étant vides) ou juste supprimer la base de données. Pour voir ces commandes, faites la commande qui suit.
+5. Au cours du développement nous avons ajouté des commandes en rapport avec la base de données. Elles sont utiles dans la mesure où l'on veut utiliser les jeux de données contenus dans les fichiers CSV, remettre la base de données à 0 (c'est à dire avoir une base de données uniquement avec toutes les tables étant vides) ou juste supprimer la base de données. Pour voir ces commandes, faites la commande qui suit.
 ```sh
 flask
 ```
