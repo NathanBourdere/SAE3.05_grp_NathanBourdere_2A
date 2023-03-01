@@ -316,19 +316,33 @@ def get_dossier(id_vaca:int)->GererDossier:
             return dossier
     return None
 
+def searchDomaine(tri="ne pas trier",search=""):
+    filtre = Domaine.id_domaine
+    match(tri):
+        case "Identifiant":
+            filtre = Domaine.id_domaine
+        case "Domaine":
+            filtre = Domaine.domaine
+        case "Responsable":
+            filtre = Domaine.responsable
+        case "Ne pas trier":
+            return db.session.query(Domaine.id_domaine,Domaine.domaine,Domaine.responsable, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).all()
+    return db.session.query(Domaine.id_domaine,Domaine.domaine, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).filter(filtre.ilike("%"+search+"%")).order_by(filtre).all()
+
 def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓",search=""):
     if filtre == "Filtrer les dossiers ↓":
         match(tri):
             case "Nom":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.nom_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.nom_v).all()
+                orderR = Vacataire.nom_v
             case "Prenom":
-                  return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.prenom_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.prenom_v).all()
+                orderR = Vacataire.prenom_v
             case "Telephone":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.num_tel_v).all()
+                orderR = Vacataire.num_tel_v
             case "Status":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(GererDossier.etat_dossier).all()
+                orderR = GererDossier.etat_dossier
             case "Trier les dossiers ↓":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
+                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all() 
+        return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(orderR.ilike("%"+search+"%")).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(orderR).all()    
     else:
         match(tri):
             case "Nom":
@@ -338,7 +352,7 @@ def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓"
             case "Telephone":
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(Vacataire.num_tel_v.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.num_tel_v).all()
             case "Status":
-                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(Vacataire.etat_dossier).all()
+                return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike("%"+search+"%"),GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).order_by(GererDossier.etat_dossier).all()
             case "Trier les dossiers ↓":
                 return db.session.query(Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).filter(GererDossier.etat_dossier.ilike(filtre)).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).all()
 
@@ -376,7 +390,7 @@ def saler_mot_de_passe(mot_de_passe, sel=None):
     hex_str = sel.hex()
 
     # Réencode les bytes en UTF-8
-    sel_utf = hex_str.encode('utf-8') # Générer un sel aléatoire de 16 octets
+    sel_utf = hex_str.encode('utf-8')
 
     mot_de_passe_encode = mot_de_passe.encode('utf-8') # Convertir le mot de passe en bytes
     # Concaténer le sel et le mot de passe
@@ -401,7 +415,15 @@ def verifier_mot_de_passe(mot_de_passe, sel, hache_stocke):
 
     # Calculer le haché du mot de passe salé
     hache = hashlib.sha256(mot_de_passe_sel).hexdigest()
-    print(hache)
-    print(hache_stocke)
+
     # Vérifier si le haché calculé correspond à celui stocké dans la base de données
     return hache == hache_stocke
+
+def get_domaines():
+    return Domaine.query.all()
+
+def get_domaine(id):
+    return Domaine.query.get(id)
+
+def get_dispos(vaca):
+    return Disponibilites.query.get(Disponibilites.id_vacataire==vaca.id_vacataire).all()

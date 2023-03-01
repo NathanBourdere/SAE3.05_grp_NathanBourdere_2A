@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+{% block backwards %}
+<a href="/menu_admin/">
+    <img src="../static/IMG/back.png" alt="retour arriere">
+</a>
+{% endblock %}
+{% block contents %}
+<h1>Rechercher dossier</h1>
+<section id="table">
+    <article>
+        <form method="POST">
+            <input type="text" name="search" placeholder="{{placeHold}}" />
+            <select name="tri">
+                {% for t in tri %}
+                <option value="{{t}}">{{t}}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <input type="submit">
+        </form>
+    </article>
+    <article id="table">
+        <table>
+            <table id="table">
+                <tr>
+                    <td>Nom</td>
+                    <td>Prenom</td>
+                    <td>Mail</td>
+                    <td>Telephone</td>
+                    <td>Status</td>
+                </tr>
+                {% for item in vaca %}
+                <tr>
+                    <td>{{item.nom_v}}</td>
+                    <td>{{item.prenom_v}}</td>
+                    <td>{{item.mail_v}}</td>
+                    <td>{{item.num_tel_v}}</td>
+                    <td><a href="{{url_for('assigner_matieres', id_v=item.id_vacataire)}}">Assigner</a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </table>
+        </table>
+    </article>
+</section>
+{% endblock %}

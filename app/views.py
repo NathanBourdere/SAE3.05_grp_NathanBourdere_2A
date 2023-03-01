@@ -73,6 +73,30 @@ def matiere():
     actualiser_date_dossier(dossierquery)
     return render_template('matiere.html', listeMatiere = liste_final, dateModif = dossierquery.date_modif, heuremodif = dossierquery.heure_modif)
 
+@app.route('/assigner_vacataire/', methods=['GET','POST'])
+@login_required
+def select_vacataire():
+    def listeTri(firstVariable):
+        if firstVariable == "Trier les dossiers ↓":
+            return ['Trier les dossiers ↓','Nom','Prenom','Telephone','Status']
+        elif firstVariable == 'Nom':
+            return ['Nom','Prenom','Telephone','Status','Trier les dossiers ↓']
+        elif firstVariable == 'Prenom':
+            return ['Prenom','Nom','Telephone','Status','Trier les dossiers ↓']
+        elif firstVariable == 'Telephone':
+            return ['Telephone','Nom','Prenom','Status','Trier les dossiers ↓']
+        else:
+            return ['Status','Nom','Prenom','Telephone','Trier les dossiers ↓']
+            
+    liste_vaca = db.session.query(Vacataire.id_vacataire,Vacataire.nom_v,Vacataire.prenom_v,Vacataire.num_tel_v,Vacataire.mail_v,GererDossier.etat_dossier).join(GererDossier,GererDossier.id_vacataire==Vacataire.id_vacataire).filter(GererDossier.etat_dossier.ilike("%Valid%")).all()
+    text_place = "Veuillez sélectionner une méthode de tri..."
+    if request.method == "POST":
+        liste_de_tri = listeTri(request.form['tri'])
+        liste_vaca = searchDossier(request.form['tri'],"Filtrer les dossiers ↓",request.form['search'])
+        return render_template('recherche-vacataire.html',vaca=liste_vaca,tri=liste_de_tri,placeHold=text_place)
+    return render_template('recherche-vacataire.html',vaca=liste_vaca,tri=['Trier les dossiers ↓','Nom','Prenom','Telephone','Status'],placeHold=text_place)  
+
+
 @app.route('/disponibilites/', methods=['GET','POST'])
 @login_required
 def disponibilites():
@@ -127,10 +151,40 @@ def new_vaca():
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenom_pa + " " + current_user.nom_pa)
 
-@app.route('/assigner_matieres/<int:id>')
+@app.route('/assigner_matieres/<id_v>', methods= ['GET', 'POST'])
 @login_required
 def assigner_matieres(id_v):
-    return render_template('assigner_matieres.html',id=id_v)
+    def listeTri(firstVariable):
+        if firstVariable == 'Identifiant':
+            return ["Identifiant","Domaine","Responsable","Ne pas trier"]
+        elif firstVariable == 'Domaine':
+            return ["Domaine","Identifiant","Responsable","Ne pas trier"]
+        elif firstVariable == 'Responsable':
+            return ["Responsable","Identifiant","Domaine","Ne pas trier"]
+        else:
+            return ["Ne pas trier","Identifiant","Domaine","Responsable"]        
+    text_place = "Veuillez sélectionner une méthode de tri..."
+    liste_de_tri = ["Ne pas trier","Identifiant","Domaine","Responsable"] 
+    if request.method == "POST":
+        liste_de_tri = listeTri(request.form['tri'])
+        matieres = searchDomaine(request.form['tri'],request.form['search'])
+    elif request.method == "GET":
+        matieres = searchDomaine()
+    return render_template('assigner_matieres.html',id_vacataire=id_v,domaine=matieres,text_place = text_place,liste_de_tri = liste_de_tri)
+
+@app.route('/info_domaine/<idM>', methods= ['GET'])
+@login_required
+def voir_infos(idM,idV=""):
+    domaine = get_domaine(idM)
+    return render_template('infos_matieres.html',domaine=domaine,idv=idV)
+
+@app.route('/edit_assignement/<id_v>/<id_m>',methods= ['GET', 'POST'])
+@login_required
+def edit_assignement(id_v,id_m):
+    vaca = get_vacataire(id_v)
+    dispos = get_dispos(vaca)
+    
+    return render_template("edit_assignement.html",v=vaca,m=get_domaine(id_m),dispos=dispos)
 @app.route('/profile/')
 @login_required
 def profile():

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='JS/verifAge.js')}}"></script>
+{% endblock %}
+{% block backwards %}
+<a href="/menu_vacataire/">
+    <img src="../static/IMG/back.png" alt="retour arriere">
+</a>
+{% endblock %}
+{% block contents %}
+<section id="flexAvatar">
+</section>
+{% endblock %}
+<article>
+    <form method="POST">
+        <section id="periodes">
+            <input type="button" name="infos" values="Informations">
+            <select name="periodes">
+                {% for periode in periodes %}
+                <option name="{{periode[0]}}">{{periode[1]}}</option>
+                {% endfor %}
+                <input type="button" value="Supprimer">
+            </select>
+        </section>
+        <section id="dates">
+            <select name="periodes">
+                {% for date in dates %}
+                <option name="{{date[0]}}">{{dates[1]}}</option>
+                {% endfor %}
+                <input type="button" value="Supprimer">
+            </select>
+        </section>
+        <section id="classes">
+            <input type="button" name="infos" values="Informations">
+            <select name="periodes">
+                {% for classe in classes %}
+                <option name="{{classe[0]}}">{{classes[1]}}</option>
+                {% endfor %}
+                <input type="button" value="Supprimer">
+            </select>
+        </section>
+    </form>
+</article>
