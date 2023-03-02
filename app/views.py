@@ -369,8 +369,20 @@ def changer_mdp():
             else:
                 current_user.cds_pa, current_user.mdp_pa = saler_mot_de_passe(form.nouveau_mdp.data)
                 db.session.commit()
+                return redirect(url_for("menu_admin"))
         else:
-            print("vacataire")
+            if not verifier_mot_de_passe(form.mdp_actuel.data, current_user.cds_v, current_user.mdp_v):
+                valide = False
+                erreur = "Le mot de passe actuel ne correspond pas."
+                return render_template("changer_mdp.html", form=form, valide=valide, erreur=erreur)
+            elif form.nouveau_mdp.data != form.confirmation.data:
+                valide = False
+                erreur = "Le nouveau mot de passe ne correspond pas à la répétition."
+                return render_template("changer_mdp.html", form=form, valide=valide, erreur=erreur)
+            else:
+                current_user.cds_v, current_user.mdp_v = saler_mot_de_passe(form.nouveau_mdp.data)
+                db.session.commit()
+                return redirect(url_for("menu_vacataire"))
     return render_template("changer_mdp.html", form=form, valide=valide, erreur=erreur)
 
 @login_manager.user_loader
