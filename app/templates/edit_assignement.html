@@ -12,9 +12,6 @@
 </a>
 {% endblock %}
 {% block contents %}
-<section id="flexAvatar">
-</section>
-{% endblock %}
 <article>
     <form method="POST">
         <section id="periodes">
@@ -25,23 +22,23 @@
                 {% for jours in disponibilitesPeriode %}
                 <table id="table">
                     <tr>
-                        <td>{{jours.jour}}</td>
+                        <td>{{jours.jour_dispo}}</td>
                         <td>
-                            <select name="{{jours.jour[0,1]}}-0-Debut">
-                                {% for heure in range({{jours.heure_debut}},{{jours.heure_fin}} -1)}
+                            <select name="{{jours.jour_dispo[0,1]}}-0-Debut">
+                                {% for heure in range(jours.heure_dispo_debut | int,jours.heure_dispo_fin | int) %}
                                 <option value="heure{{heure}}">{{heure}}h</option>
                                 {% endfor %}
                             </select>
                         </td>
                         <td>
-                            <select name="{{jours.jour[0,1]}}-0-Fin">
-                                {% for heure in range({{jours.heure_debut}} -1,{{jours.heure_fin}})}
+                            <select name="{{jours.jour_dispo[0,1]}}-0-Fin">
+                                {% for heure in range(jours.heure_dispo_debut | int,jours.heure_dispo_fin | int) %}
                                 <option value="heure{{heure}}">{{heure}}h</option>
                                 {% endfor %}
                             </select>
                         </td>
                         <td>
-                            <select name="{{jours.jour[0,1]}}-0-Type">
+                            <select name="{{jours.jour_dispo[0,1]}}-0-Type">
                                 <option name="TP">TP</option>
                                 <option name="TD">TD</option>
                                 <option name="CM">CM</option>
@@ -49,7 +46,7 @@
                             </select>
                         </td>
                         <td>
-                            <select name="{{jours.jour[0,1]}}-0-Classe">
+                            <select name="{{jours.jour_dispo[0,1]}}-0-Classe">
                                 <option name="classe">Unavailable</option>
                             </select>
                         </td>
@@ -61,3 +58,4 @@
         </section>
     </form>
 </article>
+{% endblock %}
