@@ -57,6 +57,50 @@ class Assigner(db.Model):
     def __str__(self):
         return "Le vacataire "+self.id_vacataire+" est assigné au cours "+self.type_cours+" "+self.id_cours+" avec la classe "+self.classe+" dans la salle "+self.salle+" le ",str(self.date_cours)+" à "+str(self.heure_cours)
 
+class Cours(db.Model):
+    __tablename__= "Cours"
+
+    id_cours = db.Column(db.String(100),db.ForeignKey("Domaine.id_domaine"),primary_key=True)
+    type_cours = db.Column(db.String(100),primary_key=True)
+    nom_cours = db.Column(db.String(100),nullable=False)
+    heures_totales = db.Column(db.Integer)
+    duree_cours = db.Column(db.Integer)
+
+    cours_assignee_id = db.relationship("Assigner",back_populates="assigner_cours_id", foreign_keys=[Assigner.id_cours])
+    cours_assignee_type = db.relationship("Assigner",back_populates="assigner_cours_type", foreign_keys=[Assigner.type_cours])
+
+    def __init__(self,idc,t,n,h,dur,dom):
+        self.id_cours = idc
+        self.type_cours = t
+        self.nom_cours = n
+        self.heures_totales = h
+        self.duree_cours = dur
+        self.domaine = dom
+    
+    def __str__(self):
+        return self.type_cours+" "+str(self.id_cours)+" : "+self.nom_cours+" "+str(self.heures_totales)+" d'heures totales pour une duree de "+str(self.duree_cours)+" par cours "+" du domaine "+self.domaine
+
+class Affectable(db.Model):
+    __tablename__ = "Affectable"
+
+    id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),primary_key=True)
+    id_domaine = db.Column(db.String(100),db.ForeignKey("Domaine.id_domaine"),primary_key=True)
+    date_modif_matiere = db.Column(db.String(100))
+    heure_modif_matiere = db.Column(db.String(100))
+
+    cours_affecter_vacataire = db.relationship("Vacataire",back_populates="vacat_affectable")
+    affecter_domaine =  db.relationship("Domaine",back_populates="domaine_affecter", foreign_keys=[id_domaine])
+
+    def __init__(self,idv,idc,dmd,hmm):
+        self.id_vacataire = idv
+        self.id_domaine = idc
+        self.date_modif_matiere = dmd
+        self.heure_modif_matiere = hmm
+    
+    def __str__(self):
+        return "Le vacataire "+self.id_vacataire+" est assigné au domaine "+self.id_domaine+" dernière modif : "+self.date_modif_matiere+" "+self.heure_modif_matiere
+
+
 class Domaine(db.Model):
     __tablename__ = "Domaine"
 
@@ -64,19 +108,19 @@ class Domaine(db.Model):
     domaine = db.Column(db.String(100),nullable=False)
     description = db.Column(db.String(3500),nullable=False)
     responsable = db.Column(db.String(100),db.ForeignKey("PersonnelAdministratif.id_pers_admin"),nullable=False)
-    
+
     le_cours = db.relationship("Cours", backref = "cours")
     pers_admin = db.relationship("PersonnelAdministratif",back_populates="responsable_dom")
+    domaine_affecter = db.relationship("Affectable",back_populates="affecter_domaine",foreign_keys=[Affectable.id_domaine])
 
     def __init__(self,id,nomdom,description,resp):
         self.id_domaine = id
         self.domaine = nomdom
         self.description = description
         self.responsable = resp
-
     
     def __str__(self):
-        return "Le domaine "+self.domaine+" est sous la responsabilité de "+self.responsable
+        return "Le domaine "+self.domaine+"id_v est sous la responsabilité de "+self.responsable
 
 class PersonnelAdministratif(UserMixin,db.Model):
     __tablename__ = 'PersonnelAdministratif'
@@ -108,31 +152,6 @@ class PersonnelAdministratif(UserMixin,db.Model):
 
     def __str__(self):
         return "PersonnelAdministratif :"+" "+self.id_pers_admin+" "+self.nom_pa+" "+self.prenom_pa+" né(e) le ",self.ddn_pa," mail : "+self.mail_pa
-
-
-class Affectable(db.Model):
-    __tablename__ = "Affectable"
-
-    id_vacataire = db.Column(db.String(100),db.ForeignKey("Vacataire.id_vacataire"),primary_key=True)
-    id_cours = db.Column(db.String(100),db.ForeignKey("Cours.id_cours"),primary_key=True)
-    type_cours = db.Column(db.String(100),db.ForeignKey("Cours.type_cours"),primary_key=True)
-    date_modif_matiere = db.Column(db.String(100))
-    heure_modif_matiere = db.Column(db.String(100))
-
-    cours_affecter_vacataire = db.relationship("Vacataire",back_populates="vacat_affectable")
-    affecter_cours_id = db.relationship("Cours",back_populates="cours_affecter_id", foreign_keys=[id_cours])
-    affecter_cours_type = db.relationship("Cours",back_populates="cours_affecter_type", foreign_keys=[type_cours])
-
-    def __init__(self,idv,idc,t,dmd,hmm):
-        self.id_vacataire = idv
-        self.id_cours = idc
-        self.type_cours = t
-        self.date_modif_matiere = dmd
-        self.heure_modif_matiere = hmm
-    
-    def __str__(self):
-        return "Le vacataire "+self.id_vacataire+" est assigné au cours "+self.type_cours+" "+self.id_cours+" dernière modif : "+self.date_modif_matiere+" "+self.heure_modif_matiere
-
 
 class Vacataire(UserMixin,db.Model):
     __tablename__ = "Vacataire"
@@ -189,39 +208,13 @@ class Vacataire(UserMixin,db.Model):
     def __str__(self):
         return "Vacataire : "+" "+self.id_vacataire+" "+self.nom_v+" "+self.prenom_v+" né(e) le "+self.ddn_v+" mail : "+self.mail_v+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)+" de l'entreprise "+self.entreprise
 
-class Cours(db.Model):
-    __tablename__= "Cours"
-
-    id_cours = db.Column(db.String(100),primary_key=True)
-    type_cours = db.Column(db.String(100),primary_key=True)
-    nom_cours = db.Column(db.String(100),nullable=False)
-    heures_totales = db.Column(db.Integer)
-    duree_cours = db.Column(db.Integer)
-    domaine = db.Column(db.String(100),db.ForeignKey("Domaine.domaine"),nullable=False)
-
-    cours_assignee_id = db.relationship("Assigner",back_populates="assigner_cours_id", foreign_keys=[Assigner.id_cours])
-    cours_assignee_type = db.relationship("Assigner",back_populates="assigner_cours_type", foreign_keys=[Assigner.type_cours])
-    cours_affecter_id = db.relationship("Affectable",back_populates="affecter_cours_id",foreign_keys=[Affectable.id_cours])
-    cours_affecter_type = db.relationship("Affectable",back_populates="affecter_cours_type",foreign_keys=[Affectable.type_cours])
-
-    def __init__(self,idc,t,n,h,dur,dom):
-        self.id_cours = idc
-        self.type_cours = t
-        self.nom_cours = n
-        self.heures_totales = h
-        self.duree_cours = dur
-        self.domaine = dom
-    
-    def __str__(self):
-        return self.type_cours+" "+str(self.id_cours)+" : "+self.nom_cours+" "+str(self.heures_totales)+" d'heures totales pour une duree de "+str(self.duree_cours)+" par cours "+" du domaine "+self.domaine
-
 class Disponibilites(db.Model):
     __tablename__ = "Disponibilites"
 
     id_dispo = db.Column(db.String(100),primary_key=True)
     jour_dispo = db.Column(db.String(100))# lundi,mardi ... PAS DIMANCHE
-    semestre_dispo = db.Column(db.Integer) # 1,2 jusqu'à 52
     periode_dispo = db.Column(db.Integer) # 1 ou 2 ou 3 ou 4, il y a 2 périodes par semestre
+    semestre_dispo = db.Column(db.Integer) # 1,2 jusqu'à 52
     heure_dispo_debut = db.Column(db.String(100)) # "14:30"
     heure_dispo_fin = db.Column(db.String(100)) # idem
     date_modif_dispo = db.Column(db.String(100))
@@ -316,7 +309,7 @@ def get_dossier(id_vaca:int)->GererDossier:
             return dossier
     return None
 
-def searchDomaine(tri="ne pas trier",search=""):
+def searchDomaine(id_v,tri="Ne pas trier",search=""):
     filtre = Domaine.id_domaine
     match(tri):
         case "Identifiant":
@@ -324,10 +317,10 @@ def searchDomaine(tri="ne pas trier",search=""):
         case "Domaine":
             filtre = Domaine.domaine
         case "Responsable":
-            filtre = Domaine.responsable
+            filtre = PersonnelAdministratif.nom_pa  + " " + PersonnelAdministratif.prenom_pa
         case "Ne pas trier":
-            return db.session.query(Domaine.id_domaine,Domaine.domaine,Domaine.responsable, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).all()
-    return db.session.query(Domaine.id_domaine,Domaine.domaine, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).filter(filtre.ilike("%"+search+"%")).order_by(filtre).all()
+            return db.session.query(Domaine.id_domaine,Domaine.domaine,Domaine.responsable, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).join(Affectable,Affectable.id_domaine == Domaine.id_domaine and Affectable.id_vacataire == id_v).all()
+    return db.session.query(Domaine.id_domaine,Domaine.domaine,Domaine.responsable, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).join(Affectable,Affectable.id_domaine == Domaine.id_domaine and Affectable.id_vacataire == id_v).filter(filtre.ilike("%"+search+"%")).order_by(filtre).all()
 
 def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓",search=""):
     if filtre == "Filtrer les dossiers ↓":
@@ -426,4 +419,7 @@ def get_domaine(id):
     return Domaine.query.get(id)
 
 def get_dispos(vaca):
-    return Disponibilites.query.get(Disponibilites.id_vacataire==vaca.id_vacataire).all()
+    return db.session.query(Disponibilites).filter(Disponibilites.id_vacataire==vaca.id_vacataire).all()
+
+def get_affectables(vaca):
+    return Affectable.query.get(Affectable.id_vacataire==vaca.id_vacataire).all()

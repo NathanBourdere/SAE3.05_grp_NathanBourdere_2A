@@ -3,7 +3,7 @@ from datetime import date, datetime
 import time
 from .formulaires import *
 from .app import db,app
-from flask import render_template,url_for,redirect,request
+from flask import flash, render_template,url_for,redirect,request
 from .models import *
 import csv
 from flask_login import login_user, current_user, logout_user,login_required
@@ -24,54 +24,53 @@ def home():
             return redirect(url_for('menu_vacataire'))
     return render_template('main.html')
 
+@app.route('/credits/')
+def credits():
+    return render_template('credits.html')
+    
 @app.route('/matieres/', methods=['GET','POST'])
 @login_required
 def matiere():
     if request.method == "POST":
+        Affectable.query.filter_by(id_vacataire=current_user.id_vacataire).delete()
+        db.session.commit()
         lstMat = set()
         loop = True
-        i = 0
+        tuple = 0
         while(loop):
             try:
-                lstMat.add(request.form['listes_matieres'+str(i)])
-                i+=1
+                lstMat.add(request.form['listes_matieres'+str(tuple)])
+                tuple+=1
             except Exception as e:
                 loop = False
         for mat in lstMat:
-            (lstMat)
-            for typeMat in db.session.query(Cours.id_cours, Cours.type_cours, Cours.nom_cours).filter(Cours.nom_cours.ilike(mat+"%")).group_by(Cours.nom_cours, Cours.type_cours).all():
+            liste_matiere_jsp = db.session.query(Domaine.id_domaine, Domaine.domaine).filter(Domaine.domaine.ilike("%" + mat + "%")).all()
+            for id_dom,dom in liste_matiere_jsp:
                 try:
-                    db.session.add(Affectable(current_user.id_vacataire,typeMat[0],typeMat[1],date.today(),datetime.now().strftime("%H:%M:%S")))
+                    db.session.add(Affectable(current_user.id_vacataire,id_dom,date.today(),datetime.now().strftime("%H:%M:%S")))
                     db.session.commit()
-                except Exception:
-                    ("Erreur d'insertion, le vacataire est déjà affectable a la matiere " + mat)
-        return render_template('menu_vacataire.html')
-    lstAllMatiere = db.session.query(Cours.nom_cours).all()
-    lstMatiereDispo = db.session.query(Cours.nom_cours, Affectable.id_vacataire, Cours.id_cours).filter(Affectable.id_vacataire == current_user.id_vacataire, Affectable.id_cours == Cours.id_cours).all()
-    Affectable.query.filter_by(id_vacataire=current_user.id_vacataire).delete()
-    db.session.commit()
+                except Exception as e:
+                    print(e)
+                    print("Erreur d'insertion, le vacataire est déjà affectable a la matiere " + mat)
+    lstAllMatiere = db.session.query(Domaine.domaine).all()
+    lstMatiereDispo = db.session.query(Domaine.domaine, Affectable.id_vacataire, Domaine.id_domaine).join(Affectable, Affectable.id_domaine == Domaine.id_domaine).all()
     liste_final = []
-    liste_intermediaire = []
-
-    for matiere_attitrees in lstMatiereDispo:
-        liste_intermediaire.append(matiere_attitrees)
-        for matieres_restantes in lstAllMatiere:
-            liste_intermediaire.append(matieres_restantes)
-        liste_final.append(anti_doublons(liste_intermediaire))
-        liste_intermediaire = []
-    if liste_final == []:
-        for matiere in lstAllMatiere:
-            liste_intermediaire.append(matiere)
-        liste_final.append(anti_doublons(liste_intermediaire))
-    matiere_verif = []
-    for item in liste_final:
-        if item[0][0] not in matiere_verif:
-            matiere_verif.append(item[0][0])
-        else:
-            liste_final.remove(item)
+    print(lstMatiereDispo)
+    for tuple in lstMatiereDispo:
+        liste_temp = []
+        liste_temp.append(tuple)
+        for matieres in lstAllMatiere:
+            liste_temp.append(matieres)
+        liste_final.append(liste_temp)
+    liste_rendu = []
+    start = []
+    for listes in liste_final:
+        if listes[0][0] not in start:
+            print(listes[0][0])
+            start.append(listes[0][0])
+            liste_rendu.append(anti_doublons(listes))
     dossierquery = get_dossier(current_user.id_vacataire)
-    actualiser_date_dossier(dossierquery)
-    return render_template('matiere.html', listeMatiere = liste_final, dateModif = dossierquery.date_modif, heuremodif = dossierquery.heure_modif)
+    return render_template('matiere.html', listeMatiere = liste_rendu, dateModif = dossierquery.date_modif, heuremodif = dossierquery.heure_modif)
 
 @app.route('/assigner_vacataire/', methods=['GET','POST'])
 @login_required
@@ -132,21 +131,24 @@ def disponibilites():
 @app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
 def new_vaca():
     form = InscriptionVacataire()
+    cds,mdp = saler_mot_de_passe(form.password.data)
     if request.method == "POST":
         id = max_id_actuel()
-        cds,mdp = saler_mot_de_passe(form.password.data)
-        vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,mdp,"","","","","",cds)
-        date_actuelle = date.today()
-        heure_actuelle = datetime.now().strftime("%H:%M")
-        dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
-        db.session.add(vac)
-        db.session.add(dossier)
-        db.session.commit()
-        return redirect(url_for('menu_admin'))
+        try:
+            vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,mdp,"","","","","",cds)
+            date_actuelle = date.today()
+            heure_actuelle = datetime.now().strftime("%H:%M")
+            dossier = GererDossier(vac.id_vacataire,current_user.id_pers_admin,"Distribué",date_actuelle,heure_actuelle)
+            db.session.add(vac)
+            db.session.add(dossier)
+            db.session.commit()
+            return redirect(url_for('menu_admin'))
+        except:
+            flash("Le numéro de téléphone ou l'adresse email est déjà utilisée, veuillez vérifier vos infromations")
     return render_template('nouveau_vacataire.html', form = form)
 
 
-@app.route('/menu_admin/')
+@app.route('/menu_admin/') 
 @login_required
 def menu_admin():
     return render_template('menu_admin.html',nom_prenom=current_user.prenom_pa + " " + current_user.nom_pa)
@@ -167,9 +169,9 @@ def assigner_matieres(id_v):
     liste_de_tri = ["Ne pas trier","Identifiant","Domaine","Responsable"] 
     if request.method == "POST":
         liste_de_tri = listeTri(request.form['tri'])
-        matieres = searchDomaine(request.form['tri'],request.form['search'])
+        matieres = searchDomaine(id_v,request.form['tri'],request.form['search'])
     elif request.method == "GET":
-        matieres = searchDomaine()
+        matieres = searchDomaine(id_v)
     return render_template('assigner_matieres.html',id_vacataire=id_v,domaine=matieres,text_place = text_place,liste_de_tri = liste_de_tri)
 
 @app.route('/info_domaine/<idM>', methods= ['GET'])
@@ -183,8 +185,16 @@ def voir_infos(idM,idV=""):
 def edit_assignement(id_v,id_m):
     vaca = get_vacataire(id_v)
     dispos = get_dispos(vaca)
-    
-    return render_template("edit_assignement.html",v=vaca,m=get_domaine(id_m),dispos=dispos)
+    if request.method == "POST":
+        while(loop):
+            try:
+                lstMat.add(request.form['assignements'+str(i)])
+                i+=1
+            except Exception as e:
+                loop = False
+        return redirect(url_for("menu_admin.html"))
+    return render_template("edit_assignement.html",disponibilitesPeriode=dispos)
+
 @app.route('/profile/')
 @login_required
 def profile():
@@ -335,7 +345,7 @@ def load_edt():
             Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.semestre_dispo == periode[0], Disponibilites.periode_dispo == periode[1], Disponibilites.jour_dispo == periode[2], Disponibilites.heure_dispo_debut == periode[3], Disponibilites.heure_dispo_fin == periode[4]).delete()
         for date in request.form.getlist('dat'):
             date = ast.literal_eval(date)
-            Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.periode_dispo == -1, Disponibilites.jour_dispo == date[0], Disponibilites.heure_dispo_debut == date[1], Disponibilites.heure_dispo_fin == date[2])
+            Disponibilites.query.filter(Disponibilites.id_vacataire == current_user.id_vacataire, Disponibilites.periode_dispo == -1, Disponibilites.jour_dispo == date[0], Disponibilites.heure_dispo_debut == date[1], Disponibilites.heure_dispo_fin == date[2]).delete()
         db.session.commit()
         liste_periode = db.session.query(Disponibilites.semestre_dispo, Disponibilites.periode_dispo, Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo != -1).all()
         liste_dates = db.session.query(Disponibilites.jour_dispo, Disponibilites.heure_dispo_debut, Disponibilites.heure_dispo_fin).filter(Disponibilites.periode_dispo == -1).all()
@@ -383,7 +393,6 @@ def max_id_dispo():
 def anti_doublons(liste):
     res = []
     liste_matieres = []
-    (liste)
     for item in liste:
         if item[0] not in liste_matieres:
             res.append(item)

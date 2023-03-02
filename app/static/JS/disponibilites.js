@@ -4,20 +4,26 @@ function supprimerDispo(idBouton) {
     let div;
     let ulBouton;
 
-    if (window.confirm("Êtes-vous sûr ?")) {
-        if (idBouton.slice(0, 2) === "BP") {
-            div = document.getElementById("periodes");
-        } else {
-            div = document.getElementById("dates_spe");
-        }
+    if (idBouton == 'BP0' || idBouton == 'BD0') {
+        alert('Vous ne pouvez pas supprimer votre première disponibilité');
     }
-    for (let enfant of div.children) {
-        if (enfant.children[enfant.children.length - 1].children[0].id === idBouton) {
-            ulBouton = enfant;
-            break;
+    else {
+        if (window.confirm("Êtes-vous sûr ?")) {
+            if (idBouton.slice(0, 2) === "BP") {
+                div = document.getElementById("periodes");
+            } else {
+                div = document.getElementById("dates_spe");
+            }
         }
+        for (let enfant of div.children) {
+            if (enfant.children[enfant.children.length - 1].children[0].id === idBouton) {
+                ulBouton = enfant;
+                break;
+            }
+        }
+        ulBouton.remove();
     }
-    ulBouton.remove();
+    event.preventDefault();
 }
 
 function ajouterDispoPeriode() {

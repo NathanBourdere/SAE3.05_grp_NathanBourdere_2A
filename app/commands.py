@@ -62,7 +62,7 @@ def feed_db():
                         db.session.add(Cours(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5]))
                 case 4:
                     for ligne in file_reader:
-                        db.session.add(Affectable(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4]))
+                        db.session.add(Affectable(ligne[0],ligne[1],ligne[2],ligne[3]))
                 case 5:
                     for ligne in file_reader:
                         db.session.add(Assigner(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6]))
