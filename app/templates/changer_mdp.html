@@ -17,6 +17,11 @@
 </a>
 {% endblock %}
 {% block contents %}
+    {% if not valide %}
+    <p>
+        {{ erreur }}
+    </p>
+    {% endif %}
     <form method="POST">
         <section>
             <article>

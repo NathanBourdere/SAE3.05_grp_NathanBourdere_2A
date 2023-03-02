@@ -354,10 +354,24 @@ def load_edt():
 @login_required
 def changer_mdp():
     form = NouveauMDP()
+    valide = True
+    erreur = ""
     if request.method == "POST":
-        nouveau_mot_de_passe = form.nouveau_mdp.data
-        print(current_user)
-    return render_template("changer_mdp.html", form=form)
+        if current_user.__class__ is PersonnelAdministratif:
+            if not verifier_mot_de_passe(form.mdp_actuel.data, current_user.cds_pa, current_user.mdp_pa):
+                valide = False
+                erreur = "Le mot de passe actuel ne correspond pas."
+                return render_template("changer_mdp.html", form=form, valide=valide, erreur=erreur)
+            elif form.nouveau_mdp.data != form.confirmation.data:
+                valide = False
+                erreur = "Le nouveau mot de passe ne correspond pas à la répétition."
+                return render_template("changer_mdp.html", form=form, valide=valide, erreur=erreur)
+            else:
+                current_user.cds_pa, current_user.mdp_pa = saler_mot_de_passe(form.nouveau_mdp.data)
+                db.session.commit()
+        else:
+            print("vacataire")
+    return render_template("changer_mdp.html", form=form, valide=valide, erreur=erreur)
 
 @login_manager.user_loader
 def load_user(utilisateur_id):
