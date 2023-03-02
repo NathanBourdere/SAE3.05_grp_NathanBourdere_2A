@@ -17,28 +17,28 @@
         <section id="periodes">
             <h1>Periode 2023-2024</h1>
             {% for i in range(4) %}
-            <div id="Periode{{i}}">
-                <h2>Periode {{i}}</h2>
-                {% for jours in disponibilitesPeriode %}
+            <div id="Periode{{i+1}}">
+                <h2>Periode {{i+1}}</h2>
+                {% for disponibilite in disponibilitesPeriode %}
                 <table id="table">
                     <tr>
-                        <td>{{jours.jour_dispo}}</td>
+                        <td>{{disponibilite.jour_dispo}}</td>
                         <td>
-                            <select name="{{jours.jour_dispo[0,1]}}-0-Debut">
-                                {% for heure in range(jours.heure_dispo_debut | int,jours.heure_dispo_fin | int) %}
+                            <select name="{{disponibilite.jour_dispo[0,1]}}-0-Debut">
+                                {% for heure in range(disponibilite.heure_dispo_debut | int,disponibilite.heure_dispo_fin | int) %}
                                 <option value="heure{{heure}}">{{heure}}h</option>
                                 {% endfor %}
                             </select>
                         </td>
                         <td>
-                            <select name="{{jours.jour_dispo[0,1]}}-0-Fin">
-                                {% for heure in range(jours.heure_dispo_debut | int,jours.heure_dispo_fin | int) %}
+                            <select name="{{disponibilite.jour_dispo[0,1]}}-0-Fin">
+                                {% for heure in range(disponibilite.heure_dispo_debut | int,disponibilite.heure_dispo_fin | int) %}
                                 <option value="heure{{heure}}">{{heure}}h</option>
                                 {% endfor %}
                             </select>
                         </td>
                         <td>
-                            <select name="{{jours.jour_dispo[0,1]}}-0-Type">
+                            <select name="{{disponibilite.jour_dispo[0,1]}}-0-Type">
                                 <option name="TP">TP</option>
                                 <option name="TD">TD</option>
                                 <option name="CM">CM</option>
@@ -46,7 +46,7 @@
                             </select>
                         </td>
                         <td>
-                            <select name="{{jours.jour_dispo[0,1]}}-0-Classe">
+                            <select name="{{disponibilite.jour_dispo[0,1]}}-0-Classe">
                                 <option name="classe">Unavailable</option>
                             </select>
                         </td>
@@ -55,6 +55,7 @@
                 {% endfor %}
             </div>
             {% endfor %}
+            <input type="submit" value="Enregistrer">
         </section>
     </form>
 </article>

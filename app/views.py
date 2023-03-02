@@ -186,13 +186,8 @@ def edit_assignement(id_v,id_m):
     vaca = get_vacataire(id_v)
     dispos = get_dispos(vaca)
     if request.method == "POST":
-        while(loop):
-            try:
-                lstMat.add(request.form['assignements'+str(i)])
-                i+=1
-            except Exception as e:
-                loop = False
-        return redirect(url_for("menu_admin.html"))
+        
+        return redirect(url_for("menu_admin"))
     return render_template("edit_assignement.html",disponibilitesPeriode=dispos)
 
 @app.route('/profile/')
