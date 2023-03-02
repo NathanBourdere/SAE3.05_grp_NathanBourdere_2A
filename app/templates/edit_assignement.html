@@ -18,30 +18,46 @@
 <article>
     <form method="POST">
         <section id="periodes">
-            <input type="button" name="infos" values="Informations">
-            <select name="periodes">
-                {% for periode in periodes %}
-                <option name="{{periode[0]}}">{{periode[1]}}</option>
+            <h1>Periode 2023-2024</h1>
+            {% for i in range(4) %}
+            <div id="Periode{{i}}">
+                <h2>Periode {{i}}</h2>
+                {% for jours in disponibilitesPeriode %}
+                <table id="table">
+                    <tr>
+                        <td>{{jours.jour}}</td>
+                        <td>
+                            <select name="{{jours.jour[0,1]}}-0-Debut">
+                                {% for heure in range({{jours.heure_debut}},{{jours.heure_fin}} -1)}
+                                <option value="heure{{heure}}">{{heure}}h</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <select name="{{jours.jour[0,1]}}-0-Fin">
+                                {% for heure in range({{jours.heure_debut}} -1,{{jours.heure_fin}})}
+                                <option value="heure{{heure}}">{{heure}}h</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <select name="{{jours.jour[0,1]}}-0-Type">
+                                <option name="TP">TP</option>
+                                <option name="TD">TD</option>
+                                <option name="CM">CM</option>
+
+                            </select>
+                        </td>
+                        <td>
+                            <select name="{{jours.jour[0,1]}}-0-Classe">
+                                <option name="classe">Unavailable</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
                 {% endfor %}
-                <input type="button" value="Supprimer">
-            </select>
-        </section>
-        <section id="dates">
-            <select name="periodes">
-                {% for date in dates %}
-                <option name="{{date[0]}}">{{dates[1]}}</option>
-                {% endfor %}
-                <input type="button" value="Supprimer">
-            </select>
-        </section>
-        <section id="classes">
-            <input type="button" name="infos" values="Informations">
-            <select name="periodes">
-                {% for classe in classes %}
-                <option name="{{classe[0]}}">{{classes[1]}}</option>
-                {% endfor %}
-                <input type="button" value="Supprimer">
-            </select>
+            </div>
+            {% endfor %}
         </section>
     </form>
 </article>
