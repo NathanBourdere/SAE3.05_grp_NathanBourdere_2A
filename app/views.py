@@ -190,9 +190,8 @@ def voir_infos(idM,idV=""):
 def edit_assignement(id_v,id_m):
     vaca = get_vacataire(id_v)
     dispos = get_dispos(vaca)
-    affectables = get_affectables(vaca)
     if request.method == "POST":
-        return render_template("edit_assignement.html",v=vaca,m=get_domaine(id_m),dispos=dispos)
+        return redirect(url_for("menu_admin.html"))
     return render_template("edit_assignement.html",v=vaca,m=get_domaine(id_m),dispos=dispos)
 
 @app.route('/profile/')

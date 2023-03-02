@@ -314,7 +314,7 @@ def get_dossier(id_vaca:int)->GererDossier:
             return dossier
     return None
 
-def searchDomaine(tri="ne pas trier",search=""):
+def searchDomaine(id_v,tri="ne pas trier",search=""):
     filtre = Domaine.id_domaine
     match(tri):
         case "Identifiant":
@@ -324,8 +324,8 @@ def searchDomaine(tri="ne pas trier",search=""):
         case "Responsable":
             filtre = Domaine.responsable
         case "Ne pas trier":
-            return db.session.query(Domaine.id_domaine,Domaine.domaine,Domaine.responsable, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).all()
-    return db.session.query(Domaine.id_domaine,Domaine.domaine, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).filter(filtre.ilike("%"+search+"%")).order_by(filtre).all()
+            return db.session.query(Domaine.id_domaine,Domaine.domaine,Domaine.responsable, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).join(Cours,Cours.id_cours == Domaine.id_domaine).join(Affectable,Affectable.id_cours == Cours.id_cours and Affectable.id_vacataire == id_v).all()
+    return db.session.query(Domaine.id_domaine,Domaine.domaine, PersonnelAdministratif.nom_pa, PersonnelAdministratif.prenom_pa).join(PersonnelAdministratif, PersonnelAdministratif.id_pers_admin == Domaine.responsable).join(Cours,Cours.id_cours == Domaine.id_domaine).join(Affectable,Affectable.id_cours == Cours.id_cours and Affectable.id_vacataire == id_v).filter(filtre.ilike("%"+search+"%")).order_by(filtre).all()
 
 def searchDossier(tri="Trier les dossiers ↓",filtre="Filtrer les dossiers ↓",search=""):
     if filtre == "Filtrer les dossiers ↓":
