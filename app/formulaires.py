@@ -59,6 +59,11 @@ class NewAccount(FlaskForm):
     password = PasswordField('Mot de passe')
     next = HiddenField()
 
+class NouveauMDP(FlaskForm):
+    mdp_actuel = PasswordField("Mot de passe actuel")
+    nouveau_mdp = PasswordField("Nouveau mot de passe")
+    confirmation = PasswordField("Répéter le nouveau mot de passe")
+
 def is_mdp(formulaire,user_type,user):
     m = sha256()
     m.update(formulaire.password.data.encode())
