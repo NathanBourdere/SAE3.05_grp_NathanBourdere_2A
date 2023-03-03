@@ -234,7 +234,7 @@ class Disponibilites(db.Model):
 
     def __str__(self):
         res = "Vacataire "+self.id_vacataire+" dispo. id : "+self.id_dispo+" : "+self.jour_dispo
-        res += " semaine "+self.semestre_dispo+" de la période "+self.periode_dispo
+        res += " semaine "+str(self.semestre_dispo)+" de la période "+str(self.periode_dispo)
         res += " disponible de "+self.heure_dispo_debut +" jusqu'à "+self.heure_dispo_fin
         res += "derniere modification le :"+self.date_modif_dispo+" à "+self.heure_modif_dispo+"\n"
         return res
@@ -418,8 +418,22 @@ def get_domaines():
 def get_domaine(id):
     return Domaine.query.get(id)
 
-def get_dispos(vaca):
-    return db.session.query(Disponibilites).filter(Disponibilites.id_vacataire==vaca.id_vacataire).all()
+def get_dispos(id_vacataire):
+    return db.session.query(Disponibilites).filter(Disponibilites.id_vacataire==id_vacataire).all()
 
 def get_affectables(vaca):
     return Affectable.query.get(Affectable.id_vacataire==vaca.id_vacataire).all()
+
+import json
+import datetime
+
+def get_dates_from_json_file(filename):
+    with open(filename) as f:
+        data = json.load(f)
+    
+    dates = {}
+    for key, date_list in data.items():
+        date_list = [str(date) for date in date_list if datetime.datetime.strptime(date, '%Y-%m-%d').weekday() != 6]
+        dates[key] = date_list
+    
+    return dates
