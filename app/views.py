@@ -1,5 +1,5 @@
 import ast
-from datetime import date, datetime
+from datetime import date, datetime as datetemps
 import time
 from .formulaires import *
 from .app import db,app
@@ -54,7 +54,6 @@ def matiere():
     lstAllMatiere = db.session.query(Domaine.domaine).all()
     lstMatiereDispo = db.session.query(Domaine.domaine, Affectable.id_vacataire, Domaine.id_domaine).join(Affectable, Affectable.id_domaine == Domaine.id_domaine).all()
     liste_final = []
-    print(lstMatiereDispo)
     for tuple in lstMatiereDispo:
         liste_temp = []
         liste_temp.append(tuple)
@@ -65,7 +64,6 @@ def matiere():
     start = []
     for listes in liste_final:
         if listes[0][0] not in start:
-            print(listes[0][0])
             start.append(listes[0][0])
             liste_rendu.append(anti_doublons(listes))
     dossierquery = get_dossier(current_user.id_vacataire)
@@ -105,25 +103,28 @@ def disponibilites():
         i = 0
         while(loop):
             try:
-                periodes.append([request.form['jours_semaine'+str(i)], request.form["heure_debut_periode"+str(i)], request.form["heure_fin_periode"+str(i)]])
+                if request.form['jours_semaine'+str(i)] != "":
+                    periodes.append([request.form['jours_semaine'+str(i)], request.form["heure_debut_periode"+str(i)], request.form["heure_fin_periode"+str(i)]])
                 i+=1
             except Exception as e:
                 i=0
                 while(loop):
                     try:
-                        jour_particulier = []
-                        jour_particulier.append(request.form["date_spe"+str(i)])
-                        jour_particulier.append(request.form["heure_debut_date_spe"+str(i)])
-                        jour_particulier.append(request.form["heure_fin_date_spe"+str(i)])
-                        jours_spe.append(jour_particulier)
+                        print(request.form)
+                        if request.form['date_spe'+str(i)] != "":
+                            jour_particulier = []
+                            jour_particulier.append(request.form["date_spe"+str(i)])
+                            jour_particulier.append(request.form["heure_debut_date_spe"+str(i)])
+                            jour_particulier.append(request.form["heure_fin_date_spe"+str(i)])
+                            jours_spe.append(jour_particulier)
                         i+=1
                     except Exception as a:
                         loop = False
         for item in range(2,len(periodes)):
-            db.session.add(Disponibilites(max_id_dispo()+1,current_user.id_vacataire,periodes[item][0],periodes[1],periodes[0], periodes[item][1], periodes[item][2], date.today(),datetime.now().strftime("%H:%M:%S")))
+            db.session.add(Disponibilites(max_id_dispo()+1,current_user.id_vacataire,periodes[item][0],periodes[1],periodes[0], periodes[item][1], periodes[item][2], date.today(),datetemps.now().strftime("%H:%M:%S")))
             db.session.commit()
         for item in jours_spe:
-            db.session.add(Disponibilites(max_id_dispo()+1,current_user.id_vacataire,item[0],-1,-1, item[1], item[2],date.today(),datetime.now().strftime("%H:%M:%S")))
+            db.session.add(Disponibilites(max_id_dispo()+1,current_user.id_vacataire,item[0],-1,-1, item[1], item[2],date.today(),datetemps.now().strftime("%H:%M:%S")))
             db.session.commit()
     return render_template('disponibilites.html')
 
@@ -203,32 +204,40 @@ def edit_assignement(id_v,id_m):
                     "heure_fin": "12:00"
                 }
             },
-            2: {
+            2: [{
                 "lundi": {
                     "heure_debut": "08:00",
                     "heure_fin": "12:00"
-                }
+                }]
             }
         }
     }
     """
     dispos = get_dispos(id_v)
+    dispos_dates = []
     dispos_propres = dict()
     dispo_propre = dict()
     for dispo in dispos:
         if not dispo.periode_dispo == -1:
             periode = dict()
             jour = dict()
+            if dispo.periode_dispo not in dispos_propres.keys():
+                dispo_propre = dict()
             jour["heure_debut"] = dispo.heure_dispo_debut
             jour["heure_fin"] = dispo.heure_dispo_fin
             periode[dispo.jour_dispo] = jour
-            dispo_propre[dispo.semestre_dispo] = periode
+            if dispo.semestre_dispo in dispo_propre.keys():
+                dispo_propre[dispo.semestre_dispo].append(periode)
+            else:
+                dispo_propre[dispo.semestre_dispo] = [periode]
             dispos_propres[dispo.periode_dispo] = dispo_propre
-    print(dispos_propres)
+                
+        else:
+            dispos_dates.append(dispo)
     if request.method == "POST":
         
         return redirect(url_for("menu_admin"))
-    return render_template("edit_assignement.html",disponibilitesPeriode=dispos_propres)
+    return render_template("edit_assignement.html",disponibilitesPeriode=dispos_propres, disponibilitesDates=dispos_dates)
 
 @app.route('/profile/')
 @login_required
