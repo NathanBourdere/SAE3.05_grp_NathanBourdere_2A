@@ -189,9 +189,6 @@ input[type="submit"]:hover {
     margin-bottom: 1em;
 }
 
-.doc > input {
-    margin-top: -5%;
-}
 
 ul {
     display: flex;

@@ -7,7 +7,7 @@ Vous trouverez ci-dessous tous les liens utiles en rapport avec le projet.
 Le manuel utilisateur donne la description et le guidage nécessaires pour prendre en main le site Vacat'O quel que soit le type de personne l'utilisant (administrateur ou vacataire).
 
 ### [Dossier partagé Google Drive](https://drive.google.com/drive/folders/1n3ntdANdTEU4EXUBkdOFUPeqhCDqvSGY?usp=sharing)
-Le dossier partagé Google Drive regroupe toutes les ressources du projet. Il contient les rapport, les exports et les sauvegardes du digramme de Gantt, les diagrammes conçus lors de l'analyse comme le diagramme des cas d'utilisation ou le modèle conceptuel des données, le cahier des charges, le sujet de ce projet ou encore les rapports écris demandé par le corps professeur. Pour avoir accès au dossier partagé il n'y a pas forcément besoin de se connecter à Google. N'importe qui peut le consulter mais ne peut en rien modifier quoi que ce soit.
+Le dossier partagé Google Drive regroupe toutes les ressources du projet. Il contient les rapports, les exports et les sauvegardes du diagramme de Gantt, les diagrammes conçus lors de l'analyse comme le diagramme des cas d'utilisation ou le modèle conceptuel des données, le cahier des charges, le sujet de ce projet ou encore les rapports écris demandé par le corps professeur. Pour avoir accès au dossier partagé il n'y a pas forcément besoin de se connecter à Google. N'importe qui peut le consulter mais ne peut en aucun cas modifier quoi que ce soit.
 
 ### [Maquettes sur Figma](https://www.figma.com/file/6Ac3W80ETHOQVFtlyHYx3N/Vacataire?node-id=0%3A1)
 Figma est un site que nous avons utilisé pour faire les maquettes du site Vacat'O et nous donner une idée de l'orientation front-end lors de l'implémentation des templates HTML.
@@ -17,7 +17,7 @@ Trello est un site qui nous a permis de nous organiser pour la répartition et l
 
 ## Installations, configuration et lancement côté serveur
 
-1. Pour faire tourner le site web il est conseillé d'utiliser un environnement virtuel. Pour le créer il suffi de se positionner dans le dossier contenant le projet et exécuter la commande qui suit. Si vous ne souhaitez pas utiliser d'environnement virtuel, rendez-vous à l'étape 3.
+1. Pour faire tourner le site web il est conseillé d'utiliser un environnement virtuel. Pour en créer un il suffi de se positionner dans le dossier contenant le projet et exécuter la commande qui suit. Si vous ne souhaitez pas utiliser d'environnement virtuel, rendez-vous à l'étape 3.
 ```sh
 virtualenv -p python3 venv
 ```
@@ -37,7 +37,7 @@ pip install -r requirement.txt
 flask run
 ```
 
-5. Au cours du développement nous avons ajouté des commandes en rapport avec la base de données. Elle sont utiles dans la mesure où l'on veut utiliser les jeux de données contenus dans les fichiers CSV, remettre la base de données à 0 (c'est à dire avoir une base de données uniquement avec toutes les tables étant vides) ou juste supprimer la base de données. Pour voir ces commandes, faites la commande qui suit.
+5. Au cours du développement nous avons ajouté des commandes en rapport avec la base de données. Elles sont utiles dans la mesure où l'on veut utiliser les jeux de données contenus dans les fichiers CSV, remettre la base de données à 0 (c'est à dire avoir une base de données uniquement avec toutes les tables étant vides) ou juste supprimer la base de données. Pour voir ces commandes, faites la commande qui suit.
 ```sh
 flask
 ```
