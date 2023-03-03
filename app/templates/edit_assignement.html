@@ -1,47 +1,107 @@
-{% extends "base.html" %}
-{% block styles %}
-{{ super() }}
-<link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
-{% endblock %}
-{% block scripts %}
+{% extends "base.html" %} {% block styles %} {{ super() }}
+<link
+  href="{{ url_for('static', filename='CSS/headerSpe.css')}}"
+  rel="stylesheet"
+/>
+{% endblock %} {% block scripts %}
 <script src="{{ url_for('static', filename='JS/verifAge.js')}}"></script>
-{% endblock %}
-{% block backwards %}
-<a href="/menu_vacataire/">
-    <img src="../static/IMG/back.png" alt="retour arriere">
+<script src="{{ url_for('static', filename='JS/assignation.js')}}"></script>
+{% endblock %} {% block backwards %}
+<a href="/menu_admin/">
+  <img src="../static/IMG/back.png" alt="retour arriere" />
 </a>
-{% endblock %}
-{% block contents %}
-<section id="flexAvatar">
-</section>
-{% endblock %}
+{% endblock %} {% block contents %}
 <article>
-    <form method="POST">
-        <section id="periodes">
-            <input type="button" name="infos" values="Informations">
-            <select name="periodes">
-                {% for periode in periodes %}
-                <option name="{{periode[0]}}">{{periode[1]}}</option>
-                {% endfor %}
-                <input type="button" value="Supprimer">
-            </select>
-        </section>
-        <section id="dates">
-            <select name="periodes">
-                {% for date in dates %}
-                <option name="{{date[0]}}">{{dates[1]}}</option>
-                {% endfor %}
-                <input type="button" value="Supprimer">
-            </select>
-        </section>
-        <section id="classes">
-            <input type="button" name="infos" values="Informations">
-            <select name="periodes">
-                {% for classe in classes %}
-                <option name="{{classe[0]}}">{{classes[1]}}</option>
-                {% endfor %}
-                <input type="button" value="Supprimer">
-            </select>
-        </section>
-    </form>
+  <form method="POST">
+    <h2>Périodes Spécifiques</h2>
+    {% for annee,data in disponibilitesPeriode.items() %} {% for
+    periode,data_periode in data.items() %}
+    <section id="periode{{annee}}-{{periode}}"> 
+      <h3>Période {{periode}} {{annee}}</h3>
+
+      <table id="tableau-periode-{{année}}-{{periode}}">
+        {% for jour_data in data_periode %} {% for jour, heures in
+        jour_data.items() %}
+        <tr>
+          <table id="tableau-periode{{annee}}-{{jour}}">
+            <tr>
+              <td id>{{jour}}</td>
+              <td>
+                <select name="{{jour}}-{{annee}}-{{periode}}-Debut0">
+                  <option value="{{heures['heure_debut']}}">
+                    {{heures['heure_debut']}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <select name="{{jour}}-{{annee}}-{{periode}}-Fin0">
+                  <option value="{{heures['heure_fin']}}">
+                    {{heures['heure_fin']}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <select name="{{jour}}-{{annee}}-Type0" onchange=getClassesEnFonctionCours(this.value,'{{jour}}','{{annee}}',0)>
+                  <option name="TP">TP</option>
+                  <option name="TD">TD</option>
+                  <option name="CM">CM</option>
+                </select>
+              </td>
+              <td>
+                <select name="{{jour}}-{{annee}}-Classe0">
+                  <option name="classe">Selectionner un type</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+          {% endfor %} {% endfor %}
+        </tr>
+      </table>
+    </section>
+    {% endfor %} {% endfor %}
+    <section id="dates">
+      <h2>Dates Spécifiques</h2>
+    {% for date in disponibilitesDates %} 
+        <table id="tableau-date-{{date.id_dispo}}">
+          <tr>
+            <table id="tableau-date{{annee}}-{{jour}}">
+              <td id>
+                <input type="date" value="{{date.jour_dispo}}" name="date-{{date.id_dispo}}">
+              </td>
+              <td>
+                <select name="date-{{date.id_dispo}}-Debut0">
+                  <option value="{{date.heure_dispo_debut}}">
+                    {{date.heure_dispo_debut}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <select name="date-{{date.id_dispo}}-Fin0">
+                  <option value="{{date.heure_dispo_fin}}">
+                    {{date.heure_dispo_fin}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <select name="{{date.id_dispo}}-Type0" onchange=getClassesEnFonctionCoursPourDateSpe(this.value,'{{date.id_dispo}}',0)>
+                <option name="TP">TP</option>
+                  <option name="TD">TD</option>
+                  <option name="CM">CM</option>
+                </select>
+              </td>
+              <td>
+                <select name="{{date.id_dispo}}-Classe0">
+                  <option name="classe">Selectionner un type</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+          {% endfor %}
+        </tr>
+      </table>
+    </section>
+    <input type="submit" value="Enregistrer" />
+  </form>
+  <script>genererHeure()</script>
 </article>
+{% endblock %}
