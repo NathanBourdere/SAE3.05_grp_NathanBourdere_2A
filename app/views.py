@@ -130,10 +130,11 @@ def disponibilites():
 
 @app.route('/nouveau_vacataire/', methods= ['GET', 'POST'])
 def new_vaca():
+    from datetime import datetime
     form = InscriptionVacataire()
-    cds,mdp = saler_mot_de_passe(form.password.data)
     if request.method == "POST":
         id = max_id_actuel()
+        cds,mdp = saler_mot_de_passe(form.password.data)
         try:
             vac = Vacataire('V' + id,'Spontanée',form.entreprise.data,'0', form.nom.data ,form.prenom.data ,form.tel.data,form.ddn.data,form.email.data,mdp,"","","","","",cds)
             date_actuelle = date.today()
@@ -143,7 +144,7 @@ def new_vaca():
             db.session.add(dossier)
             db.session.commit()
             return redirect(url_for('menu_admin'))
-        except:
+        except Exception as e:
             flash("Le numéro de téléphone ou l'adresse email est déjà utilisée, veuillez vérifier vos infromations")
     return render_template('nouveau_vacataire.html', form = form)
 
@@ -235,7 +236,59 @@ def edit_assignement(id_v,id_m):
         else:
             dispos_dates.append(dispo)
     if request.method == "POST":
-        
+        dico = dispos_propres
+        dom = get_domaine(id_m)
+        dates_periode = get_dates_from_json_file("static/data/periodes.json")
+        for annee,periodes in dico.items():
+            for periode,liste_dispos in periodes.items():
+                for dico_jours in liste_dispos:
+                    for jour in dico_jours.keys():
+                        dico_jours[jour] = []
+                        i = 0
+                        loop = True
+                        while(loop):
+                            try:
+                                dico_jours[jour].append((request.form[str(jour)+"-"+str(annee)+"-"+str(periode)+"-Debut"+str(i)],
+                                                  request.form[str(jour)+"-"+str(annee)+"-"+str(periode)+"-Fin"+str(i)],
+                                                  request.form[str(jour)+"-"+str(annee)+"-Type"+str(i)],
+                                                  request.form[str(jour)+"-"+str(annee)+"-Classe"+str(i)]))
+                                i+=1
+                            except Exception:
+                                loop = False
+                        for ind in range(len(dico_jours[jour])):
+                            id = str(max_id_cours())
+                            calc = duree_entre_deux_temps(dico_jours[jour][ind][0],dico_jours[jour][ind][1])
+                            db.session.add(Cours(id,dico_jours[jour][ind][2],dom.domaine,str(calc),dom.id_domaine))
+                            db.session.commit()
+                            for date_uniq in dates_periode[annee][periode]:
+                                if get_jour(date_uniq,jour):
+                                    db.session.add(Assigner(id_v,id,dico_jours[jour][2],"I003",dico_jours[jour][ind][3],date_uniq,dico_jours[jour][ind][0]))
+                                    db.session.commit()
+        i2=0
+        for dispo in dispos_dates:
+            dom = get_domaine(id_m)
+            liste_dates = []
+            id = str(max_id_cours())
+            duree = duree_entre_deux_temps(request.form.get("date-"+str(dispo.id_dispo)+"-Debut"+str(i2),request.form.get("date-"+str(dispo.id_dispo)+"-Fin"+str(i2))))
+            db.session.add(Cours(
+                    id,
+                    request.form.get("date-"+str(dispo.id_dispo)+"-Type"+str(i)),
+                    dom.domaine,
+                    duree,
+                    dom.id_domaine
+            ))
+            db.session.commit()
+            db.session.add(Assigner(
+                    id_v,
+                    id,
+                    request.form.get("date-"+str(dispo.id_dispo)+"-Type"+str(i)),
+                    "I003",
+                    request.form.get("date-"+str(dispo.id_dispo)+"-Classe"+str(i)),
+                    request.form.get("date-"+str(dispo.id_dispo)),
+                    request.form.get("date-"+str(dispo.id_dispo)+"-Debut"+str(i))
+            ))
+            db.session.commit()
+            i2+=1
         return redirect(url_for("menu_admin"))
     return render_template("edit_assignement.html",disponibilitesPeriode=dispos_propres, disponibilitesDates=dispos_dates)
 

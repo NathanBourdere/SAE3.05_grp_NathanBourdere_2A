@@ -60,25 +60,25 @@ class Assigner(db.Model):
 class Cours(db.Model):
     __tablename__= "Cours"
 
-    id_cours = db.Column(db.String(100),db.ForeignKey("Domaine.id_domaine"),primary_key=True)
+    id_cours = db.Column(db.String(100),primary_key=True)
     type_cours = db.Column(db.String(100),primary_key=True)
     nom_cours = db.Column(db.String(100),nullable=False)
-    heures_totales = db.Column(db.Integer)
     duree_cours = db.Column(db.Integer)
+    domaine = db.Column(db.String(100),db.ForeignKey("Domaine.id_domaine"))
 
+    domaine_a_cours = db.relationship("Domaine", backref=db.backref("cours", lazy="dynamic"))
     cours_assignee_id = db.relationship("Assigner",back_populates="assigner_cours_id", foreign_keys=[Assigner.id_cours])
     cours_assignee_type = db.relationship("Assigner",back_populates="assigner_cours_type", foreign_keys=[Assigner.type_cours])
 
-    def __init__(self,idc,t,n,h,dur,dom):
+    def __init__(self,idc,t,n,dur,dom):
         self.id_cours = idc
         self.type_cours = t
         self.nom_cours = n
-        self.heures_totales = h
         self.duree_cours = dur
         self.domaine = dom
     
     def __str__(self):
-        return self.type_cours+" "+str(self.id_cours)+" : "+self.nom_cours+" "+str(self.heures_totales)+" d'heures totales pour une duree de "+str(self.duree_cours)+" par cours "+" du domaine "+self.domaine
+        return self.type_cours+" "+str(self.id_cours)+" : "+self.nom_cours+" "+" d'heures totales pour une duree de "+str(self.duree_cours)+" par cours "+" du domaine "
 
 class Affectable(db.Model):
     __tablename__ = "Affectable"
@@ -109,7 +109,7 @@ class Domaine(db.Model):
     description = db.Column(db.String(3500),nullable=False)
     responsable = db.Column(db.String(100),db.ForeignKey("PersonnelAdministratif.id_pers_admin"),nullable=False)
 
-    le_cours = db.relationship("Cours", backref = "cours")
+    # le_cours = db.relationship("Cours", backref = "cours")
     pers_admin = db.relationship("PersonnelAdministratif",back_populates="responsable_dom")
     domaine_affecter = db.relationship("Affectable",back_populates="affecter_domaine",foreign_keys=[Affectable.id_domaine])
 
@@ -253,6 +253,13 @@ def max_id_actuel():
         if id_max<int(id[0][1:]):
             id_max = int(id[0][1:])
     return str(id_max+1)
+
+def max_id_cours():
+    id_max = 0
+    for id in db.session.query(Cours.id_cours).all():
+        if id>id_max:
+            id_max = id
+    return id_max + 1
 
 def est_vacataire(user):
     if type(user) == str:
@@ -424,16 +431,78 @@ def get_dispos(id_vacataire):
 def get_affectables(vaca):
     return Affectable.query.get(Affectable.id_vacataire==vaca.id_vacataire).all()
 
-import json
-import datetime
-
 def get_dates_from_json_file(filename):
-    with open(filename) as f:
-        data = json.load(f)
+    import json
+    from datetime import datetime
+    """
+    Cette fonction prend un nom de fichier JSON en entrée et renvoie un dictionnaire
+    contenant toutes les données du fichier.
+    """
+    with open(filename, 'r') as f:
+        json_dict = json.load(f) # charge le fichier JSON dans un dictionnaire Python
+
+    data_dict = {} # initialiser un dictionnaire vide pour stocker les données
+
+    # boucler sur les clés du dictionnaire externe
+    for key1 in json_dict.keys():
+        data_dict[key1] = {} # initialiser un dictionnaire interne pour chaque clé externe
+        # boucler sur les clés du dictionnaire interne
+        for key2 in json_dict[key1].keys():
+            data_dict[key1][key2] = [] # initialiser une liste pour chaque clé interne
+            # boucler sur chaque élément de la liste
+            for value in json_dict[key1][key2]:
+                # vérifier si la valeur est une date valide
+                try:
+                    date_obj = datetime.strptime(value, '%Y-%m-%d').date()
+                    # vérifier si le jour correspondant est dimanche
+                    if date_obj.weekday() != 6: # 6 correspond à dimanche
+                        data_dict[key1][key2].append(value) # ajouter la valeur à la liste
+                except ValueError:
+                    pass # ignorer les valeurs qui ne sont pas des dates valides
     
-    dates = {}
-    for key, date_list in data.items():
-        date_list = [str(date) for date in date_list if datetime.datetime.strptime(date, '%Y-%m-%d').weekday() != 6]
-        dates[key] = date_list
+    return data_dict
+
+
+def duree_entre_deux_temps(temps1, temps2):
+    from datetime import time, datetime, timedelta
+    if len(temps1) <=3:
+        date_temps1 = datetime.strptime(temps1,'%Hh')
+    else:
+        date_temps1 = datetime.strptime(temps1, '%Hh%M')
     
-    return dates
+    if len(temps2) <=3:
+        date_temps2 = datetime.strptime(temps2,'%Hh')
+    else:
+        date_temps2 = datetime.strptime(temps2, '%Hh%M')
+    
+    secondes_temps1 = time(date_temps1.hour, date_temps1.minute).second
+    secondes_temps2 = time(date_temps2.hour, date_temps2.minute).second
+    
+    duree_secondes = abs(secondes_temps2 - secondes_temps1)
+    duree = timedelta(seconds=duree_secondes)
+    
+    heures, reste = divmod(duree.seconds, 3600)
+    minutes, secondes = divmod(reste, 60)
+    
+    format_duree = f"{heures:02d}h{minutes:02d}"
+    
+    return format_duree
+
+def get_jour(val,voulu):
+    from datetime import datetime
+    match(voulu):
+        case "Lundi":
+            voulu = 0
+        case "Mardi":
+            voulu = 1
+        case "Mercredi":
+            voulu = 2
+        case "Jeudi":
+            voulu = 3
+        case "Vendredi":
+            voulu = 4
+        case "Samedi":
+            voulu = 5
+        case "Dimanche":
+            voulu = 6
+    return datetime.datetime.strptime(val, '%Y-%m-%d').weekday() == voulu

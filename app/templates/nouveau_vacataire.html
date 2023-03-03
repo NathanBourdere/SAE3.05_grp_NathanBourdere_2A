@@ -2,78 +2,11 @@
 {% block styles %}
 {{ super() }}
 <link href="{{ url_for('static', filename='CSS/headerSpe.css')}}" rel="stylesheet">
-    <!-- <style>
-      input[type="submit"] {
-        display: none;
-      }
-    
-      #dispos {
-        display: none;
-      }
-    
-      ul {
-        display: flex;
-      }
-    
-      li {
-        margin: 2%;
-      }
-    
-      article,
-      ul {
-        border: solid 1px;
-      }
-    
-      @keyframes insert {
-        0% {
-          transform: translate3d(-150px, 0, 0);
-          opacity: 0;
-        }
-    
-        100% {
-          transform: translate3d(0, 0, 0);
-          opacity: 1;
-        }
-      }
-    
-      @keyframes remove {
-        0% {
-          transform: translate3d(0, 0, 0);
-          opacity: 1;
-        }
-    
-        100% {
-          transform: translate3d(-150px, 0, 0);
-          opacity: 0;
-        }
-      }
-    </style> -->
+
 {% endblock %}
 {% block scripts %}
 {{ super() }}
-<!-- <script>
-  $("body").on("change", function () {
-    verif = true;
-    let lst = $("article ol li input");
-    console.log(lst)
-    for (i = 0; i < lst.length; i++) {
-      if (lst.get(i).type != "submit") {
-        console.log(lst.get(i).id)
-        if (lst.get(i).id != "mdp") {
-          if (lst.get(i).value == "") {
-            verif = false;
-          }
-        }
-      }
-    }
-    console.log(verif)
-    if (verif) {
-      $("#submit").css("display", "flex");
-    } else {
-      $("#submit").css("display", "none");
-    }
-  });
-</script> -->
+
 {% endblock %}
 {% block backwards %}
 <a href="/menu_admin/">
