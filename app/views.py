@@ -27,6 +27,39 @@ def home():
 def credits():
     return render_template('credits.html')
     
+@app.route('/mesmatieres/', methods=['GET'])
+def voir_matieres():        
+    subquery = db.session.query(
+        Cours.id_cours,
+        Assigner.id_vacataire
+    ).outerjoin(
+        Assigner,
+        Assigner.id_cours == Cours.id_cours
+    ).filter(
+        Assigner.id_vacataire == current_user.id_vacataire
+    ).subquery()
+
+    assignations = db.session.query(
+        Domaine.id_domaine,
+        Domaine.domaine,
+        PersonnelAdministratif.nom_pa,
+        PersonnelAdministratif.prenom_pa,
+        subquery.c.id_cours
+    ).outerjoin(
+        PersonnelAdministratif, 
+        PersonnelAdministratif.id_pers_admin == Domaine.responsable
+    ).outerjoin(
+        Cours, 
+        Cours.domaine == Domaine.id_domaine
+    ).outerjoin(
+        subquery,
+        subquery.c.id_cours == Cours.id_cours
+    ).all()
+
+
+    print(assignations)
+    return render_template('matieres_assignees.html',domaine=assignations)
+
 @app.route('/matieres/', methods=['GET','POST'])
 @login_required
 def matiere():
