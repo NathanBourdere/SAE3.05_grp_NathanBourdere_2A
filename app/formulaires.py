@@ -44,7 +44,7 @@ class InscriptionVacataire(FlaskForm):
         self.tel.data = vacataire.num_tel_v
         self.ddn.data = ddn_vacataire
         self.entreprise.data = vacataire.entreprise
-        self.nationalite.data = vacataire.nationnalite
+        self.nationalite.data = vacataire.nationalite
         self.profession.data = vacataire.profession
         self.meilleur_diplome.data = vacataire.meilleur_diplome
         self.annee_obtiention.data = vacataire.annee_obtiention

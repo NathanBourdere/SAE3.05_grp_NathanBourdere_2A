@@ -79,7 +79,7 @@ def matiere():
             liste_matiere_jsp = db.session.query(Domaine.id_domaine, Domaine.domaine).filter(Domaine.domaine.ilike("%" + mat + "%")).all()
             for id_dom,dom in liste_matiere_jsp:
                 try:
-                    db.session.add(Affectable(current_user.id_vacataire,id_dom,date.today(),datetime.now().strftime("%H:%M:%S")))
+                    db.session.add(Affectable(current_user.id_vacataire,id_dom,date.today(),datetemps.now().strftime("%H:%M:%S")))
                     db.session.commit()
                 except Exception as e:
                     print(e)
@@ -399,7 +399,7 @@ def edit_dossier():
     dossier = get_dossier(current_user.id_vacataire)
     form = InscriptionVacataire(vacataire)    
     if request.method=="POST":
-        update_dossier_vac(vacataire,
+        update_dossier_vac(vacataire,request.form.get("legal"),
                    nom=request.form.get("nom"),
                    prenom=request.form.get("prenom"),
                    tel=request.form.get("tel"),
@@ -408,10 +408,9 @@ def edit_dossier():
                    entreprise=request.form.get("entreprise"),
                    nationalite=request.form.get("nationalite"),
                    profession=request.form.get("profession"),
-                   diplome=request.form.get("meilleur_diplome"),
+                   meilleur_diplome=request.form.get("meilleur_diplome"),
                    annee_obtiention=request.form.get("annee_obtiention"),
-                   adr=request.form.get("adresse"),
-                   legal=request.form.get("legal"))
+                   adresse=request.form.get("adresse"))
         actualiser_date_dossier(dossier)
         editeur_auto_doc(dossier,vacataire)   
         return redirect(url_for("menu_vacataire"))

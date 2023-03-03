@@ -167,7 +167,7 @@ class Vacataire(UserMixin,db.Model):
     ddn_v = db.Column(db.String(100),nullable=True)
     mail_v = db.Column(db.String(100),unique=True)
     mdp_v = db.Column(db.String(200),nullable=True)
-    nationnalite = db.Column(db.String(100),nullable=True)
+    nationalite = db.Column(db.String(100),nullable=True)
     profession = db.Column(db.String(100),nullable=True)
     meilleur_diplome = db.Column(db.String(100),nullable=True)
     annee_obtiention = db.Column(db.String(100),nullable=True)
@@ -179,7 +179,7 @@ class Vacataire(UserMixin,db.Model):
     vacataire_assignee = db.relationship("Assigner", back_populates ="cours_a_vacataire")
     dispo = db.relationship("Disponibilites", backref = "vacataire")
 
-    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp,nationnalite,profession,meilleur_diplome,annee_obtention,adresse_postale,cds):
+    def __init__(self,idv,candidature,ent,est_ancien,nom,pnom,tel,ddn,mail,mdp,nationalite,profession,meilleur_diplome,annee_obtention,adresse_postale,cds):
         self.id_vacataire = idv
         self.candidature = candidature
         self.entreprise = ent
@@ -190,7 +190,7 @@ class Vacataire(UserMixin,db.Model):
         self.ddn_v = ddn
         self.mail_v = mail
         self.mdp_v = mdp
-        self.nationnalite = nationnalite
+        self.nationalite = nationalite
         self.profession = profession
         self.meilleur_diplome = meilleur_diplome
         self.annee_obtiention = annee_obtention
@@ -203,7 +203,7 @@ class Vacataire(UserMixin,db.Model):
     
     def is_filled(self):
         return all([getattr(self, attr) != "" for attr in ['entreprise', 'nom_v', 'prenom_v', 'num_tel_v', 'mail_v', 
-        'nationnalite', 'adresse','annee_obtiention', 'ddn_v', 'profession', 'meilleur_diplome']]) and self.legal == 1
+        'nationalite', 'adresse','annee_obtiention', 'ddn_v', 'profession', 'meilleur_diplome']]) and self.legal == 1
 
     def __str__(self):
         return "Vacataire : "+" "+self.id_vacataire+" "+self.nom_v+" "+self.prenom_v+" né(e) le "+self.ddn_v+" mail : "+self.mail_v+" type de candidature : "+self.candidature+" est ancien :"+str(self.ancien)+" de l'entreprise "+self.entreprise
@@ -371,7 +371,11 @@ def editeur_auto_doc(dossier,vacataire):
             dossier.etat_dossier = "Incomplet"
     db.session.commit()
 
-def update_dossier_vac(vac, **kwargs):
+def update_dossier_vac(vac, legal,**kwargs):
+    if legal=="y":
+        vac.legal = 1
+    else:
+        vac.legal = 0
     for key, value in kwargs.items():
         if hasattr(vac, key) and value is not None:
             setattr(vac, key, value)
