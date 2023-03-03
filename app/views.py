@@ -10,7 +10,6 @@ from flask_login import login_user, current_user, logout_user,login_required
 
 from .models import searchDossier
 
-
 # Initialisation des routes
 @app.route('/')
 def home():
@@ -183,12 +182,53 @@ def voir_infos(idM,idV=""):
 @app.route('/edit_assignement/<id_v>/<id_m>',methods= ['GET', 'POST'])
 @login_required
 def edit_assignement(id_v,id_m):
-    vaca = get_vacataire(id_v)
-    dispos = get_dispos(vaca)
+    """
+    recup a partir du form
+    {
+        "2022-23": { # Année début de la période scolaire
+            1: { # periode
+                "lundi": [ # Jour de la semaine
+                    ("08:00", "10:00", "TP", "22A"), # Informations des cours ce jour
+                    ("10:00","12:00", "TD","22")
+                ]
+            }
+        }
+    }
+    a envoyer a la page
+    {
+        "2022-23": {
+            1: {
+                "lundi": {
+                    "heure_debut": "08:00",
+                    "heure_fin": "12:00"
+                }
+            },
+            2: {
+                "lundi": {
+                    "heure_debut": "08:00",
+                    "heure_fin": "12:00"
+                }
+            }
+        }
+    }
+    """
+    dispos = get_dispos(id_v)
+    dispos_propres = dict()
+    dispo_propre = dict()
+    for dispo in dispos:
+        if not dispo.periode_dispo == -1:
+            periode = dict()
+            jour = dict()
+            jour["heure_debut"] = dispo.heure_dispo_debut
+            jour["heure_fin"] = dispo.heure_dispo_fin
+            periode[dispo.jour_dispo] = jour
+            dispo_propre[dispo.semestre_dispo] = periode
+            dispos_propres[dispo.periode_dispo] = dispo_propre
+    print(dispos_propres)
     if request.method == "POST":
         
         return redirect(url_for("menu_admin"))
-    return render_template("edit_assignement.html",disponibilitesPeriode=dispos)
+    return render_template("edit_assignement.html",disponibilitesPeriode=dispos_propres)
 
 @app.route('/profile/')
 @login_required
